@@ -1,0 +1,222 @@
+import React, { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+
+import { useAppDispath, useAppSelector } from '../../../hooks/hooks';
+import { createUser, clearUserError } from '../slices/usersSlice';
+import type { CreateUserDTO } from '../dtos/create-user.dto';
+
+
+// Componentes reutilizables
+import { Button } from '../../../components/UI/Button/Button';
+import { Input } from '../../../components/UI/Input/Input';
+import { Textarea } from '../../../components/UI/TextArea/TextArea';
+import { Label } from '../../../components/UI/Label/Label';
+import { Select } from '../../../components/UI/Select/Select';
+
+export const CreateUser: React.FC = () => {
+  const dispatch = useAppDispath();
+  const navigate = useNavigate();
+  const myAlert = withReactContent(Swal);
+
+  const { loading, error, user: createdUser } = useAppSelector((state) => state.users);
+
+  // Inicializar React Hook form
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<CreateUserDTO>({
+    defaultValues: {
+      nombre: '',
+      apellido: '',
+      usuario: '',
+      correo: '',
+      telefono: '',
+      direccion: '',
+      rol: 'cajero',
+      estado: 'activo',
+      foto: '',
+      configuracion: undefined,
+      roles: []
+    },
+  });
+
+  // Si la creacion fue exitosa
+  useEffect(() => {
+    if (createdUser) {
+      navigate('/users');
+    }
+  }, [createdUser, navigate]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(clearUserError());
+    };
+  }, [dispatch]);
+
+  const onSubmit = (createUserDto: CreateUserDTO) => {
+    myAlert
+      .fire({
+        title: `Crear usuario!`,
+        text: `Estas seguro que deseas crear este usuario?`,
+        icon: 'question',
+        showConfirmButton: true,
+        showCancelButton: true,
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          dispatch(createUser(createUserDto))
+            .unwrap()
+            .catch((error: string) => {
+              myAlert.fire({
+                title: 'Error',
+                text: `${error}`,
+                icon: 'error',
+                timer: 5000,
+                timerProgressBar: true,
+              });
+            });
+        }
+      });
+  };
+
+  return (
+    <div className="py-6 px-4">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="w-full max-w-4xl mx-auto p-6 bg-white dark:bg-gray-900 rounded-lg shadow-md space-y-6"
+      >
+        <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-4">
+          Crear nuevo usuario
+        </h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <Label htmlFor="nombre">Nombre</Label>
+            <Input
+              id="nombre"
+              placeholder="Nombre"
+              {...register('nombre', { required: 'El nombre es obligatorio' })}
+            />
+            {errors.nombre && <p className="mt-1 text-sm text-red-500">{errors.nombre.message}</p>}
+          </div>
+
+          <div>
+            <Label htmlFor="apellido">Apellido</Label>
+            <Input
+              id="apellido"
+              placeholder="Apellido"
+              {...register('apellido', { required: 'El apellido es obligatorio' })}
+            />
+            {errors.apellido && (
+              <p className="mt-1 text-sm text-red-500">{errors.apellido.message}</p>
+            )}
+          </div>
+
+          <div>
+            <Label htmlFor="usuario">Usuario</Label>
+            <Input
+              id="usuario"
+              placeholder="usuario123"
+              {...register('usuario', { required: 'El usuario es obligatorio' })}
+            />
+            {errors.usuario && (
+              <p className="mt-1 text-sm text-red-500">{errors.usuario.message}</p>
+            )}
+          </div>
+
+          <div>
+            <Label htmlFor="correo">Correo electronico</Label>
+            <Input
+              id="correo"
+              type="email"
+              placeholder="correo@ejemplo.com"
+              {...register('correo', {
+                required: 'El correo es obligatorio',
+                pattern: {
+                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  message: 'Formato de correo invalido',
+                },
+              })}
+            />
+            {errors.correo && <p className="mt-1 text-sm text-red-500">{errors.correo.message}</p>}
+          </div>
+
+          <div>
+            <Label htmlFor="telefono">Telefono</Label>
+            <Input
+              id="telefono"
+              placeholder="+1 000-000-0000"
+              {...register('telefono', {
+                required: 'El telefono es obligatorio',
+                pattern: {
+                  value: /^\+1\s\d{3}-\d{3}-\d{4}$/,
+                  message: 'Formato invalido, ej: +1 000-000-0000',
+                },
+              })}
+            />
+            {errors.telefono && (
+              <p className="mt-1 text-sm text-red-500">{errors.telefono.message}</p>
+            )}
+          </div>
+
+          <div>
+            <Label htmlFor="rol">Rol</Label>
+            <Select id="rol" {...register('rol')}>
+              <option value="admin">Administrador</option>
+              <option value="cajero">Cajero</option>
+              <option value="inventarista">Inventarista</option>
+            </Select>
+            {errors.rol && <p className="mt-1 text-sm text-red-500">{errors.rol.message}</p>}
+          </div>
+
+          <div>
+            <Label htmlFor="estado">Estado</Label>
+            <Select id="estado" {...register('estado')}>
+              <option value="activo">Activo</option>
+              <option value="inactivo">Inactivo</option>
+            </Select>
+          </div>
+
+          <div className="col-span-full md:col-span-2">
+            <Label htmlFor="foto">Foto (URL)</Label>
+            <Input
+              id="foto"
+              placeholder="https://ejemplo.com/imagen.jpg"
+              {...register('foto', {
+                pattern: {
+                  value: /^(https?:\/\/)?([\w\d-]+\.)+\w{2,}(\/.+)?$/i,
+                  message: 'URL no valida.',
+                },
+              })}
+            />
+            {errors.foto && <p className="mt-1 text-sm text-red-500">{errors.foto.message}</p>}
+          </div>
+
+          <div className="col-span-full">
+            <Label htmlFor="direccion">Direccion</Label>
+            <Textarea
+              id="direccion"
+              placeholder="Calle 01, Ciudad Modelo"
+              {...register('direccion')}
+            />
+          </div>
+        </div>
+
+        {error && <p className="text-center text-red-600 bg-red-100 p-2 rounded-md">{error}</p>}
+
+        <div className="flex justify-end-pt-4 border-t dark:border-gray-700">
+          <Button type="submit" className="bg-green-600 hover:bg-green-700 text-white">
+            {loading ? 'Creando...' : 'Guardar usuario'}
+          </Button>
+          <Button type="button" variant="outline" onClick={() => navigate('/users')}>
+            Cancelar
+          </Button>
+        </div>
+      </form>
+    </div>
+  );
+};

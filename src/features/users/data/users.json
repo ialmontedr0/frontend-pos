@@ -1,0 +1,21 @@
+[
+  {
+    "_id": "6bcde8990dcf0120fcde",
+    "nombre": "Anthony",
+    "apellido": "Almonte",
+    "usuario": "ialmontedr",
+    "contrasena": "Temporal123!",
+    "correo": "anthony@mail.com",
+    "telefono": "+1 809-111-222-3333",
+    "direccion": "Calle Primera, Barahona",
+    "rol": "admin",
+    "estado": "activo",
+    "configuracion": {
+      "tema": "claro",
+      "idioma": "ES",
+      "moneda": "DOP",
+      "tamanoTexto": "md",
+      "zonaHoraria": "+03:00"
+    }
+  }
+]
