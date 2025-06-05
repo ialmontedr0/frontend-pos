@@ -1,6 +1,7 @@
-import { useState, type JSX } from 'react';
+import { useEffect, useState, type JSX } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
-import { useAppSelector } from './hooks/hooks';
+import { useAppDispath, useAppSelector } from './hooks/hooks';
+import { restoreAuth } from './features/auth/slices/authSlice';
 
 import { Header } from './components/Header/Header';
 import { Sidebar } from './components/Sidebar/Sidebar';
@@ -74,11 +75,26 @@ function ChangeGuard({ children }: { children: JSX.Element }) {
 }
 
 export function App() {
+  const dispatch = useAppDispath();
+  const { isAuthenticated, loading } = useAppSelector((state) => state.auth);
+
+  useEffect(() => {
+    dispatch(restoreAuth());
+  }, [dispatch]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p className="text-gray-500 dark:text-gray-400">Cargando...</p>
+      </div>
+    );
+  }
+
   return (
     <BrowserRouter>
       <Routes>
         {/** Rutas publicas */}
-        <Route element={<PublicRoute />}>
+        <Route element={<PublicRoute isAuthenticated={isAuthenticated} />}>
           <Route path="/auth/login" element={<Login />} />
 
           <Route
@@ -109,7 +125,7 @@ export function App() {
         </Route>
 
         {/** Rutas privadas */}
-        <Route element={<PrivateRoute />}>
+        <Route element={<PrivateRoute isAuthenticated={isAuthenticated} />}>
           {/** ProtectedLayout como padre */}
           <Route path="/" element={<ProtectedLayout />}>
             <Route index element={<Navigate to="/dashboard" replace />} />

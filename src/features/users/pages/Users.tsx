@@ -20,6 +20,7 @@ export function Users() {
 
   useEffect(() => {
     dispatch(getAllUsers());
+    console.log(document.cookie)
   }, [dispatch]);
 
   const userColumns: Column<User>[] = [

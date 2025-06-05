@@ -8,7 +8,7 @@ export interface LoginResponseDTO {
     usuario: string;
     correo: string;
     telefono: string;
-    direccion: string;
+    direccion?: string;
     rol: string;
     estado: string;
     configuracion: {
@@ -20,7 +20,7 @@ export interface LoginResponseDTO {
       notificaciones: boolean;
     };
     createdAt: string;
-    updatedAt: string;
+    updatedAt?: string;
     foto?: string;
   };
 }

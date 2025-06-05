@@ -13,7 +13,7 @@ export interface User {
   estado: string;
   configuracion: UserSettings;
   foto?: string;
-  createdAt?: string;
+  createdAt: string;
   updatedAt?: string;
   createdBy?: string;
   updatedBy?: string;

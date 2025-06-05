@@ -16,11 +16,10 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const currentUser = useAppSelector((state) => state.auth.user);
 
   const detectInitialTheme = (): Theme => {
-    if (currentUser?.configuracion.tema === 'claro') return 'claro';
-    if (currentUser?.configuracion.tema === 'oscuro') return 'oscuro';
+    if (currentUser?.configuracion?.tema === 'claro') return 'claro';
+    if (currentUser?.configuracion?.tema === 'oscuro') return 'oscuro';
 
-    const stored = (localStorage.getItem(STORAGE_KEY) as Theme) || 'sistema';
-    return stored;
+    return (localStorage.getItem(STORAGE_KEY) as Theme) || 'sistema';
   };
 
   const [theme, setThemeState] = useState<Theme>(detectInitialTheme());

@@ -15,6 +15,7 @@ import type {
 } from '../dtos/index.dto';
 import type { LoginResponseDTO } from '../dtos/login-response.dto';
 import { authService } from '../services/authService';
+import type { User } from '../../users/interfaces/UserInterface';
 
 interface AuthState {
   user: LoginResponseDTO['user'] | null;
@@ -55,9 +56,9 @@ const initialIsCodeValidated = storedCodeValidated && isTimestampValid(storedCod
 
 const initialState: AuthState = {
   user: null,
-  accessToken: localStorage.getItem('access_token'),
-  refreshToken: localStorage.getItem('refresh_token'),
-  isAuthenticated: false,
+  accessToken: localStorage.getItem('access_token') || null,
+  refreshToken: localStorage.getItem('refresh_token') || null,
+  isAuthenticated: !!localStorage.getItem('access_token'),
 
   isUserValidated: initialIsUserValidated,
   isCodeValidated: initialIsCodeValidated,
@@ -80,6 +81,30 @@ export const login = createAsyncThunk(
     }
   }
 );
+
+export const restoreAuth = createAsyncThunk<
+  { user: User; access_token: string; refresh_token: string } | undefined,
+  void,
+  { rejectValue: string }
+>('auth/restore', async (_, { rejectWithValue }) => {
+  const accessToken = localStorage.getItem('access_token');
+  const refreshToken = localStorage.getItem('refresh_token');
+  if (!accessToken) {
+    return;
+  }
+  try {
+    const userResponse = await authService.getCurrentUser();
+    return {
+      user: userResponse.data,
+      access_token: accessToken,
+      refresh_token: refreshToken || '',
+    };
+  } catch (error: any) {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    rejectWithValue(error.response?.data?.message || error.message);
+  }
+});
 
 export const logout = createAsyncThunk('auth/logout', async (_, { rejectWithValue }) => {
   try {
@@ -161,17 +186,17 @@ const authSlice = createSlice({
       state.user = action.payload.user;
       state.accessToken = action.payload.access_token;
       state.refreshToken = action.payload.refresh_token;
+      state.isAuthenticated = true;
       localStorage.setItem('access_token', action.payload.access_token);
       localStorage.setItem('refresh_token', action.payload.refresh_token);
-      state.isAuthenticated = true;
     },
     clearAuth(state) {
       state.user = null;
       state.accessToken = null;
       state.refreshToken = null;
+      state.isAuthenticated = false;
       localStorage.removeItem('access_token');
       localStorage.removeItem('refresh_token');
-      state.isAuthenticated = false;
       state.error = null;
       state.loading = false;
       // Limpiar flags de recuperacion en el logout
@@ -203,6 +228,34 @@ const authSlice = createSlice({
     builder.addCase(login.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload as string;
+      state.isAuthenticated = false;
+    });
+
+    // restoreAuth
+    builder.addCase(restoreAuth.pending, (state) => {
+      (state.loading = true), (state.error = null);
+    });
+
+    builder.addCase(restoreAuth.fulfilled, (state, action) => {
+      state.loading = false;
+      if (action.payload) {
+        (state.user = action.payload.user),
+          (state.accessToken = action.payload.access_token),
+          (state.refreshToken = action.payload.refresh_token),
+          (state.isAuthenticated = true);
+      } else {
+        state.user = null;
+        state.accessToken = null;
+        state.refreshToken = null;
+        state.isAuthenticated = false;
+      }
+    });
+
+    builder.addCase(restoreAuth.rejected, (state, action) => {
+      (state.loading = false), (state.error = action.payload as string);
+      state.user = null;
+      state.accessToken = null;
+      state.refreshToken = null;
       state.isAuthenticated = false;
     });
 
