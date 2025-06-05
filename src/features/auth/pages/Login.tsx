@@ -4,6 +4,10 @@ import { clearAuth, login } from '../slices/authSlice';
 import type { LoginDTO } from '../types/auth';
 import { useState } from 'react';
 
+import { Label } from '../../../components/UI/Label/Label';
+import { Input } from '../../../components/UI/Input/Input';
+import { Button } from '../../../components/UI/Button/Button';
+
 export const Login = () => {
   const dispatch = useAppDispath();
   const navigate = useNavigate();
@@ -39,11 +43,11 @@ export const Login = () => {
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <form onSubmit={handleLogin} className="space-y-6">
           <div>
-            <label htmlFor="usuario" className="block text-sm/6 font-medium text-gray-900">
+            <Label htmlFor="usuario" className="block text-sm/6 font-medium text-gray-900">
               Usuario
-            </label>
+            </Label>
             <div className="mt-2">
-              <input
+              <Input
                 type="text"
                 name="usuario"
                 value={form.usuario}
@@ -56,9 +60,9 @@ export const Login = () => {
 
           <div>
             <div className="flex items-center justify-between">
-              <label htmlFor="contrasena" className="block text-sm/6 font-medium text-gray-900">
+              <Label htmlFor="contrasena" className="block text-sm/6 font-medium text-gray-900">
                 Contrasena
-              </label>
+              </Label>
               <div className="text-sm">
                 <a
                   href="/recover-password"
@@ -69,7 +73,7 @@ export const Login = () => {
               </div>
             </div>
             <div className="mt-2">
-              <input
+              <Input
                 type="password"
                 name="contrasena"
                 id="contrasena"
@@ -84,13 +88,13 @@ export const Login = () => {
           {error && <div className="mb-4 text-red-600 bg-red-100 p-2 rounded">{error}</div>}
 
           <div>
-            <button
+            <Button
               type="submit"
               className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               disabled={loading}
             >
               {loading ? 'Ingresando' : 'Ingresar'}
-            </button>
+            </Button>
           </div>
         </form>
       </div>

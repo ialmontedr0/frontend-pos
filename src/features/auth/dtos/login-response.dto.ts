@@ -8,6 +8,7 @@ export interface LoginResponseDTO {
     usuario: string;
     correo: string;
     telefono: string;
+    direccion: string;
     rol: string;
     estado: string;
     configuracion: {
@@ -16,6 +17,7 @@ export interface LoginResponseDTO {
       moneda: string;
       tamanoTexto: string;
       zonaHoraria: string;
+      notificaciones: boolean;
     };
     createdAt: string;
     updatedAt: string;

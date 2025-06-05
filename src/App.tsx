@@ -19,6 +19,7 @@ import { Users } from './features/users/pages/Users';
 import { User } from './features/users/pages/User';
 import { CreateUser } from './features/users/pages/CreateUser';
 import { EditUser } from './features/users/pages/EditUser';
+import { UserProfile } from './features/users/user/pages/UserProfile';
 
 const links = [
   { label: 'Inicio', to: '/dashboard' },
@@ -30,7 +31,7 @@ const links = [
   { label: 'Facturas', to: '/invoices' },
   { label: 'Notificaciones', to: '/notifications' },
   { label: 'Sync Logs', to: '/sync-logs' },
-  { label: 'Perfil', to: '/profile' },
+  { label: 'Perfil', to: '/user/profile' },
   { label: 'Configuracion', to: '/settings' },
 ];
 
@@ -57,19 +58,19 @@ function ProtectedLayout() {
 // Guardian para el RecoverPassword
 function RecoverGuard({ children }: { children: JSX.Element }) {
   const isUserValidated = useAppSelector((state) => state.auth.isUserValidated);
-  return isUserValidated ? <Navigate to="/validate-code" replace /> : children;
+  return isUserValidated ? <Navigate to="/auth/validate-code" replace /> : children;
 }
 
 function ValidateGuard({ children }: { children: JSX.Element }) {
   const { isUserValidated, isCodeValidated } = useAppSelector((state) => state.auth);
-  if (!isUserValidated) return <Navigate to="/recover-password" replace />;
-  if (isCodeValidated) return <Navigate to="/change-password" replace />;
+  if (!isUserValidated) return <Navigate to="/auth/recover-password" replace />;
+  if (isCodeValidated) return <Navigate to="/auth/change-password" replace />;
   return children;
 }
 
 function ChangeGuard({ children }: { children: JSX.Element }) {
   const isCodeValidated = useAppSelector((state) => state.auth.isCodeValidated);
-  return isCodeValidated ? children : <Navigate to="/validate-code" replace />;
+  return isCodeValidated ? children : <Navigate to="/auth/validate-code" replace />;
 }
 
 export function App() {
@@ -78,10 +79,10 @@ export function App() {
       <Routes>
         {/** Rutas publicas */}
         <Route element={<PublicRoute />}>
-          <Route path="/login" element={<Login />} />
+          <Route path="/auth/login" element={<Login />} />
 
           <Route
-            path="/recover-password"
+            path="/auth/recover-password"
             element={
               <RecoverGuard>
                 <RecoverPassword />
@@ -90,7 +91,7 @@ export function App() {
           />
 
           <Route
-            path="/validate-code"
+            path="/auth/validate-code"
             element={
               <ValidateGuard>
                 <ValidateCode />
@@ -98,7 +99,7 @@ export function App() {
             }
           />
           <Route
-            path="/change-password"
+            path="/auth/change-password"
             element={
               <ChangeGuard>
                 <ChangePassword />
@@ -117,7 +118,8 @@ export function App() {
             <Route path="/users/:userId" element={<User />} />
             <Route path="/users/create" element={<CreateUser />} />
             <Route path="/users/edit/:userId" element={<EditUser />} />
-            
+            <Route path="/user/profile" element={<UserProfile />} />
+
             <Route
               path="*"
               element={<p className="p-6 text-black dark:text-white">Pagina no existe 404 :(</p>}

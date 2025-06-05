@@ -20,7 +20,7 @@ export function Header({ onToggleSidebar }: HeaderProps) {
   const handleLogout = async () => {
     await dispatch(logout());
     dispatch(clearAuth());
-    navigate('/login');
+    navigate('/auth/login');
   };
 
   return (
@@ -97,7 +97,7 @@ export function Header({ onToggleSidebar }: HeaderProps) {
 
         {/** Perfil */}
         <Link
-          to="/profile"
+          to="/user/profile"
           className="flex items-center space-x-2 p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-800"
         >
           <img

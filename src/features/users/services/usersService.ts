@@ -1,4 +1,5 @@
 import api from '../../../services/api';
+import type { ChangeUserPasswordDTO } from '../dtos/change-user-password.dto';
 import type { UpdateUserDTO } from '../dtos/update-user.dto';
 import type { User } from '../interfaces/UserInterface';
 
@@ -11,6 +12,7 @@ export const usersService = {
   create: (createUserDTO: Partial<User>) => api.post<User>('/users', createUserDTO),
   update: (userId: string, updateUserDTO: UpdateUserDTO) =>
     api.patch<User>(`/users/${userId}`, updateUserDTO),
+  changePassword: (changeUserPasswordDTO: ChangeUserPasswordDTO) => api.post<void>(`/profile/change-password`, changeUserPasswordDTO),
   activate: (userId: string) => api.patch<void>(`/users/activate/${userId}`),
   deactivate: (userId: string) => api.patch<void>(`/users/deactivate/${userId}`),
   delete: (userId: string) => api.delete<void>(`/users/${userId}`),

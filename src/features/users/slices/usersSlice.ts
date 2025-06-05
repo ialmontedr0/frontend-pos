@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/tool
 import type { User } from '../interfaces/UserInterface';
 import type { UpdateUserDTO } from '../dtos/update-user.dto';
 import { usersService } from '../services/usersService';
+import type { ChangeUserPasswordDTO } from '../dtos/change-user-password.dto';
 
 interface UsersState {
   user: User | null;
@@ -97,6 +98,20 @@ export const updateUser = createAsyncThunk<
   try {
     const userResponse = await usersService.update(userId, updateUserDTO);
     return userResponse.data;
+  } catch (error: any) {
+    return rejectWithValue(error.response?.data?.message || error.message);
+  }
+});
+
+// Cambiar contrasena del usuario actual
+export const changeUserPassword = createAsyncThunk<
+  void,
+  { changeUserPasswordDTO: ChangeUserPasswordDTO },
+  { rejectValue: string }
+>('users/changePassword', async ({ changeUserPasswordDTO }, { rejectWithValue }) => {
+  try {
+    const changePasswordResponse = await usersService.changePassword(changeUserPasswordDTO);
+    return changePasswordResponse.data;
   } catch (error: any) {
     return rejectWithValue(error.response?.data?.message || error.message);
   }
