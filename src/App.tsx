@@ -21,6 +21,7 @@ import { User } from './features/users/pages/User';
 import { CreateUser } from './features/users/pages/CreateUser';
 import { EditUser } from './features/users/pages/EditUser';
 import { UserProfile } from './features/users/user/pages/UserProfile';
+import { UserSettings } from './features/users/user/components/Settings/Settings';
 
 const links = [
   { label: 'Inicio', to: '/dashboard' },
@@ -135,6 +136,7 @@ export function App() {
             <Route path="/users/create" element={<CreateUser />} />
             <Route path="/users/edit/:userId" element={<EditUser />} />
             <Route path="/user/profile" element={<UserProfile />} />
+            <Route path="/user/settings" element={<UserSettings />} />
 
             <Route
               path="*"

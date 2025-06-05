@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
@@ -23,6 +24,7 @@ interface EditBasicInfoDTO {
 
 export const UserInfo: React.FC = () => {
   const dispatch = useAppDispath();
+  const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
 
   const authUser = useAppSelector((state: RootState) => state.auth.user);
@@ -167,6 +169,9 @@ export const UserInfo: React.FC = () => {
             </div>
 
             <div className="mt-6 flex justify-end">
+              <Button type="button" onClick={() => navigate('/dashboard')}>
+                Volver a Inicio
+              </Button>
               <Button
                 type="submit"
                 disabled={!isDirty}

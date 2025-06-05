@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
 import { useAppSelector, useAppDispath } from '../../../../../hooks/hooks';
-import { updateUserSettings } from '../../../slices/usersSlice';
+import { updateUserSettings, resetUserSettings } from '../../../slices/usersSlice';
 import type { RootState } from '../../../../../store/store';
 
 import { Label } from '../../../../../components/UI/Label/Label';
@@ -29,7 +29,7 @@ const timeZones = [
   'Asia/Tokyo',
 ];
 
-export const UserPreferences: React.FC = () => {
+export const UserSettings: React.FC = () => {
   const dispatch = useAppDispath();
   const myAlert = withReactContent(Swal);
 
@@ -73,6 +73,7 @@ export const UserPreferences: React.FC = () => {
   }, [authUser, reset]);
 
   const onSubmit = (updatePreferencesDTO: FormValues) => {
+    console.log(authUser);
     if (!authUser) return;
     myAlert
       .fire({
@@ -108,8 +109,43 @@ export const UserPreferences: React.FC = () => {
       });
   };
 
+  const resetSettings = () => {
+    myAlert
+      .fire({
+        title: 'Restablecer configuracion',
+        text: `Estas seguro que deseas restablecer tu configuracion?`,
+        icon: 'question',
+        showConfirmButton: true,
+        showCancelButton: true,
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          dispatch(resetUserSettings())
+            .unwrap()
+            .then(() => {
+              myAlert.fire({
+                title: 'Restablecimiento de configuracion!',
+                text: `Se ha restablecido la configuracion!`,
+                icon: 'success',
+                timer: 5000,
+                timerProgressBar: true,
+              });
+            })
+            .catch((error: any) => {
+              myAlert.fire({
+                title: 'Error!',
+                text: `${error.response?.data?.message || error.message}`,
+                icon: 'error',
+                timer: 5000,
+                timerProgressBar: true,
+              });
+            });
+        }
+      });
+  };
+
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mt-6">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 m-4 mt-6">
       <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Preferencias</h3>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -214,13 +250,16 @@ export const UserPreferences: React.FC = () => {
           </Select>
         </div>
 
-        <div className="mt-6 flex justify-end">
+        <div className="mt-6 flex gap-2 justify-end">
           <Button
             type="submit"
             disabled={isDirty}
             className="bg-indigo-600 hover:bg-indigo-700 text-white"
           >
             Guardar ajustes
+          </Button>
+          <Button type="button" onClick={resetSettings} variant="outline">
+            Restablecer preferencias
           </Button>
         </div>
       </form>

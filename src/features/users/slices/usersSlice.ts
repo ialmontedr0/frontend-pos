@@ -194,7 +194,7 @@ export const updateUserSettings = createAsyncThunk<
   }
 });
 
-export const resetUserSettings = createAsyncThunk<User, { rejectValue: string }>(
+export const resetUserSettings = createAsyncThunk<User, void, { rejectValue: string }>(
   'settings/resetSettings',
   async (_, { rejectWithValue }) => {
     try {

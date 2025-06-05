@@ -122,7 +122,7 @@ export function Header({ onToggleSidebar }: HeaderProps) {
 
         {/** Configuracion */}
         <Link
-          to="/settings"
+          to="/user/settings"
           className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-800"
           aria-label="Settings"
         >
