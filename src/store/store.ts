@@ -1,6 +1,27 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query';
+import {
+  persistStore,
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+
+// Importar los slices
+import authReducer from '../features/auth/slices/authSlice';
+import usersReducer from '../features/users/slices/usersSlice';
+
+const persistConfig = {
+  key: 'root',
+  storage,
+  whitelist: ['auth'],
+};
 
 export const api = createApi({
   reducerPath: 'api',
@@ -20,19 +41,26 @@ export const api = createApi({
   }),
 });
 
-// Importar los slices
-import authReducer from '../features/auth/slices/authSlice';
-import usersReducer from '../features/users/slices/usersSlice';
+const rootReducer = combineReducers({
+  auth: authReducer,
+  users: usersReducer,
+  [api.reducerPath]: api.reducer,
+});
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
-  reducer: {
-    [api.reducerPath]: api.reducer,
-    auth: authReducer,
-    users: usersReducer,
-  },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(api.middleware),
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }).concat(api.middleware),
   devTools: import.meta.env.DEV,
 });
+
+export const persistor = persistStore(store);
 
 setupListeners(store.dispatch);
 
