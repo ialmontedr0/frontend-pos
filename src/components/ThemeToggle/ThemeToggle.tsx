@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { BiGlobe } from 'react-icons/bi';
+import React from 'react';
 import { BiSun } from 'react-icons/bi';
 import { BiSolidYinYang } from 'react-icons/bi';
 
