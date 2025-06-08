@@ -174,7 +174,6 @@ export const UserInfo: React.FC = () => {
               </Button>
               <Button
                 type="submit"
-                disabled={!isDirty}
                 className="bg-indigo-600 hover:bg-indigo-700 text-white"
               >
                 Guardar cambios

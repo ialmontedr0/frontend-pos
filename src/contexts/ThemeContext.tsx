@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useAppSelector } from '../hooks/hooks';
+import { useAppDispath } from '../hooks/hooks';
+import { toggleUserTheme, updateUserSettings } from '../features/users/slices/usersSlice';
 
 export type Theme = 'claro' | 'oscuro' | 'sistema';
 
@@ -13,6 +15,7 @@ const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 const STORAGE_KEY = 'app_theme';
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const dispatch = useAppDispath();
   const currentUser = useAppSelector((state) => state.auth.user);
 
   const detectInitialTheme = (): Theme => {
@@ -56,7 +59,11 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const order: Theme[] = ['claro', 'oscuro', 'sistema'];
     const next = order[(order.indexOf(theme) + 1) % order.length];
     setTheme(next);
-    console.log(next);
+    const payload: { tema: 'claro' | 'oscuro' | 'sistema' } = {
+      tema: next,
+    };
+    dispatch(toggleUserTheme(next));
+    console.log(payload);
   };
 
   return (

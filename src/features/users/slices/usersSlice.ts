@@ -7,6 +7,7 @@ import type { ChangeUserPasswordDTO } from '../dtos/change-user-password.dto';
 interface UsersState {
   user: User | null;
   users: User[] | [];
+  nextTema: string | null;
   error: string | null;
   loading: boolean;
 }
@@ -14,6 +15,7 @@ interface UsersState {
 const initialState: UsersState = {
   user: null,
   users: [],
+  nextTema: null,
   error: null,
   loading: false,
 };
@@ -189,6 +191,19 @@ export const updateUserSettings = createAsyncThunk<
   try {
     const updateSettingsResponse = await usersService.updateSettings(configuracion);
     return updateSettingsResponse.data;
+  } catch (error: any) {
+    return rejectWithValue(error.response?.data?.message || error.message);
+  }
+});
+
+export const toggleUserTheme = createAsyncThunk<
+  User,
+  'claro' | 'oscuro' | 'sistema',
+  { rejectValue: string }
+>('settings/toggleTheme', async (tema, { rejectWithValue }) => {
+  try {
+    const toggleThemeResponse = await usersService.toggleTheme(tema);
+    return toggleThemeResponse.data;
   } catch (error: any) {
     return rejectWithValue(error.response?.data?.message || error.message);
   }
@@ -401,6 +416,23 @@ const usersSlice = createSlice({
 
     builder.addCase(updateUserSettings.rejected, (state, action) => {
       (state.loading = false), (state.error = action.payload as string);
+    });
+
+    // === Alternar tema del usuario ===
+    builder.addCase(toggleUserTheme.pending, (state) => {
+      (state.loading = true), (state.error = null);
+    });
+
+    builder.addCase(toggleUserTheme.fulfilled, (state, action) => {
+      state.loading = false;
+      if (state.user) {
+        state.user = { ...state.user, configuracion: action.payload.configuracion };
+      }
+    });
+
+    builder.addCase(toggleUserTheme.rejected, (state, action) => {
+      (state.loading = false),
+        (state.error = (action.payload as string) || 'Error al actualizar el tema del usuario');
     });
 
     // === Restablecer configuracion ===

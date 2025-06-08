@@ -12,7 +12,8 @@ export const usersService = {
   create: (createUserDTO: Partial<User>) => api.post<User>('/users', createUserDTO),
   update: (userId: string, updateUserDTO: UpdateUserDTO) =>
     api.patch<User>(`/users/${userId}`, updateUserDTO),
-  changePassword: (changeUserPasswordDTO: ChangeUserPasswordDTO) => api.post<void>(`/profile/change-password`, changeUserPasswordDTO),
+  changePassword: (changeUserPasswordDTO: ChangeUserPasswordDTO) =>
+    api.post<void>(`/profile/change-password`, changeUserPasswordDTO),
   activate: (userId: string) => api.patch<void>(`/users/activate/${userId}`),
   deactivate: (userId: string) => api.patch<void>(`/users/deactivate/${userId}`),
   delete: (userId: string) => api.delete<void>(`/users/${userId}`),
@@ -20,5 +21,7 @@ export const usersService = {
   resetPreferences: (userId: string) => api.patch<User>(`/users/reset-preferences/${userId}`),
   updateSettings: (configuracion: Partial<User['configuracion']>) =>
     api.patch<User>(`/settings/update`, configuracion),
+  toggleTheme: (tema: 'claro' | 'oscuro' | 'sistema') =>
+    api.patch<any>('/settings/toggle-theme', { tema }),
   resetSettings: () => api.patch<User>(`/settings/reset`),
 };

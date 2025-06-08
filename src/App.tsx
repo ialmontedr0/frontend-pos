@@ -5,7 +5,6 @@ import { restoreAuth } from './features/auth/slices/authSlice';
 
 import { Header } from './components/Header/Header';
 import { Sidebar } from './components/Sidebar/Sidebar';
-import { ThemeProvider } from './contexts/ThemeContext';
 
 import { PublicRoute } from './components/Routes/PublicRoute/PublicRoute';
 import { PrivateRoute } from './components/Routes/ProtectedRoute/ProtectedRoute';
@@ -22,6 +21,8 @@ import { CreateUser } from './features/users/pages/CreateUser';
 import { EditUser } from './features/users/pages/EditUser';
 import { UserProfile } from './features/users/user/pages/UserProfile';
 import { UserSettings } from './features/users/user/components/Settings/Settings';
+import { Notifications } from './features/notifications/pages/Notifications';
+import { getNotificationsForCurrentUser } from './features/notifications/slices/notificationsSlice';
 
 const links = [
   { label: 'Inicio', to: '/dashboard' },
@@ -42,18 +43,16 @@ function ProtectedLayout() {
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
   return (
-    <ThemeProvider>
-      <div className="flex flex-col h-screen">
-        {/** Header y sidebar siempre visibles en rutas privadas */}
-        <Header isSidebarOpen={isSidebarOpen} onToggleSidebar={toggleSidebar} />
-        <div className="flex flex-1">
-          <Sidebar isOpen={isSidebarOpen} onToggle={toggleSidebar} links={links} />
-          <main className="flex-1 overflow-auto">
-            <Outlet />
-          </main>
-        </div>
+    <div className="bg-white dark:bg-indigo-900">
+      {/** Header y sidebar siempre visibles en rutas privadas */}
+      <Header isSidebarOpen={isSidebarOpen} onToggleSidebar={toggleSidebar} />
+      <div className="">
+        <Sidebar isOpen={isSidebarOpen} onToggle={toggleSidebar} links={links} />
+        <main className="">
+          <Outlet />
+        </main>
       </div>
-    </ThemeProvider>
+    </div>
   );
 }
 
@@ -80,7 +79,11 @@ export function App() {
   const { isAuthenticated, loading } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
-    dispatch(restoreAuth());
+    dispatch(restoreAuth()).then((action) => {
+      if (restoreAuth.fulfilled.match(action)) {
+        dispatch(getNotificationsForCurrentUser());
+      }
+    });
   }, [dispatch]);
 
   if (loading) {
@@ -131,6 +134,8 @@ export function App() {
           <Route path="/" element={<ProtectedLayout />}>
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="/dashboard" element={<Dashboard />} />
+
+            {/** Usuarios */}
             <Route path="/users" element={<Users />} />
             <Route path="/users/:userId" element={<User />} />
             <Route path="/users/create" element={<CreateUser />} />
@@ -138,6 +143,8 @@ export function App() {
             <Route path="/user/profile" element={<UserProfile />} />
             <Route path="/user/settings" element={<UserSettings />} />
 
+            {/** Notificaciones */}
+            <Route path="/notifications" element={<Notifications />} />
             <Route
               path="*"
               element={<p className="p-6 text-black dark:text-white">Pagina no existe 404 :(</p>}

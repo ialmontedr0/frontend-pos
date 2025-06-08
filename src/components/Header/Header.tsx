@@ -3,6 +3,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useTheme } from '../../contexts/ThemeContext';
 import { clearAuth, logout } from '../../features/auth/slices/authSlice';
 import { useAppDispath, useAppSelector } from '../../hooks/hooks';
+import { NotificationsModal } from '../../features/notifications/components/NotificationsModal';
+import { selectUnreadCount } from '../../features/notifications/slices/notificationsSlice';
+import { ThemeToggle } from '../ThemeToggle/ThemeToggle';
+import { SearchBar } from '../SearchBar/SearchBar';
 
 export interface HeaderProps {
   isSidebarOpen: boolean;
@@ -12,10 +16,12 @@ export interface HeaderProps {
 export function Header({ onToggleSidebar }: HeaderProps) {
   const [showNotifications, setShowNotifications] = useState<boolean>(false);
   const { theme, toggleTheme } = useTheme();
+  const enabled = theme === 'oscuro';
   const dispatch = useAppDispath();
   const navigate = useNavigate();
 
   const user = useAppSelector((state) => state.auth.user);
+  const unreadCount = useAppSelector(selectUnreadCount);
 
   const handleLogout = async () => {
     await dispatch(logout());
@@ -27,17 +33,14 @@ export function Header({ onToggleSidebar }: HeaderProps) {
     <header
       className="
       flex items-center justify-between 
-      bg-slate-50 dark:bg-slate-900 
+      dark:bg-red-100 bg-blue-800 
       text-slate-900 dark:text-slate-100
       px-4 py-2 
       border-b border-slate-200 dark:border-slate-700
       shadow-sm dark:shadow-black/20
     "
     >
-      {' '}
-      {/** Header left */}
       <div className="flex items-center space-x-4">
-        {/** Toggle sidebar */}
         <button
           onClick={onToggleSidebar}
           className="
@@ -52,8 +55,7 @@ export function Header({ onToggleSidebar }: HeaderProps) {
           <div className="w-6 h-0.5 bg-gray-800 dark:bg-gray-200"></div>
         </button>
 
-        {/** Search bar */}
-        <input
+        {/* <input
           type="text"
           placeholder="Buscar..."
           className="
@@ -64,11 +66,11 @@ export function Header({ onToggleSidebar }: HeaderProps) {
             placeholder-slate-400 dark:placeholder-slate-500
             focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500
           "
-        />
+        /> */}
+
+        <SearchBar />
       </div>
-      {/** Header right */}
       <div className="flex items-center space-x-4">
-        {/** Notificaciones */}
         <div className="relative">
           <button
             onClick={() => setShowNotifications((prev) => !prev)}
@@ -76,16 +78,19 @@ export function Header({ onToggleSidebar }: HeaderProps) {
             aria-label="Toggle notifications"
           >
             🔔
+            {unreadCount > 0 && (
+              <span className="absolute top-0 right-0 -mt-1 -mr-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-xs text-white">
+                {unreadCount}
+              </span>
+            )}
           </button>
-          {showNotifications && (
-            <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 shadow-lg rounded p-4">
-              <p className="text-gray-700 dark:text-gray-300">No hay notificaciones</p>
-            </div>
-          )}
+          <NotificationsModal
+            visible={showNotifications}
+            onClose={() => setShowNotifications(false)}
+          />
         </div>
 
-        {/** Tema */}
-        <button
+        {/* <button
           onClick={toggleTheme}
           className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-800"
           aria-label="Toggle theme"
@@ -93,9 +98,9 @@ export function Header({ onToggleSidebar }: HeaderProps) {
           {theme === 'claro' && '🌞'}
           {theme === 'oscuro' && '🌜'}
           {theme === 'sistema' && '🌐'}
-        </button>
+        </button> */}
+        <ThemeToggle enabled={enabled} onClick={toggleTheme} />
 
-        {/** Perfil */}
         <Link
           to="/user/profile"
           className="flex items-center space-x-2 p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-800"
@@ -120,7 +125,6 @@ export function Header({ onToggleSidebar }: HeaderProps) {
           </div>
         </Link>
 
-        {/** Configuracion */}
         <Link
           to="/user/settings"
           className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-800"
