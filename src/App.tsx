@@ -33,6 +33,10 @@ import { Category } from './features/products/categories/pages/Category';
 import { CreateCategory } from './features/products/categories/pages/CreateCategory';
 import { EditCategory } from './features/products/categories/pages/EditCategory';
 import { Products } from './features/products/pages/Products';
+import { Providers } from './features/products/providers/pages/Providers';
+import { Provider } from './features/products/providers/pages/Provider';
+import { CreateProvider } from './features/products/providers/pages/CreateProvider';
+import { EditProvider } from './features/products/providers/pages/EditProvider';
 
 function ProtectedLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
@@ -155,6 +159,12 @@ export function App() {
             <Route path="/products/categories/:categoryId" element={<Category />} />
             <Route path="/products/categories/create" element={<CreateCategory />} />
             <Route path="/products/categories/edit/:categoryId" element={<EditCategory />} />
+
+            {/** Products:Proveedores */}
+            <Route path="/products/providers" element={<Providers />} />
+            <Route path="/products/providers/:providerId" element={<Provider />} />
+            <Route path="/products/providers/create" element={<CreateProvider />} />
+            <Route path="/products/providers/edit/:providerId" element={<EditProvider />} />
 
             {/** Notificaciones */}
             <Route path="/notifications" element={<Notifications />} />

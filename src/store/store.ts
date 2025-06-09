@@ -19,6 +19,7 @@ import usersReducer from '../features/users/slices/usersSlice';
 import customersReducer from '../features/customers/slices/customerSlice';
 import notificationsReducer from '../features/notifications/slices/notificationsSlice';
 import categoriesReducer from '../features/products/categories/slices/categoriesSlice';
+import providersReducer from '../features/products/providers/slices/providersSlice';
 
 const persistConfig = {
   key: 'root',
@@ -49,6 +50,7 @@ const rootReducer = combineReducers({
   users: usersReducer,
   customers: customersReducer,
   categories: categoriesReducer,
+  providers: providersReducer,
   notifications: notificationsReducer,
   [api.reducerPath]: api.reducer,
 });

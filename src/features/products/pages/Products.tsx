@@ -9,7 +9,7 @@ export const Products: React.FC = () => {
   return (
     <div className="text-black dark:text-white">
       <div className="flex flex-col">
-        <h2 className='text-xl font-semibold mb-3'>Productos</h2>
+        <h2 className="text-xl font-semibold mb-3">Productos</h2>
 
         <button
           className="bg-blue-800 text-white dark:text-white px-4 py-2 w-xs rounded-lg"
@@ -17,6 +17,7 @@ export const Products: React.FC = () => {
         >
           Categorias
         </button>
+        <button onClick={() => navigate('/products/providers')}>Proveedores</button>
       </div>
     </div>
   );
