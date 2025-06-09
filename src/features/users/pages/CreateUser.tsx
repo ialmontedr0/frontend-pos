@@ -94,7 +94,7 @@ export const CreateUser: React.FC = () => {
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
+          <div> 
             <Label htmlFor="nombre">Nombre</Label>
             <Input
               id="nombre"
@@ -208,7 +208,7 @@ export const CreateUser: React.FC = () => {
 
         {error && <p className="text-center text-red-600 bg-red-100 p-2 rounded-md">{error}</p>}
 
-        <div className="flex justify-end-pt-4 border-t dark:border-gray-700">
+        <div className="flex justify-end pt-4 border-t dark:border-gray-700">
           <Button type="submit" className="bg-green-600 hover:bg-green-700 text-white">
             {loading ? 'Creando...' : 'Guardar usuario'}
           </Button>

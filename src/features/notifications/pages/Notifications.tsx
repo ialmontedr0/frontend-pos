@@ -1,4 +1,11 @@
 import React, { useEffect } from 'react';
+import { BiCheck, BiRefresh, BiTrash, BiCheckDouble, BiTrashAlt } from 'react-icons/bi';
+import { formatDistanceToNow } from 'date-fns';
+import { es } from 'date-fns/locale';
+
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+
 import { useAppDispath, useAppSelector } from '../../../hooks/hooks';
 import {
   getNotificationsForCurrentUser,
@@ -9,71 +16,245 @@ import {
   deleteAllNotifications,
 } from '../slices/notificationsSlice';
 import type { Notification } from '../interfaces/NotificationInterface';
+import { tipoMap } from '../components/NotificationsModal';
 import type { RootState } from '../../../store/store';
 
 export const Notifications: React.FC = () => {
   const dispatch = useAppDispath();
+  const myAlert = withReactContent(Swal);
   const { notifications, loading, error } = useAppSelector(
     (state: RootState) => state.notifications
   );
+
+  const handleMarkAsRead = (notificationId: string) => {
+    myAlert
+      .fire({
+        title: 'Marcar como leida',
+        text: `Estas seguro que desease marcar esta notificacion como leida?`,
+        icon: 'question',
+        showConfirmButton: true,
+        confirmButtonText: 'Si!',
+        showCancelButton: true,
+        cancelButtonText: 'Cancelar',
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          dispatch(markNotificationAsRead(notificationId))
+            .then(() => {})
+            .catch((error: any) => {
+              myAlert.fire({
+                title: 'Error',
+                text: `Error: ${error}`,
+                icon: 'error',
+                timer: 5000,
+                timerProgressBar: true,
+              });
+            });
+        }
+      });
+  };
+
+  const handleMarkAsUnread = (notificationId: string) => {
+    myAlert
+      .fire({
+        title: 'Marcar como no leida',
+        text: `Estas seguro que desease marcar esta notificacion como no leida?`,
+        icon: 'question',
+        showConfirmButton: true,
+        confirmButtonText: 'Si!',
+        showCancelButton: true,
+        cancelButtonText: 'Cancelar',
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          dispatch(markNotificationAsUnread(notificationId))
+            .then(() => {})
+            .catch((error) => {
+              myAlert.fire({
+                title: 'Error',
+                text: `Error: ${error}`,
+                icon: 'error',
+                timer: 5000,
+                timerProgressBar: true,
+              });
+            });
+        }
+      });
+  };
+
+  const handleMarkAllAsRead = () => {
+    myAlert
+      .fire({
+        title: 'Marcar todas como leidas!',
+        text: `Estas seguro que deseas marcar todas las notificaciones como leidas?`,
+        icon: 'question',
+        showConfirmButton: true,
+        confirmButtonText: 'Si!',
+        showCancelButton: true,
+        cancelButtonText: 'Cancelar',
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          dispatch(markAllNotificationAsRead())
+            .unwrap()
+            .then(() => {})
+            .catch((error: any) => {
+              myAlert.fire({
+                title: 'Error',
+                text: `Error: ${error}`,
+                icon: 'error',
+              });
+            });
+        }
+      });
+  };
+
+  const handleDelete = (notificationId: string) => {
+    myAlert
+      .fire({
+        title: 'Eliminar notificacion',
+        text: `Estas seguro que deseas eliminar la notificacion?`,
+        icon: 'question',
+        showConfirmButton: true,
+        confirmButtonText: 'Si, eliminar!',
+        showCancelButton: true,
+        cancelButtonText: 'Cancelar',
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          dispatch(deleteNotification(notificationId))
+            .unwrap()
+            .then(() => {})
+            .catch((error) => {
+              myAlert.fire({
+                title: 'Error',
+                text: `Error: ${error}`,
+                icon: 'error',
+                timer: 5000,
+                timerProgressBar: true,
+              });
+            });
+        }
+      });
+  };
+
+  const handleDeleteAll = () => {
+    myAlert
+      .fire({
+        title: 'Eliminar notificaciones',
+        text: `Estas seguro que deseas eliminar todas las notificaciones?`,
+        icon: 'question',
+        showConfirmButton: true,
+        confirmButtonText: 'Si, eliminar!',
+        showCancelButton: true,
+        cancelButtonText: 'Cancelar',
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          dispatch(deleteAllNotifications())
+            .unwrap()
+            .then(() => {})
+            .catch((error) => {
+              myAlert.fire({
+                title: 'Error',
+                text: `Error: ${error}`,
+                icon: 'error',
+                timer: 5000,
+                timerProgressBar: true,
+              });
+            });
+        }
+      });
+  };
 
   useEffect(() => {
     dispatch(getNotificationsForCurrentUser());
   }, [dispatch]);
 
-  if (loading) {
-    return (
-      <div>
-        <p>Cargando notificaciones...</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div>
-        <p>Error: {error}</p>
-      </div>
-    );
-  }
-
   return (
-    <div>
-      <div>
-        <h2>Notificaciones</h2>
-        <div>
-          <button onClick={() => dispatch(markAllNotificationAsRead())}>
-            Marcar todas como leidas
+    <div className="max-w-4xl mx-auto p-6 space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-100">Notificaciones</h2>
+        <div className="flex space-x-2">
+          <button
+            onClick={() => handleMarkAllAsRead()}
+            className="flex items-center px-4 py-2 bg-green-100 dark:bg-green-800 dark:text-green-100 rounded hover:bg-green-200 dark:hover:bg-green-700 transition"
+          >
+            <BiCheckDouble className="mr-2" />
           </button>
-          <button onClick={() => dispatch(deleteAllNotifications())}>Eliminar todas</button>
+          <button
+            onClick={() => handleDeleteAll()}
+            className="flex items-center px-4 py-2 bg-red-100 dark:bg-red-800 dark:text-red-100 rounded hover:bg-gred-200 dark:hover:bg-red-700 transition"
+          >
+            <BiTrashAlt className="mr-2" />
+          </button>
         </div>
       </div>
 
-      {notifications.length === 0 && <p>No hay notificaciones...</p>}
+      {loading && <div className="text-center text-gray-500 dark:text-gray-400">Cargando...</div>}
 
-      <ul>
+      {loading && <div className="text-center text-red-600 dark:text-gray-400">Error: {error}</div>}
+
+      {!loading && notifications.length === 0 && (
+        <div className="text-center text-gray-500 dark:text-gray-400">No hay notificaciones...</div>
+      )}
+
+      <ul className="space-y-4">
         {notifications.map((notification: Notification) => (
-          <li key={notification._id}>
-            <div>
-              <div>
-                <p>{notification.tipo}</p>
-                <p>{notification.mensaje}</p>
-                <p>{new Date(notification.fecha).toLocaleString()}</p>
+          <li
+            key={notification._id}
+            className="bg-white dark:bg-gray-800 borer border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-4 flex flex-col sm:flex-row sm:items-center justify-between space-y-4 sm:space-y-0"
+          >
+            <div className="flex-1 space-y-1">
+              <p className="text-sm font-medium text-indigo-600 dark:text-indigo-300">
+                {tipoMap[notification.tipo] || notification.tipo}
+              </p>
+              <p className="text-gray-700 dark:text-gray-200">{notification.mensaje}</p>
+              <div className="flex items-center space-x-2 text-xs text-gray-500 dark:text-gray-400">
+                <span>
+                  {formatDistanceToNow(new Date(notification.fecha), {
+                    addSuffix: true,
+                    locale: es,
+                  })}
+                </span>
+                <span className="inline-block h-1 w-1 rounded-full bg-gray-400 dark:bg-gray-600" />
+                <span
+                  className={`px-2 py-0.5 text-xs font-medium rounded-full ${
+                    notification.estado === 'leida'
+                      ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100'
+                      : 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100'
+                  }`}
+                >
+                  {notification.estado === 'leida' ? 'Leida' : 'No leida'}
+                </span>
               </div>
-              <div>
-                {notification.estado === 'sin_leer' ? (
-                  <button onClick={() => dispatch(markNotificationAsRead(notification._id))}>
-                    Marcar leida
-                  </button>
-                ) : (
-                  <button onClick={() => dispatch(markNotificationAsUnread(notification._id))}>
-                    Marcar no leida
-                  </button>
-                )}
-                <button onClick={() => dispatch(deleteNotification(notification._id))}>
-                  Eliminar
+            </div>
+
+            <div className="flex-shrink-0 flex space-x-2">
+              {notification.estado === 'sin_leer' ? (
+                <button
+                  onClick={() => handleMarkAsRead(notification._id)}
+                  className="p-2 bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-100 rounded hover:bg-blue-200 dark:hover:bg-blue-700 transition"
+                  title="Marcar como leida"
+                >
+                  <BiCheck />
                 </button>
-              </div>
+              ) : (
+                <button
+                  onClick={() => handleMarkAsUnread(notification._id)}
+                  className="p-2 bg-yellow dark:bg-yellow-800 text-yellow-800 dark:text-yellow-100 rounded hover:bg-yellow-200 dark:hover:bg-yellow-700 transition"
+                  title="Marcar como no leida"
+                >
+                  <BiRefresh />
+                </button>
+              )}
+              <button
+                onClick={() => handleDelete(notification._id)}
+                className="p-2 bg-red-100 dark:bg-red-800 text-red-800 dark:text-red-100 rounded hover:bg-red-200 dark:hover:bg-red-700 transition"
+                title="Eliminar"
+              >
+                <BiTrash />
+              </button>
             </div>
           </li>
         ))}

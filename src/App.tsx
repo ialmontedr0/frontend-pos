@@ -24,31 +24,24 @@ import { UserSettings } from './features/users/user/components/Settings/Settings
 import { Notifications } from './features/notifications/pages/Notifications';
 import { getNotificationsForCurrentUser } from './features/notifications/slices/notificationsSlice';
 
-const links = [
-  { label: 'Inicio', to: '/dashboard' },
-  { label: 'Usuarios', to: '/users' },
-  { label: 'Clientes', to: '/customers' },
-  { label: 'Productos', to: '/products' },
-  { label: 'Inventario', to: '/inventory' },
-  { label: 'Ventas', to: '/sales' },
-  { label: 'Facturas', to: '/invoices' },
-  { label: 'Notificaciones', to: '/notifications' },
-  { label: 'Sync Logs', to: '/sync-logs' },
-  { label: 'Perfil', to: '/user/profile' },
-  { label: 'Configuracion', to: '/settings' },
-];
+import { Customers } from './features/customers/pages/Customers';
+import { CreateCustomer } from './features/customers/pages/CreateCustomer';
+import { Customer } from './features/customers/pages/Customer';
+import { EditCustomer } from './features/customers/pages/EditCustomer';
 
 function ProtectedLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
   return (
-    <div className="bg-white dark:bg-indigo-900">
+    <div className="flex flex-col h-screen">
       {/** Header y sidebar siempre visibles en rutas privadas */}
-      <Header isSidebarOpen={isSidebarOpen} onToggleSidebar={toggleSidebar} />
-      <div className="">
-        <Sidebar isOpen={isSidebarOpen} onToggle={toggleSidebar} links={links} />
-        <main className="">
+      <header className="shrink-0">
+        <Header isSidebarOpen={isSidebarOpen} onToggleSidebar={toggleSidebar} />
+      </header>
+      <div className="flex flex-1 overflow-hidden">
+        <Sidebar isOpen={isSidebarOpen} onToggle={toggleSidebar} />
+        <main className="flex-1 overflow-auto p-4 bg-white dark:bg-[#1d293d]">
           <Outlet />
         </main>
       </div>
@@ -142,6 +135,12 @@ export function App() {
             <Route path="/users/edit/:userId" element={<EditUser />} />
             <Route path="/user/profile" element={<UserProfile />} />
             <Route path="/user/settings" element={<UserSettings />} />
+
+            {/** Clientes */}
+            <Route path="/customers" element={<Customers />} />
+            <Route path="/customers/create" element={<CreateCustomer />} />
+            <Route path="/customers/:customerId" element={<Customer />} />
+            <Route path="/customers/edit/:customerId" element={<EditCustomer />} />
 
             {/** Notificaciones */}
             <Route path="/notifications" element={<Notifications />} />

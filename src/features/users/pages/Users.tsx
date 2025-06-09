@@ -20,7 +20,7 @@ export function Users() {
 
   useEffect(() => {
     dispatch(getAllUsers());
-    console.log(document.cookie)
+    console.log(document.cookie);
   }, [dispatch]);
 
   const userColumns: Column<User>[] = [
@@ -131,7 +131,7 @@ export function Users() {
 
   return (
     <div className="p-4">
-      <h2 className="text-xl font-semibold text-black dark:text-white mb-4">Usuarios</h2>
+      <h2 className="text-2xl font-semibold text-black dark:text-white mb-4">Usuarios</h2>
       <Button type="button" onClick={createUser} variant="default">
         Nuevo Usuario +
       </Button>

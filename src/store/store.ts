@@ -16,6 +16,7 @@ import storage from 'redux-persist/lib/storage';
 // Importar los slices
 import authReducer from '../features/auth/slices/authSlice';
 import usersReducer from '../features/users/slices/usersSlice';
+import customersReducer from '../features/customers/slices/customerSlice';
 import notificationsReducer from '../features/notifications/slices/notificationsSlice';
 /* import { notificationMiddleware } from '../features/notifications/middleware/notificationsMiddleware'; */
 const persistConfig = {
@@ -45,6 +46,7 @@ export const api = createApi({
 const rootReducer = combineReducers({
   auth: authReducer,
   users: usersReducer,
+  customers: customersReducer,
   notifications: notificationsReducer,
   [api.reducerPath]: api.reducer,
 });

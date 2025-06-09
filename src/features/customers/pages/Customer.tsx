@@ -1,0 +1,211 @@
+import React, { useCallback, useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import moment from 'moment';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+import { useAppDispath, useAppSelector } from '../../../hooks/hooks';
+import { getCustomerById, deleteCustomer, clearSelectedCustomer } from '../slices/customerSlice';
+import type { RootState } from '../../../store/store';
+import type { User } from '../../users/interfaces/UserInterface';
+import { usersService } from '../../users/services/usersService';
+
+import { Label } from '../../../components/UI/Label/Label';
+
+export const Customer: React.FC = () => {
+  const dispatch = useAppDispath();
+  const navigate = useNavigate();
+  const myAlert = withReactContent(Swal);
+  const { customerId } = useParams<{ customerId: string }>();
+
+  const { customer, loading, error } = useAppSelector((state: RootState) => state.customers);
+
+  /*   const [customerPurchases, setCustomerPurchases] = useState<any[]>([]);*/ const [
+    creator,
+    setCreator,
+  ] = useState<User | null>(null);
+  const [updater, setUpdater] = useState<User | null>(null);
+  const [fetchError, setFectchError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!customerId) {
+      navigate('/customers');
+      return;
+    }
+    dispatch(getCustomerById(customerId));
+    return () => {
+      dispatch(clearSelectedCustomer());
+      setCreator(null);
+      setUpdater(null);
+      setFectchError(null);
+    };
+  }, [dispatch, customerId, navigate]);
+
+  useEffect(() => {
+    if (!customer) return;
+
+    setFectchError(null);
+    const loadById = async (userId: string, setter: (u: User | null) => void) => {
+      try {
+        const userResponse = await usersService.getById(userId);
+        setter(userResponse.data);
+      } catch (error: any) {
+        setter(null);
+        setFectchError(
+          `No se pudo obtener el usuario con el ID: ${userId}: ${error.response?.data?.message || error.message}`
+        );
+      }
+    };
+
+    if (customer.createdBy) {
+      loadById(customer.createdBy, setCreator);
+    }
+
+    if (customer.updatedBy) {
+      loadById(customer.updatedBy, setUpdater);
+    }
+  }, [customer]);
+
+  const handleDeleteCustomer = useCallback(
+    (customerId: string) => {
+      myAlert
+        .fire({
+          title: `Eliminar cliente`,
+          text: `Estas seguro que deseas eliminar el cliente?`,
+          icon: 'question',
+          showConfirmButton: true,
+          confirmButtonText: 'Si, eliminar',
+          showCancelButton: true,
+          cancelButtonText: 'Cancelar',
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            dispatch(deleteCustomer(customerId))
+              .unwrap()
+              .then(() => {
+                myAlert.fire({
+                  title: 'Eliminacion de cliente',
+                  text: `Se ha eliminado el cliente con exito`,
+                  icon: 'success',
+                  timer: 5000,
+                  timerProgressBar: true,
+                });
+                navigate('/customers');
+              })
+              .catch((error: any) => {
+                myAlert.fire({
+                  title: 'Error',
+                  text: `Error: ${error.response?.data?.message || error.message}`,
+                  icon: 'error',
+                  timer: 5000,
+                  timerProgressBar: true,
+                });
+              });
+          }
+        });
+    },
+    [dispatch, navigate, myAlert]
+  );
+
+  if (loading) {
+    return <div>Cargando...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  return (
+    <div className="p-6 max-2-2xl mx-auto bg-white dark:bg-gray-900 rounded-lg shadow-lg">
+      <div className="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8">
+        <h2 className="text-2xl text-2xl text-black dark:text-white">Cliente</h2>
+      </div>
+
+      <div className="flex-1 space-y-4">
+        <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-100">
+          {customer?.nombre} {customer?.apellido || ''}
+        </h2>
+
+        <div className="grid grid-cols sm:grid-cols-2 gap-x-6 gap-y-2">
+          <div>
+            <p className="text-gray-500 dark:text-gray-400 text-sm">Telefono</p>
+            <p className="text-gray-800 dark:text-gray-200">{customer?.telefono}</p>
+          </div>
+
+          <div>
+            <p className="text-gray-500 dark:text-gray-400 text-sm">Correo</p>
+            <p className="text-gray-800 dark:text-gray-200">{customer?.correo || ''}</p>
+          </div>
+
+          <div>
+            <p className="text-gray-500 dark:text-gray-400 text-sm">Direccion</p>
+            <p className="text-gray-800 dark:text-gray-200">{customer?.direccion || ''}</p>
+          </div>
+
+          {customer?.createdBy && (
+            <div>
+              <p className="text-gray-500 dark:text-gray-400 text-sm">Creado por</p>
+              <p className="text-gray-700 dark:text-gray-200">
+                {creator ? `${creator.usuario}` : 'Cargando...'}
+              </p>
+            </div>
+          )}
+
+          {customer?.updatedBy && (
+            <div>
+              <p className="text-gray-500 dark:text-gray-400 text-sm">Actualizado por</p>
+              <p className="text-gray-700 dark:text-gray-200">
+                {updater ? `${updater.usuario}` : 'Cargando...'}
+              </p>
+            </div>
+          )}
+
+          {fetchError && (
+            <div className="mt-4 p-2 bg-red-100 text-red-700 rounded">{fetchError}</div>
+          )}
+
+          <div>
+            <p className="text-gray-500 dark:text-gray-400 text-sm">Fecha creacion</p>
+            <p className="text-gray-800 dark:text-gray-200">
+              {moment(customer?.createdAt).format('MMMM Do YYYY, h:mm:ss a')}
+            </p>
+          </div>
+
+          <div>
+            <p className="text-gray-500 dark:text-gray-400 text-sm">Fecha Actualizacion</p>
+            <p className="text-gray-800 dark:text-gray-200">
+              {moment(customer?.updatedAt).format('MMMM Do YYYY, h:mm:ss a')}
+            </p>
+          </div>
+
+          {customer?.historialCompras && (
+            <div>
+              <Label htmlFor="historialCompras">Historial de Compras</Label>
+              {customer?.historialCompras}
+            </div>
+          )}
+        </div>
+
+        <div className="mt-6 flex flex-col sm:flex-row items-center justify-end space-y-2 sm:space-y-0 sm:space-x-4">
+          <button
+            onClick={() => navigate('/customers')}
+            className="w-full sm:w-auto py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition"
+          >
+            ← Volver
+          </button>
+          <button
+            onClick={() => navigate(`/customers/edit/${customer?._id}`)}
+            className="w-full sm:w-auto py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition"
+          >
+            Editar
+          </button>
+          <button
+            onClick={() => handleDeleteCustomer(customer!._id)}
+            className="w-full sm:w-auto py-2 bg-red-200 dark:bg-red-700 text-white dark:text-white rounded"
+          >
+            Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
