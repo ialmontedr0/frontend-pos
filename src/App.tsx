@@ -28,6 +28,11 @@ import { Customers } from './features/customers/pages/Customers';
 import { CreateCustomer } from './features/customers/pages/CreateCustomer';
 import { Customer } from './features/customers/pages/Customer';
 import { EditCustomer } from './features/customers/pages/EditCustomer';
+import { Categories } from './features/products/categories/pages/Categories';
+import { Category } from './features/products/categories/pages/Category';
+import { CreateCategory } from './features/products/categories/pages/CreateCategory';
+import { EditCategory } from './features/products/categories/pages/EditCategory';
+import { Products } from './features/products/pages/Products';
 
 function ProtectedLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
@@ -141,6 +146,15 @@ export function App() {
             <Route path="/customers/create" element={<CreateCustomer />} />
             <Route path="/customers/:customerId" element={<Customer />} />
             <Route path="/customers/edit/:customerId" element={<EditCustomer />} />
+
+            {/** Productos */}
+            <Route path="/products" element={<Products />} />
+
+            {/** Products:Categorias */}
+            <Route path="/products/categories" element={<Categories />} />
+            <Route path="/products/categories/:categoryId" element={<Category />} />
+            <Route path="/products/categories/create" element={<CreateCategory />} />
+            <Route path="/products/categories/edit/:categoryId" element={<EditCategory />} />
 
             {/** Notificaciones */}
             <Route path="/notifications" element={<Notifications />} />
