@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider, type RouteObject, Navigate } from 'react-router-dom';
+import { createBrowserRouter, type RouteObject, Navigate } from 'react-router-dom';
 
 import AppLayout from './layouts/AppLayout';
 import { Login } from './features/auth/pages/Login';
@@ -39,6 +39,7 @@ import { PrivateRoute } from './components/Routes/ProtectedRoute/ProtectedRoute'
 import { RecoverGuard } from './features/auth/guards/RecoverGuard';
 import { ValidateGuard } from './features/auth/guards/ValidateGuard';
 import { ChangeGuard } from './features/auth/guards/ChangeGuard';
+import { Inventory } from './features/products/inventory/pages/Inventory';
 
 const routes: RouteObject[] = [
   {
@@ -107,6 +108,8 @@ const routes: RouteObject[] = [
           { path: '/products/providers/create', element: <CreateProvider /> },
           { path: '/products/providers/:providerId', element: <Provider /> },
           { path: '/products/providers/edit/:providerId', element: <EditProvider /> },
+
+          { path: '/products/inventory', element: <Inventory /> },
 
           { path: '/notifications', element: <Notifications /> },
 
