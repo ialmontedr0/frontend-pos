@@ -4,7 +4,6 @@ import { clearAuth, login } from '../slices/authSlice';
 import type { LoginDTO } from '../types/auth';
 import { useState } from 'react';
 
-import { Label } from '../../../components/UI/Label/Label';
 import { Input } from '../../../components/UI/Input/Input';
 import { Button } from '../../../components/UI/Button/Button';
 
@@ -43,9 +42,9 @@ export const Login = () => {
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <form onSubmit={handleLogin} className="space-y-6">
           <div>
-            <Label htmlFor="usuario" className="block text-sm/6 font-medium text-gray-900">
+            <label htmlFor="usuario" className="block text-md font-semibold text-blue-900">
               Usuario
-            </Label>
+            </label>
             <div className="mt-2">
               <Input
                 type="text"
@@ -60,12 +59,12 @@ export const Login = () => {
 
           <div>
             <div className="flex items-center justify-between">
-              <Label htmlFor="contrasena" className="block text-sm/6 font-medium text-gray-900">
+              <label htmlFor="contrasena" className="block text-md font-semibold text-blue-900">
                 Contrasena
-              </Label>
+              </label>
               <div className="text-sm">
                 <a
-                  href="/recover-password"
+                  href="/auth/recover-password"
                   className="font-semibold text-indigo-600 hover:text-indigo-500"
                 >
                   Olvidaste tu contrasena?

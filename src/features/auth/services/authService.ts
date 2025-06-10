@@ -18,7 +18,7 @@ class AuthService {
   constructor() {
     this.client = axios.create({
       baseURL: `${API_BASE_URL}/auth`,
-      timeout: 10000,
+      timeout: 30000,
       withCredentials: true,
       headers: { 'Content-Type': 'application/json' },
     });

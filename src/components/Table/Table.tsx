@@ -91,7 +91,7 @@ export function Table<T extends { [key: string]: any }>({
           <button
             onClick={() => goToPage(page - 1)}
             disabled={page === pageCount}
-            className="px-3 py-1 mx-1 bg-white dark:bg-slate-800 border rounded disabled:opacity-50"
+            className="px-3 py-1 mx-1 bg-white dark:bg-slate-800 dark:text-white border rounded disabled:opacity-50"
           >
             « Anterior
           </button>
@@ -101,7 +101,7 @@ export function Table<T extends { [key: string]: any }>({
           <button
             onClick={() => goToPage(page + 1)}
             disabled={page === pageCount}
-            className="px-3 py-1 mx-1 bg-white dark:bg-slate-800 border rounded disabled:opacity-50"
+            className="px-3 py-1 mx-1 bg-white dark:bg-slate-800 dark:text-white border rounded disabled:opacity-50"
           >
             Siguiente »
           </button>

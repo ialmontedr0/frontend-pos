@@ -44,8 +44,9 @@ import { Provider } from './features/products/providers/pages/Provider';
 import { CreateProvider } from './features/products/providers/pages/CreateProvider';
 import { EditProvider } from './features/products/providers/pages/EditProvider';
 
-import { RoleRoute } from './components/Routes/RoleRoute/RoleRoute';
+/* import { RoleRoute } from './components/Routes/RoleRoute/RoleRoute'; */
 import { Forbidden } from './pages/Forbidden';
+import { NotFound } from './pages/NotFound';
 
 function ProtectedLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
@@ -150,18 +151,18 @@ export function App() {
             {/* <Route
               element={<RoleRoute allowedRoles={['admin', 'cajero']} redirectPath="/forbidden" />}
             > */}
-              <Route path="/users" element={<Users />} />
-              <Route path="/users/:userId" element={<User />} />
-              <Route path="/users/create" element={<CreateUser />} />
-              <Route path="/users/edit/:userId" element={<EditUser />} />
-              <Route path="/user/profile" element={<UserProfile />} />
-              <Route path="/user/settings" element={<UserSettings />} />
+            <Route path="/users" element={<Users />} />
+            <Route path="/users/:userId" element={<User />} />
+            <Route path="/users/create" element={<CreateUser />} />
+            <Route path="/users/edit/:userId" element={<EditUser />} />
+            <Route path="/user/profile" element={<UserProfile />} />
+            <Route path="/user/settings" element={<UserSettings />} />
 
-              {/** Clientes */}
-              <Route path="/customers" element={<Customers />} />
-              <Route path="/customers/create" element={<CreateCustomer />} />
-              <Route path="/customers/:customerId" element={<Customer />} />
-              <Route path="/customers/edit/:customerId" element={<EditCustomer />} />
+            {/** Clientes */}
+            <Route path="/customers" element={<Customers />} />
+            <Route path="/customers/create" element={<CreateCustomer />} />
+            <Route path="/customers/:customerId" element={<Customer />} />
+            <Route path="/customers/edit/:customerId" element={<EditCustomer />} />
             {/* </Route> */}
 
             {/** Productos */}
@@ -187,10 +188,7 @@ export function App() {
 
             <Route path="forbidden" element={<Forbidden />} />
 
-            <Route
-              path="*"
-              element={<p className="p-6 text-black dark:text-white">Pagina no existe 404 :(</p>}
-            />
+            <Route path="*" element={<NotFound />} />
           </Route>
         </Route>
       </Routes>

@@ -8,6 +8,7 @@ import { selectUnreadCount } from '../../features/notifications/slices/notificat
 import { ThemeToggle } from '../ThemeToggle/ThemeToggle';
 import { SearchBar } from '../SearchBar/SearchBar';
 import { BiBell, BiCog, BiLogOut } from 'react-icons/bi';
+import type { RootState } from '../../store/store';
 
 export interface HeaderProps {
   isSidebarOpen: boolean;
@@ -21,7 +22,7 @@ export function Header({ onToggleSidebar }: HeaderProps) {
   const dispatch = useAppDispath();
   const navigate = useNavigate();
 
-  const user = useAppSelector((state) => state.auth.user);
+  const user = useAppSelector((state: RootState) => state.auth.user);
   const unreadCount = useAppSelector(selectUnreadCount);
 
   const handleLogout = async () => {
@@ -56,19 +57,6 @@ export function Header({ onToggleSidebar }: HeaderProps) {
           <div className="w-6 h-0.5 bg-gray-800 dark:bg-gray-200"></div>
         </button>
 
-        {/* <input
-          type="text"
-          placeholder="Buscar..."
-          className="
-            px-3 py-1 
-            border-slate-300 dark:border-slate-600
-            bg-white dark:bg-slate-800
-            text-slate-800 dark:text-slate-200
-            placeholder-slate-400 dark:placeholder-slate-500
-            focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500
-          "
-        /> */}
-
         <SearchBar />
       </div>
       <div className="flex items-center space-x-4">
@@ -91,15 +79,6 @@ export function Header({ onToggleSidebar }: HeaderProps) {
           />
         </div>
 
-        {/* <button
-          onClick={toggleTheme}
-          className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-800"
-          aria-label="Toggle theme"
-        >
-          {theme === 'claro' && '🌞'}
-          {theme === 'oscuro' && '🌜'}
-          {theme === 'sistema' && '🌐'}
-        </button> */}
         <ThemeToggle enabled={enabled} onClick={toggleTheme} />
 
         <Link
