@@ -28,11 +28,17 @@ import { Customers } from './features/customers/pages/Customers';
 import { CreateCustomer } from './features/customers/pages/CreateCustomer';
 import { Customer } from './features/customers/pages/Customer';
 import { EditCustomer } from './features/customers/pages/EditCustomer';
+
+import { Products } from './features/products/pages/Products';
+import { Product } from './features/products/pages/Product';
+import { CreateProduct } from './features/products/pages/CreateProduct';
+import { EditProduct } from './features/products/pages/EditProduct';
+
 import { Categories } from './features/products/categories/pages/Categories';
 import { Category } from './features/products/categories/pages/Category';
 import { CreateCategory } from './features/products/categories/pages/CreateCategory';
 import { EditCategory } from './features/products/categories/pages/EditCategory';
-import { Products } from './features/products/pages/Products';
+
 import { Providers } from './features/products/providers/pages/Providers';
 import { Provider } from './features/products/providers/pages/Provider';
 import { CreateProvider } from './features/products/providers/pages/CreateProvider';
@@ -153,6 +159,9 @@ export function App() {
 
             {/** Productos */}
             <Route path="/products" element={<Products />} />
+            <Route path="/products/:productId" element={<Product />} />
+            <Route path="/products/create" element={<CreateProduct />} />
+            <Route path="/products/edit/:productId" element={<EditProduct />} />
 
             {/** Products:Categorias */}
             <Route path="/products/categories" element={<Categories />} />
