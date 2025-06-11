@@ -209,10 +209,10 @@ export const CreateUser: React.FC = () => {
         {error && <p className="text-center text-red-600 bg-red-100 p-2 rounded-md">{error}</p>}
 
         <div className="flex justify-end pt-4 border-t dark:border-gray-700">
-          <Button type="submit" className="bg-green-600 hover:bg-green-700 text-white">
+          <Button type="submit" variant='default'>
             {loading ? 'Creando...' : 'Guardar usuario'}
           </Button>
-          <Button type="button" variant="outline" onClick={() => navigate('/users')}>
+          <Button type="button" variant="default" onClick={() => navigate('/users')}>
             Cancelar
           </Button>
         </div>

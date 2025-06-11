@@ -9,6 +9,7 @@ import { getUserById, clearSelectedUser } from '../slices/usersSlice';
 import { usersService } from '../services/usersService';
 
 import type { User } from '../interfaces/UserInterface';
+import { Button } from '../../../components/UI/Button/Button';
 
 export function User() {
   const { userId } = useParams<{ userId: string }>();
@@ -190,19 +191,13 @@ export function User() {
           </div>
         </div>
         <div className="mt-6 flex flex-col sm:flex-row items-center justify-end space-y-2 sm:space-y-0 sm:space-x-4">
-          <button
-            onClick={() => navigate('/users')}
-            className="w-full sm:w-auto px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition"
-          >
+          <Button variant="secondary" onClick={() => navigate('/users')}>
             ← Volver
-          </button>
+          </Button>
 
-          <button
-            onClick={() => navigate(`/users/edit/${user._id}`)}
-            className="w-full sm:w-auto px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition"
-          >
+          <Button onClick={() => navigate(`/users/edit/${user._id}`)} variant="default">
             Editar usuario
-          </button>
+          </Button>
         </div>
       </div>
     </div>

@@ -302,24 +302,17 @@ export const EditUser: React.FC = () => {
 
         {/** Botones */}
         <div className="flex flex-wrap justify-end gap-3 pt-4 border-t dark:border-gray-700">
-          <Button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white">
-            Guardar
-          </Button>
-          <Button type="button" variant="outline" onClick={onResetPwd}>
+          <Button type="submit" variant='default'>Guardar</Button>
+          <Button type="button" className='bg-green-800 hover:bg-green-700' onClick={onResetPwd}>
             Restablecer contrasena
           </Button>
-          <Button type="button" variant="outline" onClick={onResetPrefs}>
+          <Button type="button" className='bg-green-600 hover:bg-green-500' onClick={onResetPrefs}>
             Restablecer preferencias
           </Button>
-          <Button
-            type="button"
-            variant="destructive"
-            onClick={onDelUser}
-            className="bg-red-600 hover:bg-red-700"
-          >
+          <Button type="button"  variant="destructive" onClick={onDelUser}>
             Eliminar usuario
           </Button>
-          <Button type="button" variant="outline" onClick={cancel}>
+          <Button type="button" variant='secondary' onClick={cancel}>
             Cancelar
           </Button>
         </div>

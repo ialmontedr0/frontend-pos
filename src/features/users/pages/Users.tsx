@@ -1,15 +1,20 @@
 import { useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
+
 import { useAppDispath, useAppSelector } from '../../../hooks/hooks';
 import type { RootState } from '../../../store/store';
 import { getAllUsers, deleteUser } from '../slices/usersSlice';
 import { resetPassword } from '../../auth/slices/authSlice';
+
 import type { User } from '../interfaces/UserInterface';
 import type { Column, Action } from '../../../components/Table/types';
+
 import { Table } from '../../../components/Table/Table';
 import { Button } from '../../../components/UI/Button/Button';
+import { BiPlus } from 'react-icons/bi';
 
 export function Users() {
   const dispatch = useAppDispath();
@@ -29,8 +34,8 @@ export function Users() {
     { header: 'Apellido', accessor: 'apellido' },
     { header: 'Correo', accessor: 'correo' },
     { header: 'Telefono', accessor: 'telefono' },
-    { header: 'Rol', accessor: 'rol' },
-    { header: 'Estado', accessor: 'estado' },
+    { header: 'Rol', accessor: 'rol', render: (value: string) => parseRoleString(value) },
+    { header: 'Estado', accessor: 'estado', render: (value: string) => parseStatusString(value) },
   ];
 
   const userActions: Action<User>[] = [
@@ -60,6 +65,30 @@ export function Users() {
     },
     [navigate]
   );
+
+  const parseRoleString = (role: string): string => {
+    switch (role) {
+      case 'admin':
+        return 'Administrador';
+      case 'cajero':
+        return 'Cajero';
+      case 'inventarista':
+        return 'Inventarista';
+      default:
+        return 'Desconocido';
+    }
+  };
+
+  const parseStatusString = (status: string): string => {
+    switch (status) {
+      case 'activo':
+        return 'Activo';
+      case 'inactivo':
+        return 'Inactivo';
+      default:
+        return 'Desconocido';
+    }
+  };
 
   const handleResetPassword = useCallback(
     (usuario: string) => {
@@ -130,10 +159,10 @@ export function Users() {
   if (error) return <div>Error {error}</div>;
 
   return (
-    <div className="p-4">
+    <div className="p-4 space-y-4">
       <h2 className="text-2xl font-semibold text-black dark:text-white mb-4">Usuarios</h2>
-      <Button type="button" onClick={createUser} variant="default">
-        Nuevo Usuario +
+      <Button icon={<BiPlus />} type="button" variant="default" size="sm" onClick={createUser}>
+        Nuevo usuario
       </Button>
       <Table
         columns={userColumns}
