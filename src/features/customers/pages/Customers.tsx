@@ -23,8 +23,8 @@ export function Customers() {
   const customerColumns: Column<Customer>[] = [
     { header: 'Nombre', accessor: 'nombre' },
     { header: 'Telefono', accessor: 'telefono' },
-    { header: 'Correo', accessor: 'correo' },
-    { header: 'Direccion', accessor: 'direccion' },
+    { header: 'Correo', accessor: 'correo', render: (value: string) => `${value || 'Sin correo'}` },
+    { header: 'Direccion', accessor: 'direccion', render: (value: string) => `${value || '--'}` },
   ];
 
   const customerActions: Action<Customer>[] = [

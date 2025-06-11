@@ -99,7 +99,7 @@ const routes: RouteObject[] = [
           { path: '/products/:productId', element: <Product /> },
           { path: '/products/edit/:productId', element: <EditProduct /> },
 
-          { path: '/product/categories', element: <Categories /> },
+          { path: '/products/categories', element: <Categories /> },
           { path: '/products/categories/create', element: <CreateCategory /> },
           { path: '/products/categories/:categoryId', element: <Category /> },
           { path: '/products/categories/edit/:categoryId', element: <EditCategory /> },

@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import Swal from 'sweetalert2';
@@ -14,12 +14,16 @@ import type { Column, Action } from '../../../components/Table/types';
 
 import { Table } from '../../../components/Table/Table';
 import { Button } from '../../../components/UI/Button/Button';
-import { BiPlus } from 'react-icons/bi';
+import { BiPencil, BiPlus, BiShow } from 'react-icons/bi';
+import { BiGrid } from 'react-icons/bi';
+import { BiListUl } from 'react-icons/bi';
+import { Card, type CardItem } from '../../../components/UI/Card/Card';
 
 export function Users() {
   const dispatch = useAppDispath();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
+  const [mode, setMode] = useState<'list' | 'grid'>('list');
 
   const { users, loading, error } = useAppSelector((state: RootState) => state.users);
 
@@ -35,7 +39,11 @@ export function Users() {
     { header: 'Correo', accessor: 'correo' },
     { header: 'Telefono', accessor: 'telefono' },
     { header: 'Rol', accessor: 'rol', render: (value: string) => parseRoleString(value) },
-    { header: 'Estado', accessor: 'estado', render: (value: string) => parseStatusString(value) },
+    {
+      header: 'Estado',
+      accessor: 'estado',
+      render: (value: string) => parseStatusString(value),
+    },
   ];
 
   const userActions: Action<User>[] = [
@@ -48,9 +56,28 @@ export function Users() {
     { label: 'Eliminar', onClick: (u) => handleDeleteUser(u._id) },
   ];
 
-  const createUser = () => {
-    navigate('/users/create');
-  };
+  const cardItems: CardItem[] = users.map((u) => ({
+    id: u._id,
+    imageUrl: u.foto || '',
+    title: `${u.nombre} ${u.apellido}`,
+    subtitle: u.usuario,
+    fields: [
+      { label: 'Rol', value: u.rol },
+      { label: 'Estado', value: u.estado ? 'Activo' : 'Inactivo' },
+    ],
+    actions: [
+      {
+        icon: <BiShow size={20} />,
+        onClick: () => navigate(`/users/${u._id}`),
+        toolTip: 'Ver usuario',
+      },
+      {
+        icon: <BiPencil size={20} />,
+        onClick: () => navigate(`/users/edit/${u._id}`),
+        toolTip: 'Editar usuario',
+      },
+    ],
+  }));
 
   const viewUser = useCallback(
     (userId: string) => {
@@ -161,16 +188,39 @@ export function Users() {
   return (
     <div className="p-4 space-y-4">
       <h2 className="text-2xl font-semibold text-black dark:text-white mb-4">Usuarios</h2>
-      <Button icon={<BiPlus />} type="button" variant="default" size="sm" onClick={createUser}>
+      <Button
+        icon={<BiPlus />}
+        type="button"
+        variant="default"
+        size="sm"
+        onClick={() => navigate('/users/create')}
+      >
         Nuevo usuario
       </Button>
-      <Table
-        columns={userColumns}
-        data={users}
-        defaultPageSize={10}
-        pageSizeOptions={[5, 10, 20]}
-        actions={userActions}
-      />
+      <div className="flex items-center justify-end gap-2 mb-4">
+        <button onClick={() => setMode('list')} className={mode === 'list' ? 'font-bold' : ''}>
+          <BiListUl className="dark:text-white" size={28} />
+        </button>
+        <button onClick={() => setMode('grid')} className={mode === 'grid' ? 'font-bold' : ''}>
+          <BiGrid className="dark:text-white" size={28} />
+        </button>
+      </div>
+
+      {mode === 'list' ? (
+        <Table
+          columns={userColumns}
+          data={users}
+          defaultPageSize={10}
+          pageSizeOptions={[5, 10, 20]}
+          actions={userActions}
+        />
+      ) : (
+        <div className="grid grid-cols-1 sm: grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {cardItems.map((item) => (
+            <Card key={item.id} item={item} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

@@ -12,7 +12,7 @@ const AppLayout: React.FC = () => {
       <Header isSidebarOpen={isSidebarOpen} onToggleSidebar={toggleSidebar} />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar isOpen={isSidebarOpen} onToggle={toggleSidebar} />
-        <main className="flex-1 overflow-auto p-4 bg-white dark:bg-[#1d293d]">
+        <main className="flex-1 overflow-auto bg-white dark:bg-[#1d293d]">
           <Outlet />
         </main>
       </div>
