@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, type ChangeEvent } from 'react';
 import { cn } from '../../lib/utils';
 
 interface SearchSelectItem {
@@ -9,94 +9,82 @@ interface SearchSelectItem {
 
 interface SearchSelectProps {
   options: SearchSelectItem[];
-  onSelect: (item: SearchSelectItem) => void;
-  placeholder?: string;
-  className?: string;
-  initialDisplayValue?: string;
-  fieldValue?: string;
-  onFieldChange?: (value: string) => void;
+  onSelect: (id: string) => void; // Se invoca con el _id seleccionado
+  onFieldChange: (value: string) => void; // Se invoca en cada cambio de texto o seleccion
   onFieldBlur?: () => void;
-  nombre?: string;
+  fieldValue?: string; // Valor actual del _ID
+  initialDisplayValue?: string; // Texto a mostrar inicialmente
+  placeholder?: string;
+  name?: string;
+  className?: string;
 }
 
 export function SearchSelect({
   options,
   onSelect,
-  placeholder = 'Buscar...',
-  className,
-  initialDisplayValue = '',
-  fieldValue, // _id
   onFieldChange,
+  fieldValue,
   onFieldBlur,
-  nombre,
+  initialDisplayValue = '',
+  placeholder = 'Buscar...',
+  name,
+  className,
 }: SearchSelectProps) {
   const [query, setQuery] = useState<string>(initialDisplayValue);
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   const filteredOptions = query
-    ? options.filter((item) => item.nombre.toLowerCase().includes(query.toLowerCase()))
+    ? options.filter((o) => o.nombre.toLowerCase().includes(query.toLowerCase()))
     : [];
 
   useEffect(() => {
-    if (
-      initialDisplayValue !== query &&
-      initialDisplayValue !== '' &&
-      initialDisplayValue !== undefined
-    ) {
-      setQuery(initialDisplayValue);
-    }
+    setQuery(initialDisplayValue);
   }, [initialDisplayValue]);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value);
+    const v = e.target.value;
+    setQuery(v);
     setShowDropdown(true);
-
-    if (e.target.value === '' && onFieldChange) {
-      onFieldChange('');
-      onSelect({ _id: '', nombre: '' });
+    onFieldChange?.(v);
+    if (v === '') {
+      onSelect('');
     }
   };
 
   const handleItemClick = (item: SearchSelectItem) => {
     setQuery(item.nombre);
-    onSelect(item);
-    if (onFieldChange) {
-      onFieldChange(item._id);
-    }
+    onSelect(item._id);
+    onFieldChange?.(item._id);
     setShowDropdown(false);
   };
 
   useEffect(() => {
-    const handleClickOutsid = (event: MouseEvent) => {
+    const onClickOutside = (event: MouseEvent) => {
       if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
         setShowDropdown(false);
-        if (onFieldBlur) {
-          onFieldBlur();
-        }
-        const selectedOption = options.find((opt) => opt._id === fieldValue);
-        if (!selectedOption || selectedOption.nombre !== query) {
-          setQuery(selectedOption?.nombre || '');
-        }
+        onFieldBlur?.();
+
+        const sel = options.find((o) => o._id === fieldValue);
+        setQuery(sel?.nombre || '');
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutsid);
+    document.addEventListener('mousedown', onClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutsid);
+      document.removeEventListener('mousedown', onClickOutside);
     };
-  }, [options, fieldValue, query, onFieldBlur]);
+  }, [fieldValue, onFieldBlur, options]);
 
   return (
     <div className={cn('relative', className)} ref={wrapperRef}>
       <input
         type="text"
+        name={name}
         value={query}
+        placeholder={placeholder}
         onChange={handleInputChange}
         onFocus={() => setShowDropdown(true)}
-        onBlur={() => {}}
-        name={nombre}
-        placeholder={placeholder}
         className="px-3 py-2 border border-gray-300 dark:border-gray-400 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-md focus:ring-indigo-500 focus:border-indigo-500 w-full"
       />
       {showDropdown && filteredOptions.length > 0 && (

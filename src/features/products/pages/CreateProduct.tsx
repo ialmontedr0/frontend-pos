@@ -159,16 +159,17 @@ export const CreateProduct: React.FC = () => {
               render={({ field }) => (
                 <SearchSelect
                   options={categories}
-                  placeholder="Busca una categoria"
-                  onSelect={(item) => {
-                    field.onChange(item._id);
-                    setSelectedCategoryName(item.nombre);
-                  }}
                   initialDisplayValue={selectedCategoryName}
                   fieldValue={field.value}
+                  placeholder="Busca una categoria"
+                  name={field.name}
                   onFieldChange={field.onChange}
                   onFieldBlur={field.onBlur}
-                  nombre={field.name}
+                  onSelect={(id) => {
+                    field.onChange(id);
+                    const found = categories.find((c) => c._id === id);
+                    setSelectedCategoryName(found?.nombre || 'Cargando');
+                  }}
                 />
               )}
             />
@@ -184,16 +185,17 @@ export const CreateProduct: React.FC = () => {
               render={({ field }) => (
                 <SearchSelect
                   options={providers}
-                  placeholder="Busca un proveedor"
-                  onSelect={(item) => {
-                    field.onChange(item._id);
-                    setSelectedProviderName(item.name);
-                  }}
                   initialDisplayValue={selectedProviderName}
                   fieldValue={field.value}
+                  placeholder="Busca un provedor"
+                  name={field.name}
                   onFieldChange={field.onChange}
                   onFieldBlur={field.onBlur}
-                  nombre={field.name}
+                  onSelect={(id) => {
+                    field.onChange(id);
+                    const found = providers.find((p) => p._id === id);
+                    setSelectedProviderName(found?.nombre || 'Cargando');
+                  }}
                 />
               )}
             />
@@ -255,12 +257,15 @@ export const CreateProduct: React.FC = () => {
           </div>
 
           <div>
-            <Label htmlFor="notificaciones" className="text-gray-700 dark:text-gray-300">
-              Notificaciones
+            <Label htmlFor="itbis" className="text-gray-700 dark:text-gray-300">
+              ITBIS
             </Label>
             <Select
               id="itbis"
-              {...register('itbis', { required: 'El campo ITBIS es obligatorio' })}
+              {...register('itbis', {
+                required: 'El campo ITBIS es obligatorio',
+                setValueAs: (v) => v === 'true',
+              })}
               className="block w-40 md:w-48 rounded-md border border-gray-300 dark:border-gray-600 
                         bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200
                         focus:ring-indigo-500 focus:border-indigo-500"
@@ -269,6 +274,11 @@ export const CreateProduct: React.FC = () => {
               <option value="false">No</option>
             </Select>
           </div>
+        </div>
+
+        <div>
+          <Label htmlFor="foto">Foto</Label>
+          <Input id="foto" placeholder="foto (URL)" {...register('foto')} />
         </div>
 
         {error && <div className="text-red-600">Error: {error}</div>}

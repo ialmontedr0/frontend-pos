@@ -13,10 +13,7 @@ import type { User } from '../../users/interfaces/UserInterface';
 import { usersService } from '../../users/services/usersService';
 
 import type { Provider } from '../providers/interfaces/ProviderInterface';
-import { providersService } from '../providers/services/providersService';
-
 import type { Category } from '../categories/interfaces/CategoryInterface';
-import { categoriesService } from '../categories/services/categoriesService';
 
 export function Product() {
   const { productId } = useParams<{ productId: string }>();
@@ -26,6 +23,7 @@ export function Product() {
 
   const [provider, setProvider] = useState<Provider | null>(null);
   const [category, setCategory] = useState<Category | null>(null);
+
   const [creator, setCreator] = useState<User | null>(null);
   const [updater, setUpdater] = useState<User | null>(null);
   const [fetchError, setFetchError] = useState<string | null>(null);
@@ -49,6 +47,7 @@ export function Product() {
   useEffect(() => {
     if (!product) return;
 
+    setFetchError(null);
     const loadById = async (userId: string, setter: (u: User | null) => void) => {
       try {
         const userResponse = await usersService.getById(userId);
@@ -59,47 +58,23 @@ export function Product() {
           `No se pudo obtener el usuario con el ID: ${userId}: ${error.response?.data?.message || error.message}`
         );
       }
-
-      if (product.createdBy) {
-        loadById(product.createdBy, setCreator);
-      }
-
-      if (product.updatedBy) {
-        loadById(product.updatedBy, setUpdater);
-      }
     };
 
-    const providedById = async (providerId: string, setter: (p: Provider | null) => void) => {
-      try {
-        const providerResponse = await providersService.getById(providerId);
-        setter(providerResponse.data);
-      } catch (error: any) {
-        setter(null);
-        setFetchError(
-          `No se pudo obtener el proveedor con el ID: ${providerId}: ${error.response?.data?.message || error.message}`
-        );
-      }
+    if (product.createdBy) {
+      loadById(product.createdBy, setCreator);
+    }
 
-      if (product.proveedor) {
-        providedById(product.proveedor, setProvider);
-      }
-    };
+    if (product.updatedBy) {
+      loadById(product.updatedBy, setUpdater);
+    }
 
-    const loadCategory = async (categoryId: string, setter: (c: Category | null) => void) => {
-      try {
-        const categoryResponse = await categoriesService.getById(categoryId);
-        setter(categoryResponse.data);
-      } catch (error: any) {
-        setter(null);
-        setFetchError(
-          `No se pudo obtener la categoria con el ID: ${categoryId}: ${error.response?.data?.message || error.message}`
-        );
-      }
+    if (typeof product.categoria === 'object') {
+      setCategory(product.categoria as Category);
+    }
 
-      if (product.categoria) {
-        loadCategory(product.categoria, setCategory);
-      }
-    };
+    if (typeof product.proveedor === 'object') {
+      setProvider(product.proveedor as Provider);
+    }
   }, [product]);
 
   const handleDeleteProduct = useCallback(
@@ -202,20 +177,20 @@ export function Product() {
             <p className="text-gray-800 dark:text-gray-200">{product.codigo}</p>
           </div>
 
-          {product.categoria && (
+          {category && (
             <div>
               <p className="text-gray-500 dark:text-gray-400 text-sm">Categoria</p>
               <p className="text-gray-800 dark:text-gray-200">
-                {category ? `${product.categoria}` : 'Cargando...'}
+                {category!.nombre || 'Cargando...'}
               </p>
             </div>
           )}
 
-          {product.proveedor && (
+          {provider && (
             <div>
               <p className="text-gray-500 dark:text-gray-400 text-sm">Proveedor</p>
               <p className="text-gray-800 dark:text-gray-200">
-                {provider ? `${product.proveedor}` : 'Cargnado'}
+                {provider!.nombre || 'Cargando...'}
               </p>
             </div>
           )}

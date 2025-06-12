@@ -24,11 +24,23 @@ export const Products: React.FC = () => {
 
   const productColumns: Column<Product>[] = [
     { header: 'Nombre', accessor: 'nombre' },
-    { header: 'Categoria', accessor: 'categoria' },
+    {
+      header: 'Categoria',
+      accessor: 'categoria',
+      render: (value: { _id: string; nombre: string }) => `${value.nombre ?? '-'}`,
+    },
     { header: 'Stock', accessor: 'stock' },
-    { header: 'Disponible', accessor: 'disponible' },
-    { header: 'Precio', accessor: 'precioVenta' },
-    { header: 'ITBIS', accessor: 'itbis' },
+    {
+      header: 'Disponible',
+      accessor: 'disponible',
+      render: (value: string) => `${value ? 'Si' : 'No'}`,
+    },
+    {
+      header: 'Precio',
+      accessor: 'precioVenta',
+      render: (value: number) => `RD$ ${value.toFixed(2)}`,
+    },
+    { header: 'ITBIS', accessor: 'itbis', render: (value: string) => `${value ? 'Si' : 'No'}` },
   ];
 
   const productActions: Action<Product>[] = [
