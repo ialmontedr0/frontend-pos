@@ -8,8 +8,9 @@ import { getCustomerById, deleteCustomer, clearSelectedCustomer } from '../slice
 import type { RootState } from '../../../store/store';
 import type { User } from '../../users/interfaces/UserInterface';
 import { usersService } from '../../users/services/usersService';
-
-import { Label } from '../../../components/UI/Label/Label';
+import type { Column, Action } from '../../../components/Table/types';
+import { Table } from '../../../components/Table/Table';
+import type { Sale } from '../../sales/interfaces/SaleInterface';
 
 export const Customer: React.FC = () => {
   const dispatch = useAppDispath();
@@ -25,6 +26,24 @@ export const Customer: React.FC = () => {
   ] = useState<User | null>(null);
   const [updater, setUpdater] = useState<User | null>(null);
   const [fetchError, setFectchError] = useState<string | null>(null);
+
+  const purchaseColumns: Column<Sale>[] = [
+    { header: 'Codigo', accessor: 'codigo' },
+    {
+      header: 'Fecha',
+      accessor: 'fecha',
+      render: (value: string) => `${new Date(value).toLocaleString()}`,
+    },
+    { header: 'Estado', accessor: 'estado' },
+    { header: 'Total', accessor: 'totalVenta' },
+  ];
+
+  const purcahseActions: Action<Sale>[] = [
+    {
+      label: 'Ver',
+      onClick: (s) => navigate(`/sales/${s._id}`),
+    },
+  ];
 
   useEffect(() => {
     if (!customerId) {
@@ -177,11 +196,19 @@ export const Customer: React.FC = () => {
             </p>
           </div>
 
-          {customer?.historialCompras && (
-            <div>
-              <Label htmlFor="historialCompras">Historial de Compras</Label>
-              {customer?.historialCompras}
+          {customer?.historialCompras?.length ? (
+            <div className='mt-6'>
+              <h3 className='text-lg font-semibold mb-2'>Historial de compras</h3>
+              <Table 
+                columns={purchaseColumns}
+                data={customer.historialCompras}
+                defaultPageSize={5}
+                pageSizeOptions={[5, 10]}
+                actions={purcahseActions}
+              />
             </div>
+          ) : (
+            <p className='mt-6 text-gray-500'>Este cliente aun no tiene compras.</p>
           )}
         </div>
 

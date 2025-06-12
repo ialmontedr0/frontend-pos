@@ -1,3 +1,5 @@
+import type { Sale } from '../../sales/interfaces/SaleInterface';
+
 export interface Customer {
   _id: string;
   nombre: string;
@@ -5,7 +7,7 @@ export interface Customer {
   telefono: string;
   correo?: string;
   direccion?: string;
-  historialCompras: any[];
+  historialCompras: Sale[];
   createdAt: string;
   updatedAt?: string;
   createdBy?: string;
