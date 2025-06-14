@@ -15,7 +15,6 @@ import type { UpdateCustomerDTO } from '../dtos/update-customer.dto';
 
 import { Button } from '../../../components/UI/Button/Button';
 import { Input } from '../../../components/UI/Input/Input';
-import { Textarea } from '../../../components/UI/TextArea/TextArea';
 import { Label } from '../../../components/UI/Label/Label';
 import type { RootState } from '../../../store/store';
 
@@ -82,6 +81,7 @@ export const EditCustomer: React.FC = () => {
       .then((result) => {
         if (result.isConfirmed) {
           dispatch(updateCustomer({ customerId: customer!._id, updateCustomerDTO })).then(() => {
+            console.log(updateCustomerDTO.direccion);
             navigate(`/customers/${customerId}`);
           });
         }
@@ -200,7 +200,14 @@ export const EditCustomer: React.FC = () => {
 
             <div className="col-span-full">
               <Label htmlFor="direccion">Direccion</Label>
-              <Textarea id="direccion" rows={3} {...register('direccion')} />
+              <Input
+                id="direccion"
+                placeholder="Direccion del cliente"
+                {...register('direccion')}
+              />
+              {errors.direccion && (
+                <p className="text-sm text-red-500">{errors.direccion.message}</p>
+              )}
             </div>
           </div>
         </div>

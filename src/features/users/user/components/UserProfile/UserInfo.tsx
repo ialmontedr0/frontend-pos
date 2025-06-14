@@ -12,6 +12,7 @@ import { Label } from '../../../../../components/UI/Label/Label';
 import { Input } from '../../../../../components/UI/Input/Input';
 import { Button } from '../../../../../components/UI/Button/Button';
 import { Textarea } from '../../../../../components/UI/TextArea/TextArea';
+import { BiArrowBack, BiSave } from 'react-icons/bi';
 
 interface EditBasicInfoDTO {
   nombre?: string;
@@ -39,7 +40,7 @@ export const UserInfo: React.FC = () => {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isDirty },
+    formState: { errors },
   } = useForm<EditBasicInfoDTO>({
     defaultValues: {
       nombre: authUser?.nombre || '',
@@ -168,15 +169,21 @@ export const UserInfo: React.FC = () => {
               <Input id="foto" {...register('foto')} className="mt-1" />
             </div>
 
-            <div className="mt-6 flex justify-end">
-              <Button type="button" onClick={() => navigate('/dashboard')}>
-                Volver a Inicio
+            <div className="mt-6 flex flex-row gap-2 justify-end">
+              <Button
+                icon={<BiArrowBack size={20} />}
+                variant="secondary"
+                type="button"
+                onClick={() => navigate('/dashboard')}
+              >
+                Volver
               </Button>
               <Button
+                icon={<BiSave size={20} />}
                 type="submit"
-                className="bg-indigo-600 hover:bg-indigo-700 text-white"
+                className="bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 dark:text-white text-white"
               >
-                Guardar cambios
+                Guardar
               </Button>
             </div>
           </form>

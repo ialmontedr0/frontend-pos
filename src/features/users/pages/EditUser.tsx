@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useParams, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
@@ -20,14 +20,15 @@ import { Input } from '../../../components/UI/Input/Input';
 import { Textarea } from '../../../components/UI/TextArea/TextArea';
 import { Label } from '../../../components/UI/Label/Label';
 import { Select } from '../../../components/UI/Select/Select';
-import { Switch } from '../../../components/UI/Switch/Switch';
+import { ToggleSwitch } from '../../../components/UI/Switch/Switch';
+import { BiKey, BiReset, BiSave, BiTrash, BiX } from 'react-icons/bi';
 
 export const EditUser: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
   const dispatch = useAppDispath();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
-
+  const [enabled, setEnabled] = useState<boolean>(false);
   const { user, loading, error } = useAppSelector((state) => state.users);
 
   const sanitizedUserForForm = (u: any): UpdateUserDTO => {
@@ -62,7 +63,6 @@ export const EditUser: React.FC = () => {
     handleSubmit,
     reset,
     watch,
-    setValue,
     formState: { errors },
   } = useForm<UpdateUserDTO>({
     defaultValues: {
@@ -282,9 +282,9 @@ export const EditUser: React.FC = () => {
             </div>
 
             <div className="flex items-center space-x-4 col-span-full">
-              <Switch
-                checked={estadoActual === 'activo'}
-                onCheckedChange={(val) => setValue('estado', val ? 'activo' : 'inactivo')}
+              <ToggleSwitch
+                enabled={estadoActual === 'activo'}
+                onClick={() => setEnabled((prev) => !prev)}
               />
               <Label htmlFor="estado">
                 Estado: {estadoActual === 'activo' ? 'Activo' : 'Inactivo'}
@@ -302,17 +302,34 @@ export const EditUser: React.FC = () => {
 
         {/** Botones */}
         <div className="flex flex-wrap justify-end gap-3 pt-4 border-t dark:border-gray-700">
-          <Button type="submit" variant='default'>Guardar</Button>
-          <Button type="button" className='bg-green-800 hover:bg-green-700' onClick={onResetPwd}>
+          <Button icon={<BiSave size={20} />} type="submit" variant="default">
+            Guardar
+          </Button>
+          <Button
+            icon={<BiKey size={20} />}
+            type="button"
+            className="bg-green-800 hover:bg-green-700"
+            onClick={onResetPwd}
+          >
             Restablecer contrasena
           </Button>
-          <Button type="button" className='bg-green-600 hover:bg-green-500' onClick={onResetPrefs}>
+          <Button
+            icon={<BiReset size={20} />}
+            type="button"
+            className="bg-green-600 hover:bg-green-500"
+            onClick={onResetPrefs}
+          >
             Restablecer preferencias
           </Button>
-          <Button type="button"  variant="destructive" onClick={onDelUser}>
+          <Button
+            icon={<BiTrash size={20} />}
+            type="button"
+            variant="destructive"
+            onClick={onDelUser}
+          >
             Eliminar usuario
           </Button>
-          <Button type="button" variant='secondary' onClick={cancel}>
+          <Button icon={<BiX size={20} />} type="button" variant="secondary" onClick={cancel}>
             Cancelar
           </Button>
         </div>

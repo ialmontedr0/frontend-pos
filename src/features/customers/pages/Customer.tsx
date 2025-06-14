@@ -11,6 +11,8 @@ import { usersService } from '../../users/services/usersService';
 import type { Column, Action } from '../../../components/Table/types';
 import { Table } from '../../../components/Table/Table';
 import type { Sale } from '../../sales/interfaces/SaleInterface';
+import { Button } from '../../../components/UI/Button/Button';
+import { BiArrowBack, BiEdit, BiTrash } from 'react-icons/bi';
 
 export const Customer: React.FC = () => {
   const dispatch = useAppDispath();
@@ -134,11 +136,7 @@ export const Customer: React.FC = () => {
   }
 
   return (
-    <div className="p-6 max-2-2xl mx-auto bg-white dark:bg-gray-900 rounded-lg shadow-lg">
-      <div className="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8">
-        <h2 className="text-2xl text-2xl text-black dark:text-white">Cliente</h2>
-      </div>
-
+    <div className="border border-black m-5 ml-5 mr-5 p-4 max-2-2xl mx-auto bg-white dark:bg-gray-900 rounded-lg shadow-lg">
       <div className="flex-1 space-y-4">
         <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-100">
           {customer?.nombre} {customer?.apellido || ''}
@@ -152,7 +150,9 @@ export const Customer: React.FC = () => {
 
           <div>
             <p className="text-gray-500 dark:text-gray-400 text-sm">Correo</p>
-            <p className="text-gray-800 dark:text-gray-200">{customer?.correo || ''}</p>
+            <p className="text-gray-800 dark:text-gray-200">
+              {customer?.correo || 'Sin correo registrado'}
+            </p>
           </div>
 
           <div>
@@ -169,14 +169,13 @@ export const Customer: React.FC = () => {
             </div>
           )}
 
-          {customer?.updatedBy && (
             <div>
               <p className="text-gray-500 dark:text-gray-400 text-sm">Actualizado por</p>
               <p className="text-gray-700 dark:text-gray-200">
                 {updater ? `${updater.usuario}` : 'Cargando...'}
               </p>
             </div>
-          )}
+        
 
           {fetchError && (
             <div className="mt-4 p-2 bg-red-100 text-red-700 rounded">{fetchError}</div>
@@ -197,9 +196,9 @@ export const Customer: React.FC = () => {
           </div>
 
           {customer?.historialCompras?.length ? (
-            <div className='mt-6'>
-              <h3 className='text-lg font-semibold mb-2'>Historial de compras</h3>
-              <Table 
+            <div className="mt-6">
+              <h3 className="text-lg font-semibold mb-2">Historial de compras</h3>
+              <Table
                 columns={purchaseColumns}
                 data={customer.historialCompras}
                 defaultPageSize={5}
@@ -208,29 +207,32 @@ export const Customer: React.FC = () => {
               />
             </div>
           ) : (
-            <p className='mt-6 text-gray-500'>Este cliente aun no tiene compras.</p>
+            <p className="mt-6 text-gray-500">Este cliente aun no tiene compras.</p>
           )}
         </div>
 
-        <div className="mt-6 flex flex-col sm:flex-row items-center justify-end space-y-2 sm:space-y-0 sm:space-x-4">
-          <button
+        <div className="mt-6 flex flex-col sm:flex-row items-center justify-end space-y-2 sm:space-y-0 sm:space-x-2">
+          <Button
             onClick={() => navigate('/customers')}
-            className="w-full sm:w-auto py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition"
+            className=""
+            icon={<BiArrowBack size={20} />}
           >
-            ← Volver
-          </button>
-          <button
+            Atras
+          </Button>
+          <Button
             onClick={() => navigate(`/customers/edit/${customer?._id}`)}
-            className="w-full sm:w-auto py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition"
+            className="bg-green-600 text-white dark:bg-green-500 hover:bg-green-800 dark:hover:bg-green-700"
+            icon={<BiEdit size={20} />}
           >
             Editar
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => handleDeleteCustomer(customer!._id)}
-            className="w-full sm:w-auto py-2 bg-red-200 dark:bg-red-700 text-white dark:text-white rounded"
+            className="bg-red-600 text-white dark:bg-red-500 hover:bg-red-800 dark:hover:bg-red-700"
+            icon={<BiTrash size={20} />}
           >
             Eliminar
-          </button>
+          </Button>
         </div>
       </div>
     </div>

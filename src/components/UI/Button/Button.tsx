@@ -3,12 +3,12 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '../../../lib/utils';
 
 const buttonVariants = cva(
-  'inline-flex cursor-pointer items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus:visible::ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+  'inline-flex cursor-pointer items-center justify-center whitespace-nowrap rounded-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus:visible::ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
   {
     variants: {
       variant: {
         default:
-          'bg-[#4d39f6] text-white hover:bg-[#4f39f6] focus-visible:ring-[#e5e7eb] dark:bg-[#4b5563] dark:text-gray-900 dark:hover:bg-[#4b5563] dark:focus-visible:ring-[#6c55fa]',
+          'bg-[#4d39f6] text-white hover:bg-[#4f39f8] focus-visible:ring-[#e5e7eb] dark:bg-[#4b5563] dark:text-gray-900 dark:hover:bg-[#4b5563] dark:focus-visible:ring-[#6c55fa]',
         secondary:
           'bg-gray-100 text-gray-900 hover:bg-gray-200 focus-visible:ring-gray-950 dark:bg-gray-800 dark:text-gray-50 dark:hover:bg-gray-700 dark:focus-visible:ring-gray-50',
         outline:
@@ -17,7 +17,7 @@ const buttonVariants = cva(
           'bg-red-500 text-white hover:bg-red-600 focus:visible:ring-red-500 dark:bg-red-700 dark:text-white dark:hover:bg-red-800 dark:focus-visible:ring-red-700',
       },
       size: {
-        default: 'h-10 px-4 py-2',
+        default: 'h-10 px-4 py-1',
         sm: 'h-8 rounded-md px-3',
         lg: 'h-11 rounded-md px-8',
         icon: 'h-10 w-10',

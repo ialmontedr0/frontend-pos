@@ -1,43 +1,38 @@
 import React from 'react';
 
-interface SwitchProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  checked: boolean;
-  onCheckedChange: (checked: boolean) => void;
+interface ToggleSwitchProps {
+  enabled: boolean;
+  onClick: () => void;
+  offLabel?: string;
+  onLabel?: string;
+  className?: string;
 }
 
-export const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
-  ({ checked, onCheckedChange, className = '', ...props }, ref) => {
-    return (
-      <label
-        className={`
-                        inline-flex items-center cursor-pointer ${className}
-                    `}
-      >
-        <span
-          className={`
-            relative inline-block w-10 h-6 transition duration-200 ease-linear
-            bg-gray-300 rounded-full shadow-inner dark:bg-gray-700
-            ${checked ? 'bg-indigo-600' : ''}
-          `}
-        >
-          <span
-            className={`
-              absolute left-0 inline-block w-4 h-4 mt-1 ml-1 bg-white rounded-full shadow transform transition-transform
-              ${checked ? 'translate-x-4' : ''}
-            `}
-          />
-        </span>
-        <input
-          type="checkbox"
-          checked={checked}
-          onChange={(e) => onCheckedChange(e.target.checked)}
-          className="sr-only"
-          ref={ref}
-          {...props}
-        />
-      </label>
-    );
-  }
-);
-
-Switch.displayName = 'Switch';
+export const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
+  enabled,
+  onClick,
+  offLabel = 'No',
+  onLabel = 'Si',
+  className = '',
+}) => {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={enabled}
+      onClick={onClick}
+      className={`relative inline-flex items-center h-6 w-12 rounded-full transition-colors duration-200 focus:outline-none ${enabled ? 'bg-green-500' : 'bg-gray-300'} ${className}`}
+    >
+      <span className="sr-only">{enabled ? onLabel : offLabel}</span>
+      <span
+        className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform duration-200 ${enabled ? 'translate-x-6' : 'translate-x-1'}`}
+      />
+      <span className="absolute left-0 ml-1 text-xs font-medium text-white">
+        {!enabled ? offLabel : ''}
+      </span>
+      <span className="absolute right-0 mr-1 text-xs font-medium text-white">
+        {enabled ? onLabel : ''}
+      </span>
+    </button>
+  );
+};

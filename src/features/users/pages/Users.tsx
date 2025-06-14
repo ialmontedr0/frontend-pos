@@ -14,7 +14,7 @@ import type { Column, Action } from '../../../components/Table/types';
 
 import { Table } from '../../../components/Table/Table';
 import { Button } from '../../../components/UI/Button/Button';
-import { BiPencil, BiPlus, BiShow } from 'react-icons/bi';
+import { BiPencil, BiPlusCircle, BiShow } from 'react-icons/bi';
 import { BiGrid } from 'react-icons/bi';
 import { BiListUl } from 'react-icons/bi';
 import { Card, type CardItem } from '../../../components/UI/Card/Card';
@@ -189,10 +189,10 @@ export function Users() {
     <div className="p-4 space-y-4">
       <h2 className="text-2xl font-semibold text-black dark:text-white mb-4">Usuarios</h2>
       <Button
-        icon={<BiPlus />}
+        icon={<BiPlusCircle size={24} />}
+        iconPosition="right"
         type="button"
-        variant="default"
-        size="sm"
+        className="border border-gray-900 px-4 py-1 rounded-md text-white bg-blue-900 dark:bg-blue-400 cursor-pointer hover:bg-blue-800 transition-colors"
         onClick={() => navigate('/users/create')}
       >
         Nuevo usuario

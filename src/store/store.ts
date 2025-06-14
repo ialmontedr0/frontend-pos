@@ -21,6 +21,8 @@ import notificationsReducer from '../features/notifications/slices/notifications
 import categoriesReducer from '../features/products/categories/slices/categoriesSlice';
 import providersReducer from '../features/products/providers/slices/providersSlice';
 import productsReducer from '../features/products/slices/productsSlice';
+import salesReducer from '../features/sales/slices/salesSlice';
+import paymentsReducer from '../features/payments/slices/paymentsSlices';
 
 const persistConfig = {
   key: 'root',
@@ -40,7 +42,17 @@ export const api = createApi({
       return headers;
     },
   }),
-  tagTypes: ['Auth', 'User', 'Customer', 'Product', 'Category', 'Sale', 'Invoice', 'Notification'],
+  tagTypes: [
+    'Auth',
+    'User',
+    'Customer',
+    'Product',
+    'Category',
+    'Sale',
+    'Payment',
+    'Invoice',
+    'Notification',
+  ],
   endpoints: () => ({
     // ex getUsers: builder.query<User[], void>({ query: () => '/users' })
   }),
@@ -53,6 +65,8 @@ const rootReducer = combineReducers({
   categories: categoriesReducer,
   providers: providersReducer,
   products: productsReducer,
+  sales: salesReducer,
+  payments: paymentsReducer,
   notifications: notificationsReducer,
   [api.reducerPath]: api.reducer,
 });

@@ -8,13 +8,13 @@ import { useAppDispath, useAppSelector } from '../../../hooks/hooks';
 import { createUser, clearUserError } from '../slices/usersSlice';
 import type { CreateUserDTO } from '../dtos/create-user.dto';
 
-
 // Componentes reutilizables
 import { Button } from '../../../components/UI/Button/Button';
 import { Input } from '../../../components/UI/Input/Input';
 import { Textarea } from '../../../components/UI/TextArea/TextArea';
 import { Label } from '../../../components/UI/Label/Label';
 import { Select } from '../../../components/UI/Select/Select';
+import { BiSave, BiX } from 'react-icons/bi';
 
 export const CreateUser: React.FC = () => {
   const dispatch = useAppDispath();
@@ -40,7 +40,7 @@ export const CreateUser: React.FC = () => {
       estado: 'activo',
       foto: '',
       configuracion: undefined,
-      roles: []
+      roles: [],
     },
   });
 
@@ -83,6 +83,24 @@ export const CreateUser: React.FC = () => {
       });
   };
 
+  const cancel = () => {
+    myAlert
+      .fire({
+        title: 'Cancelar creacion',
+        text: `Estas seguro que deseas cancelar la creacion del usuario?`,
+        icon: 'question',
+        showConfirmButton: true,
+        confirmButtonText: 'Si, cancelar',
+        showCancelButton: true,
+        cancelButtonText: 'No',
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          navigate('/users');
+        }
+      });
+  };
+
   return (
     <div className="py-6 px-4">
       <form
@@ -94,7 +112,7 @@ export const CreateUser: React.FC = () => {
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div> 
+          <div>
             <Label htmlFor="nombre">Nombre</Label>
             <Input
               id="nombre"
@@ -208,11 +226,11 @@ export const CreateUser: React.FC = () => {
 
         {error && <p className="text-center text-red-600 bg-red-100 p-2 rounded-md">{error}</p>}
 
-        <div className="flex justify-end pt-4 border-t dark:border-gray-700">
-          <Button type="submit" variant='default'>
+        <div className="flex justify-end pt-4 gap-2 dark:border-gray-700">
+          <Button icon={<BiSave size={20} />} type="submit" variant="default">
             {loading ? 'Creando...' : 'Guardar usuario'}
           </Button>
-          <Button type="button" variant="default" onClick={() => navigate('/users')}>
+          <Button icon={<BiX size={20} />} type="button" variant="secondary" onClick={cancel}>
             Cancelar
           </Button>
         </div>

@@ -10,6 +10,7 @@ import { usersService } from '../services/usersService';
 
 import type { User } from '../interfaces/UserInterface';
 import { Button } from '../../../components/UI/Button/Button';
+import { BiArrowBack, BiEdit } from 'react-icons/bi';
 
 export function User() {
   const { userId } = useParams<{ userId: string }>();
@@ -191,12 +192,22 @@ export function User() {
           </div>
         </div>
         <div className="mt-6 flex flex-col sm:flex-row items-center justify-end space-y-2 sm:space-y-0 sm:space-x-4">
-          <Button variant="secondary" onClick={() => navigate('/users')}>
-            ← Volver
+          <Button
+            variant="secondary"
+            className="px-2 py-1"
+            icon={<BiArrowBack size={20} />}
+            onClick={() => navigate('/users')}
+          >
+            Volver
           </Button>
 
-          <Button onClick={() => navigate(`/users/edit/${user._id}`)} variant="default">
-            Editar usuario
+          <Button
+            icon={<BiEdit size={20} />}
+            iconPosition='right'
+            onClick={() => navigate(`/users/edit/${user._id}`)}
+            variant="default"
+          >
+            Editar
           </Button>
         </div>
       </div>

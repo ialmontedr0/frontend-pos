@@ -1,3 +1,4 @@
+import type { Payment } from '../../payments/interfaces/PaymentInterface';
 import type { SaleProduct } from './SaleProductInterface';
 
 export interface Sale {
@@ -13,6 +14,7 @@ export interface Sale {
   metodoPago: string;
   subtotalVenta: number;
   pagoVenta: number;
+  pagos: Payment[];
   totalVenta: number;
   createdBy: string;
   createdAt: string;

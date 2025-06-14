@@ -206,10 +206,13 @@ export function Product() {
           </div>
 
           <div>
-            <p className="text-gray-500 dark:text-gray-400 text-sm">Disponible</p>
+            <p className="text-gray-500 dark:text-gray-400 text-sm">Estado</p>
             <p
-              className={`
-                ${product.disponible === true ? 'py-1 text-gray-800 dark:text-white bg-green-800 rounded-full' : 'text-gray-800 dark:text-gray-200 bg-red-200 rounded-full'}`}
+              className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${
+                product.disponible === true
+                  ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                  : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+              }`}
             >
               {product.disponible === true ? 'Disponible' : 'No disponible'}
             </p>
@@ -279,7 +282,7 @@ export function Product() {
             </button>
             <button
               className="w-full sm:w-auto px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition"
-              onClick={() => navigate(`/products/edit/${product}`)}
+              onClick={() => navigate(`/products/edit/${product._id}`)}
             >
               Editar
             </button>

@@ -1,9 +1,12 @@
+import type { Category } from "../categories/interfaces/CategoryInterface";
+import type { Provider } from "../providers/interfaces/ProviderInterface";
+
 export interface Product {
   _id: string;
   codigo: string;
   nombre: string;
-  categoria: string;
-  proveedor: string;
+  categoria: string | Category;
+  proveedor: string | Provider;
   descripcion?: string;
   stock: number;
   disponible: boolean;

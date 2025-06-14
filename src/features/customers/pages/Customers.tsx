@@ -96,17 +96,18 @@ export function Customers() {
 
   return (
     <div className="p-4 py-2">
-      <h2 className="text-2xl font-semibold text-black dark:text-white mb-4">Clientes</h2>
-      <Button
-        className="my-2 dark:text-white"
-        icon={<BiPlusCircle size={24} />}
-        iconPosition='right'
-        type="button"
-        onClick={createCustomer}
-        variant="default"
-      >
-        Nuevo Cliente
-      </Button>
+      <h2 className="text-2xl font-semibold text-black dark:text-white mb-2">Clientes</h2>
+      <div className="py-2 flex flex-row gap-2 my-2">
+        <Button
+          icon={<BiPlusCircle size={24} />}
+          className="border border-gray-900 px-4 py-1 rounded-md text-white bg-blue-900 dark:bg-blue-400 cursor-pointer hover:bg-blue-800 transition-colors"
+          iconPosition="right"
+          type="button"
+          onClick={createCustomer}
+        >
+          Nuevo Cliente
+        </Button>
+      </div>
 
       {loading && <div>Cargando...</div>}
 

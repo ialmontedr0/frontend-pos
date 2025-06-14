@@ -13,6 +13,7 @@ import { resetPassword as resetUserPassword, clearAuth } from '../../../../auth/
 import { Label } from '../../../../../components/UI/Label/Label';
 import { Input } from '../../../../../components/UI/Input/Input';
 import { Button } from '../../../../../components/UI/Button/Button';
+import { BiReset, BiSave } from 'react-icons/bi';
 
 type SecurityForm = {
   contrasenaActual: string;
@@ -155,7 +156,9 @@ export const UserSecurity: React.FC = () => {
           <Input
             id="contrasenaActual"
             type={showPassword ? 'text' : 'password'}
-            {...register('contrasenaActual', { required: 'Ingresa tu contrasena actual por favor' })}
+            {...register('contrasenaActual', {
+              required: 'Ingresa tu contrasena actual por favor',
+            })}
             className="mt-1"
           />
           <button
@@ -178,7 +181,9 @@ export const UserSecurity: React.FC = () => {
           >
             {showPassword ? '🙈' : '👁️'}
           </button>
-          {errors.contrasenaActual && <p className="text-red-600 text-sm">{errors.contrasenaActual.message}</p>}
+          {errors.contrasenaActual && (
+            <p className="text-red-600 text-sm">{errors.contrasenaActual.message}</p>
+          )}
         </div>
 
         <div>
@@ -227,16 +232,23 @@ export const UserSecurity: React.FC = () => {
           )}
         </div>
 
-        <div className="mt-6 flex justify-end">
+        <div className="mt-6 flex flex-wrap gap-2 justify-end">
           <Button
+            icon={<BiSave size={20} />}
             type="submit"
             disabled={isSubmitting}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white"
+            className="bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 dark:text-white text-white transition-colors"
           >
             Guardar contrasena
           </Button>
 
-          <Button type="button" onClick={resetPassword} variant="outline">
+          <Button
+            icon={<BiReset size={20} />}
+            className="transition-colors dark:bg-white"
+            type="button"
+            onClick={resetPassword}
+            variant="outline"
+          >
             Restablecer contrasena
           </Button>
         </div>

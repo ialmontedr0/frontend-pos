@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
@@ -11,6 +12,7 @@ import type { RootState } from '../../../../../store/store';
 import { Label } from '../../../../../components/UI/Label/Label';
 import { Select } from '../../../../../components/UI/Select/Select';
 import { Button } from '../../../../../components/UI/Button/Button';
+import { BiArrowBack, BiReset, BiSave } from 'react-icons/bi';
 
 type FormValues = {
   tema: 'claro' | 'oscuro' | 'sistema';
@@ -31,6 +33,7 @@ const timeZones = [
 
 export const UserSettings: React.FC = () => {
   const dispatch = useAppDispath();
+  const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
 
   const authUser = useAppSelector((state: RootState) => state.auth.user);
@@ -144,12 +147,16 @@ export const UserSettings: React.FC = () => {
       });
   };
 
+  const goBack = () => {
+    navigate('/dashboard');
+  };
+
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 m-4 mt-6">
       <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Preferencias</h3>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-2">
           <Label htmlFor="tema" className="text-gray-700 dark:text-gray-300">
             Tema
           </Label>
@@ -166,7 +173,7 @@ export const UserSettings: React.FC = () => {
           </Select>
         </div>
 
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-2">
           <Label htmlFor="idioma" className="text-gray-700 dark:text-gray-300">
             Idioma
           </Label>
@@ -182,7 +189,7 @@ export const UserSettings: React.FC = () => {
           </Select>
         </div>
 
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-2">
           <Label htmlFor="moneda" className="text-gray-700 dark:text-gray-300">
             Moneda
           </Label>
@@ -198,7 +205,7 @@ export const UserSettings: React.FC = () => {
           </Select>
         </div>
 
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-2">
           <Label htmlFor="tamanoTexto" className="text-gray-700 dark:text-gray-300">
             Tamano Texto
           </Label>
@@ -215,7 +222,7 @@ export const UserSettings: React.FC = () => {
           </Select>
         </div>
 
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-2">
           <Label htmlFor="zonaHoraria" className="text-gray-700 dark:text-gray-300">
             Zona Horaria
           </Label>
@@ -234,7 +241,7 @@ export const UserSettings: React.FC = () => {
           </Select>
         </div>
 
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-2">
           <Label htmlFor="notificaciones" className="text-gray-700 dark:text-gray-300">
             Notificaciones
           </Label>
@@ -252,14 +259,28 @@ export const UserSettings: React.FC = () => {
 
         <div className="mt-6 flex gap-2 justify-end">
           <Button
+            className="dark:bg-white dark:text-black"
             type="submit"
             disabled={isDirty}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white"
+            icon={<BiSave size={20} />}
           >
             Guardar ajustes
           </Button>
-          <Button type="button" onClick={resetSettings} variant="outline">
+          <Button
+            icon={<BiReset size={20} />}
+            type="button"
+            onClick={resetSettings}
+            className="bg-green-600 hover:bg-green-800 dark:bg-green-700 hover:bg-green-900 dark:text-white transition-colors"
+          >
             Restablecer preferencias
+          </Button>
+          <Button
+            className="dark:bg-white dark:text-black"
+            type="button"
+            variant="secondary"
+            icon={<BiArrowBack size={20} onClick={goBack} />}
+          >
+            Volver
           </Button>
         </div>
       </form>

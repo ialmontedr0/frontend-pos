@@ -40,6 +40,9 @@ import { RecoverGuard } from './features/auth/guards/RecoverGuard';
 import { ValidateGuard } from './features/auth/guards/ValidateGuard';
 import { ChangeGuard } from './features/auth/guards/ChangeGuard';
 import { Inventory } from './features/products/inventory/pages/Inventory';
+import { Sales } from './features/sales/pages/Sales';
+import { CreateSale } from './features/sales/pages/CreateSale';
+import { Payments } from './features/payments/pages/Payments';
 
 const routes: RouteObject[] = [
   {
@@ -78,14 +81,14 @@ const routes: RouteObject[] = [
       {
         element: <AppLayout />,
         children: [
-          { index: true, element: <Navigate to='/dashboard' replace /> },
+          { index: true, element: <Navigate to="/dashboard" replace /> },
           { path: '/dashboard', element: <Dashboard /> },
 
           { path: '/users', element: <Users /> },
           { path: '/users/create', element: <CreateUser /> },
           { path: '/users/:userId', element: <User /> },
           { path: '/users/edit/:userId', element: <EditUser /> },
-          
+
           { path: '/user/profile', element: <UserProfile /> },
           { path: '/user/settings', element: <UserSettings /> },
 
@@ -111,6 +114,11 @@ const routes: RouteObject[] = [
 
           { path: '/products/inventory', element: <Inventory /> },
 
+          { path: '/sales', element: <Sales /> },
+          { path: '/sales/create', element: <CreateSale /> },
+
+          { path: '/payments', element: <Payments /> },
+
           { path: '/notifications', element: <Notifications /> },
 
           { path: '/forbidden', element: <Forbidden /> },
@@ -122,4 +130,4 @@ const routes: RouteObject[] = [
   },
 ];
 
-export const router = createBrowserRouter(routes)
+export const router = createBrowserRouter(routes);

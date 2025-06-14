@@ -8,6 +8,8 @@ import type { Category } from '../interfaces/CategoryInterface';
 import type { Column, Action } from '../../../../components/Table/types';
 import { Table } from '../../../../components/Table/Table';
 import { useAppDispath, useAppSelector } from '../../../../hooks/hooks';
+import { Button } from '../../../../components/UI/Button/Button';
+import { BiPlusCircle } from 'react-icons/bi';
 
 export const Categories: React.FC = () => {
   const dispatch = useAppDispath();
@@ -91,9 +93,15 @@ export const Categories: React.FC = () => {
     <div className="p-4">
       <h2 className="text-2xl font-semibold text-black dark:text-white mb-4">Categorias</h2>
 
-      <button type="button" onClick={createCategory} className="">
-        Nueva Categoria +
-      </button>
+      <Button
+        icon={<BiPlusCircle size={24} />}
+        type="button"
+        iconPosition='right'
+        className="border my-4 border-gray-900 px-4 py-1 rounded-md text-white bg-blue-900 dark:bg-blue-400 cursor-pointer hover:bg-blue-800 transition-colors"
+        onClick={createCategory}
+      >
+        Nueva Categoria
+      </Button>
 
       {loading && <div>Cargando...</div>}
       {!loading && categories.length === 0 && <div>No hay categorias.</div>}
