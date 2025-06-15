@@ -4,9 +4,9 @@ export interface Payment {
   _id: string;
   venta: string | Sale;
   cliente: string;
+  usuario: string;
   metodoPago: 'efectivo' | 'credito' | 'tarjetaCreditoDebito' | 'puntos';
   montoPagado: number;
   referenciaExterna?: string;
-  createdAt: string;
-  createdBy: string;
+  fecha: string;
 }

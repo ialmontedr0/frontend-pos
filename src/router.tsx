@@ -43,6 +43,7 @@ import { Inventory } from './features/products/inventory/pages/Inventory';
 import { Sales } from './features/sales/pages/Sales';
 import { CreateSale } from './features/sales/pages/CreateSale';
 import { Payments } from './features/payments/pages/Payments';
+import { Sale } from './features/sales/pages/Sale';
 
 const routes: RouteObject[] = [
   {
@@ -116,6 +117,7 @@ const routes: RouteObject[] = [
 
           { path: '/sales', element: <Sales /> },
           { path: '/sales/create', element: <CreateSale /> },
+          { path: 'sales/:codigo', element: <Sale /> },
 
           { path: '/payments', element: <Payments /> },
 

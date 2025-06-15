@@ -13,6 +13,7 @@ import { useEffect } from 'react';
 
 import { Button } from '../../../components/UI/Button/Button';
 import { BiPlusCircle } from 'react-icons/bi';
+import moment from 'moment';
 
 export const Sales: React.FC = () => {
   const dispatch = useAppDispath();
@@ -22,15 +23,36 @@ export const Sales: React.FC = () => {
 
   const saleColumns: Column<Sale>[] = [
     { header: 'Codigo', accessor: 'codigo' },
-    { header: 'Usuario', accessor: 'usuario' },
-    { header: 'Cliente', accessor: 'cliente' },
-    { header: 'Fecha', accessor: 'fecha' },
-    { header: 'Estado', accessor: 'estado' },
-    { header: 'Total', accessor: 'totalVenta' },
+    {
+      header: 'Usuario',
+      accessor: 'usuario',
+      render: (value: { _id: string; usuario: string } | null) => (value ? value.usuario : '-'),
+    },
+    {
+      header: 'Cliente',
+      accessor: 'cliente',
+      render: (value: { _id: string; nombre: string } | null) => (value ? value.nombre : '-'),
+    },
+    {
+      header: 'Fecha',
+      accessor: 'fecha',
+      render: (val: string | Date) => `${moment(val).format('DD-MM-YYYY, hh:mm A')}`,
+    },
+    {
+      header: 'Estado',
+      accessor: 'estado',
+      render: (value: string) => {
+        const base = `px-2 py-1 rounded-full text-white text-xs font-semibold`;
+        const color =
+          value === 'completada' ? 'bg-green-600' : 'bg-amber-500';
+          return <span className={`${base} ${color}`}>{value}</span>
+      },
+    },
+    { header: 'Total', accessor: 'totalVenta', render: (value: number) => `RD$ ${value.toFixed(2)}` },
   ];
 
   const saleActions: Action<Sale>[] = [
-    { label: 'Ver', onClick: (s) => navigate(`/sales/${s._id}`) },
+    { label: 'Ver', onClick: (s) => navigate(`/sales/${s.codigo}`) },
     {
       label: 'Descargar Factura',
       onClick: (s) => console.log(`Descargando factura de venta con codigo ${s.codigo}`),

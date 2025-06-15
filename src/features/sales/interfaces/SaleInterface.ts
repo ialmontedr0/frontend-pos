@@ -4,8 +4,8 @@ import type { SaleProduct } from './SaleProductInterface';
 export interface Sale {
   _id: string;
   codigo: string;
-  usuario: string;
-  cliente: string;
+  usuario: { _id: string; usuario: string };
+  cliente: { _id: string; nombre: string };
   fecha: string;
   productos: SaleProduct[];
   itbisVenta: number;

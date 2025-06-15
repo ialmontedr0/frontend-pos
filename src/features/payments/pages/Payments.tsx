@@ -15,6 +15,7 @@ import { Table } from '../../../components/Table/Table';
 
 import { Button } from '../../../components/UI/Button/Button';
 import { BiPlusCircle } from 'react-icons/bi';
+import moment from 'moment';
 
 export const Payments: React.FC = () => {
   const dispatch = useAppDispath();
@@ -24,10 +25,36 @@ export const Payments: React.FC = () => {
   const { payments, loading, error } = useAppSelector((state: RootState) => state.payments);
 
   const paymentsColumns: Column<Payment>[] = [
-    { header: 'Venta', accessor: 'venta' },
-    { header: 'Cliente', accessor: 'cliente' },
-    { header: 'Metodo Pago', accessor: 'metodoPago', render: (value: string) => `${value.toLocaleUpperCase()}` },
-    { header: 'Monto', accessor: 'montoPagado', render: (value: number) => `RD$ ${value.toFixed(2)}` },
+    {
+      header: 'Venta',
+      accessor: 'venta',
+      render: (value: { _id: string; codigo: string } | null) => (value ? value.codigo : '-'),
+    },
+    {
+      header: 'Usuario',
+      accessor: 'usuario',
+      render: (value: { _id: string; usuario: string } | null) => (value ? value.usuario : '-'),
+    },
+    {
+      header: 'Cliente',
+      accessor: 'cliente',
+      render: (value: { _id: string; nombre: string } | null) => (value ? value.nombre : '-'),
+    },
+    {
+      header: 'Metodo Pago',
+      accessor: 'metodoPago',
+      render: (value: string) => `${value.toLocaleUpperCase()}`,
+    },
+    {
+      header: 'Monto',
+      accessor: 'montoPagado',
+      render: (value: number) => `RD$ ${value.toFixed(2)}`,
+    },
+    {
+      header: 'Fecha',
+      accessor: 'fecha',
+      render: (value: string) => `${moment(value).format('DD MM YYYY, hh:mm A')}`,
+    },
   ];
 
   const paymentsActions: Action<Payment>[] = [

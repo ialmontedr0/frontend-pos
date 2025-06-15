@@ -44,7 +44,7 @@ export const Products: React.FC = () => {
     {
       header: 'Categoria',
       accessor: 'categoria',
-      render: (value: { _id: string; nombre: string }) => `${value.nombre ?? '-'}`,
+      render: (value: { _id: string; nombre: string } | null) => (value ? value.nombre : '-'),
     },
     { header: 'Stock', accessor: 'stock' },
     {
