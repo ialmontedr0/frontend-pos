@@ -2,14 +2,11 @@ import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
 import moment from 'moment';
-import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
 
 import { useAppDispath, useAppSelector } from '../../../hooks/hooks';
 import type { RootState } from '../../../store/store';
-import { getSaleByCode, clearSelectedSale, clearSaleError } from '../slices/salesSlice';
+import { getSaleByCode, clearSelectedSale } from '../slices/salesSlice';
 
-import type { Sale as SaleInterface } from '../interfaces/SaleInterface';
 import { Label } from '../../../components/UI/Label/Label';
 import { Button } from '../../../components/UI/Button/Button';
 import { BiArrowBack } from 'react-icons/bi';
@@ -21,7 +18,6 @@ import type { SaleProduct } from '../interfaces/SaleProductInterface';
 export const Sale: React.FC = () => {
   const dispatch = useAppDispath();
   const navigate = useNavigate();
-  const myAlert = withReactContent(Swal);
 
   const { codigo } = useParams<{ codigo: string }>();
 
