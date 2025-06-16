@@ -40,9 +40,9 @@ import { RecoverGuard } from './features/auth/guards/RecoverGuard';
 import { ValidateGuard } from './features/auth/guards/ValidateGuard';
 import { ChangeGuard } from './features/auth/guards/ChangeGuard';
 import { Inventory } from './features/products/inventory/pages/Inventory';
-import SalesPage  from './features/sales/pages/Sales';
+import Sales from './features/sales/pages/Sales';
 import { CreateSale } from './features/sales/pages/CreateSale';
-import { Payments } from './features/payments/pages/Payments';
+import Payments from './features/payments/pages/Payments';
 import { Sale } from './features/sales/pages/Sale';
 
 const routes: RouteObject[] = [
@@ -115,7 +115,7 @@ const routes: RouteObject[] = [
 
           { path: '/products/inventory', element: <Inventory /> },
 
-          { path: '/sales', element: <SalesPage /> },
+          { path: '/sales', element: <Sales /> },
           { path: '/sales/create', element: <CreateSale /> },
           { path: 'sales/:codigo', element: <Sale /> },
 

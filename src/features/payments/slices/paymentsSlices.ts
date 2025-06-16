@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/tool
 import type { Payment } from '../interfaces/PaymentInterface';
 import type { CreatePaymentDTO } from '../dtos/create-payment.dto';
 import { paymentsService } from '../services/paymentsService';
+import { getAllSalesForCurrentUser } from '../../sales/slices/salesSlice';
 
 interface PaymentState {
   payment: Payment | null;
@@ -28,6 +29,19 @@ export const getAllPayments = createAsyncThunk<Payment[], void, { rejectValue: s
     }
   }
 );
+
+export const getAllPaymentsForCurrentUser = createAsyncThunk<
+  Payment[],
+  void,
+  { rejectValue: string }
+>('payments/getAllForCurrentUser', async (_, { rejectWithValue }) => {
+  try {
+    const paymentsResponse = await paymentsService.findAllForCurrentUser();
+    return paymentsResponse.data;
+  } catch (error: any) {
+    return rejectWithValue(error.response?.data?.message || error.message);
+  }
+});
 
 export const getPaymentById = createAsyncThunk<Payment, string, { rejectValue: string }>(
   'payments/getById',
@@ -138,6 +152,23 @@ const paymentsSlice = createSlice({
       (state.loading = false), (state.error = (action.payload as string) || 'Error al ');
     });
 
+    // === Obtener todos los pagos del usuario actual
+    builder.addCase(getAllSalesForCurrentUser.pending, (state) => {
+      (state.loading = true), (state.error = null);
+    });
+
+    builder.addCase(
+      getAllPaymentsForCurrentUser.fulfilled,
+      (state, action: PayloadAction<Payment[]>) => {
+        (state.loading = false), (state.payments = action.payload);
+      }
+    );
+
+    builder.addCase(getAllPaymentsForCurrentUser.rejected, (state, action) => {
+      (state.loading = false),
+        (state.error = (action.payload as string) || 'Error al obtener todos los pagos');
+    });
+
     // === Obtener un pago por su ID ===
     builder.addCase(getPaymentById.pending, (state) => {
       (state.loading = true), (state.error = null);
@@ -234,4 +265,4 @@ const paymentsSlice = createSlice({
 });
 
 export const { clearPaymentError, clearSelectedPayment } = paymentsSlice.actions;
-export default paymentsSlice.reducer
+export default paymentsSlice.reducer;

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+/* import React, { useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import Swal from 'sweetalert2';
@@ -140,3 +140,13 @@ export const Payments: React.FC = () => {
     </div>
   );
 };
+ */
+
+import { withFetchByRole } from '../../../hocs/withFetchByRole';
+import { getAllPayments, getAllPaymentsForCurrentUser } from '../slices/paymentsSlices';
+import { PaymentsTable } from '../components/PaymentsTable';
+
+export default withFetchByRole(PaymentsTable, {
+  adminFetchThunk: getAllPayments,
+  selfFetchThunk: getAllPaymentsForCurrentUser,
+});

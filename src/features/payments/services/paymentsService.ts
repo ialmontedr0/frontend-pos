@@ -4,6 +4,7 @@ import type { CreatePaymentDTO } from '../dtos/create-payment.dto';
 
 export const paymentsService = {
   findAll: () => api.get<Payment[]>('/payments'),
+  findAllForCurrentUser: () => api.get<Payment[]>('/payments/current-user'),
   findById: (paymentId: string) => api.get<Payment>(`/payments/id/${paymentId}`),
   findBySale: (saleId: string) => api.get<Payment[]>(`/payments/sale/${saleId}`),
   findByCustomer: (customerId: string) => api.get<Payment[]>(`/payments/customer/${customerId}`),
