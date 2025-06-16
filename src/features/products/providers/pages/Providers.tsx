@@ -6,14 +6,14 @@ import withReactContent from 'sweetalert2-react-content';
 
 import type { RootState } from '../../../../store/store';
 import { getAllProviders, deleteProvider } from '../slices/providersSlice';
-import { useAppDispath, useAppSelector } from '../../../../hooks/hooks';
+import { useAppDispatch, useAppSelector } from '../../../../hooks/hooks';
 
 import type { Provider } from '../interfaces/ProviderInterface';
 import type { Column, Action } from '../../../../components/Table/types';
 import { Table } from '../../../../components/Table/Table';
 
 export const Providers: React.FC = () => {
-  const dispatch = useAppDispath();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
 

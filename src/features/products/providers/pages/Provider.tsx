@@ -5,7 +5,7 @@ import moment from 'moment';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
-import { useAppDispath, useAppSelector } from '../../../../hooks/hooks';
+import { useAppDispatch, useAppSelector } from '../../../../hooks/hooks';
 import type { RootState } from '../../../../store/store';
 import { getProviderById, deleteProvider, clearSelectedProvider } from '../slices/providersSlice';
 
@@ -13,7 +13,7 @@ import type { User } from '../../../users/interfaces/UserInterface';
 import { usersService } from '../../../users/services/usersService';
 
 export const Provider: React.FC = () => {
-  const dispatch = useAppDispath();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
   const { providerId } = useParams<{ providerId: string }>();

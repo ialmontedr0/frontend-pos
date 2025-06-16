@@ -6,7 +6,7 @@ import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
 import type { RootState } from '../../../../../store/store';
-import { useAppSelector, useAppDispath } from '../../../../../hooks/hooks';
+import { useAppSelector, useAppDispatch } from '../../../../../hooks/hooks';
 import { changePassword } from '../../slices/profileSlice';
 import { resetPassword as resetUserPassword, clearAuth } from '../../../../auth/slices/authSlice';
 
@@ -23,7 +23,7 @@ type SecurityForm = {
 
 export const UserSecurity: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const dispatch = useAppDispath();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
 

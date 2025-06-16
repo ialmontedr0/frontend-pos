@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
-import { useAppSelector, useAppDispath } from '../../../../hooks/hooks';
+import { useAppSelector, useAppDispatch } from '../../../../hooks/hooks';
 import type { RootState } from '../../../../store/store';
 import { clearCategoryError, createCategory } from '../slices/categoriesSlice';
 import type { CreateCategoryDTO } from '../dtos/create-category.dto';
@@ -12,7 +12,7 @@ import { Label } from '../../../../components/UI/Label/Label';
 import { Input } from '../../../../components/UI/Input/Input';
 
 export const CreateCategory: React.FC = () => {
-  const dispatch = useAppDispath();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
 

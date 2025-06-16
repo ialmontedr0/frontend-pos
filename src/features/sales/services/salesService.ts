@@ -4,6 +4,7 @@ import type { CreateSaleDTO } from "../dtos/create-sale.dto";
 
 export const salesService = {
     getAll: () => api.get<Sale[]>('/sales'),
+    getAllForCurrentUser: () => api.get<Sale[]>('sales/current-user'),
     getById: (saleId: string) => api.get<Sale>(`/sales/id/${saleId}`),
     getByCode: (codigo: string) => api.get<Sale>(`/sales/code/${codigo}`),
     getByUser: (userId: string) => api.get<Sale[]>(`/sales/user/${userId}`),

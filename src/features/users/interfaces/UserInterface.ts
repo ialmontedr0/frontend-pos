@@ -1,5 +1,7 @@
 import type { UserSettings } from './UserSettingsInterface';
 
+export type UserRole = 'admin' | 'cajero' | 'inventarista';
+
 export interface User {
   _id: string;
   nombre: string;
@@ -9,7 +11,7 @@ export interface User {
   correo: string;
   telefono: string;
   direccion?: string;
-  rol: string;
+  rol: UserRole;
   estado: string;
   configuracion: UserSettings;
   foto?: string;

@@ -6,7 +6,7 @@ import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
 import type { RootState } from '../../../store/store';
-import { useAppSelector, useAppDispath } from '../../../hooks/hooks';
+import { useAppSelector, useAppDispatch } from '../../../hooks/hooks';
 import {
   getProductById,
   clearSelectedProduct,
@@ -24,7 +24,7 @@ import { ToggleSwitch } from '../../../components/UI/Switch/Switch';
 import { BiSave, BiTrash, BiX } from 'react-icons/bi';
 
 export const EditProduct: React.FC = () => {
-  const dispatch = useAppDispath();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
   const { productId } = useParams<{ productId: string }>();

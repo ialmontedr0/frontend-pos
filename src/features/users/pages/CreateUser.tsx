@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
-import { useAppDispath, useAppSelector } from '../../../hooks/hooks';
+import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
 import { createUser, clearUserError } from '../slices/usersSlice';
 import type { CreateUserDTO } from '../dtos/create-user.dto';
 
@@ -17,7 +17,7 @@ import { Select } from '../../../components/UI/Select/Select';
 import { BiSave, BiX } from 'react-icons/bi';
 
 export const CreateUser: React.FC = () => {
-  const dispatch = useAppDispath();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
 

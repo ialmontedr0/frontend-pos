@@ -15,7 +15,8 @@ import type {
 } from '../dtos/index.dto';
 import type { LoginResponseDTO } from '../dtos/login-response.dto';
 import { authService } from '../services/authService';
-import type { User } from '../../users/interfaces/UserInterface';
+import type { User, UserRole } from '../../users/interfaces/UserInterface';
+import type { RootState } from '../../../store/store';
 
 interface AuthState {
   user: LoginResponseDTO['user'] | null;
@@ -342,3 +343,5 @@ const authSlice = createSlice({
 
 export const { clearRecoveryState, setCredentials, clearAuth } = authSlice.actions;
 export default authSlice.reducer;
+export const selectUserRole = (state: RootState): UserRole | null =>
+  state.auth.user ? state.auth.user.rol : null;

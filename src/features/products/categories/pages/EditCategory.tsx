@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
 import type { RootState } from '../../../../store/store';
-import { useAppSelector, useAppDispath } from '../../../../hooks/hooks';
+import { useAppSelector, useAppDispatch } from '../../../../hooks/hooks';
 import {
   getCategoryById,
   clearSelectedCategory,
@@ -19,7 +19,7 @@ import { Input } from '../../../../components/UI/Input/Input';
 import { Label } from '../../../../components/UI/Label/Label';
 
 export const EditCategory: React.FC = () => {
-  const dispatch = useAppDispath();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
   const { categoryId } = useParams<{ categoryId: string }>();

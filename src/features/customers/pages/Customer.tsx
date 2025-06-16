@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import moment from 'moment';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
-import { useAppDispath, useAppSelector } from '../../../hooks/hooks';
+import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
 import { getCustomerById, deleteCustomer, clearSelectedCustomer } from '../slices/customerSlice';
 import type { RootState } from '../../../store/store';
 import type { User } from '../../users/interfaces/UserInterface';
@@ -15,7 +15,7 @@ import { Button } from '../../../components/UI/Button/Button';
 import { BiArrowBack, BiEdit, BiTrash } from 'react-icons/bi';
 
 export const Customer: React.FC = () => {
-  const dispatch = useAppDispath();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
   const { customerId } = useParams<{ customerId: string }>();

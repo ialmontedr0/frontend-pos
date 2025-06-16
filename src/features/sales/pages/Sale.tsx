@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 
 import moment from 'moment';
 
-import { useAppDispath, useAppSelector } from '../../../hooks/hooks';
+import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
 import type { RootState } from '../../../store/store';
 import { getSaleByCode, clearSelectedSale } from '../slices/salesSlice';
 
@@ -16,7 +16,7 @@ import type { Payment } from '../../payments/interfaces/PaymentInterface';
 import type { SaleProduct } from '../interfaces/SaleProductInterface';
 
 export const Sale: React.FC = () => {
-  const dispatch = useAppDispath();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const { codigo } = useParams<{ codigo: string }>();

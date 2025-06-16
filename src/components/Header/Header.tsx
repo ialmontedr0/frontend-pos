@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTheme } from '../../contexts/ThemeContext';
 import { clearAuth, logout } from '../../features/auth/slices/authSlice';
-import { useAppDispath, useAppSelector } from '../../hooks/hooks';
+import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
 import { NotificationsModal } from '../../features/notifications/components/NotificationsModal';
 import { selectUnreadCount } from '../../features/notifications/slices/notificationsSlice';
 import { ThemeToggle } from '../ThemeToggle/ThemeToggle';
@@ -19,7 +19,7 @@ export function Header({ onToggleSidebar }: HeaderProps) {
   const [showNotifications, setShowNotifications] = useState<boolean>(false);
   const { theme, toggleTheme } = useTheme();
   const enabled = theme === 'oscuro';
-  const dispatch = useAppDispath();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const user = useAppSelector((state: RootState) => state.auth.user);

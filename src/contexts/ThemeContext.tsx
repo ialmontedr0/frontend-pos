@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useAppSelector } from '../hooks/hooks';
-import { useAppDispath } from '../hooks/hooks';
+import { useAppDispatch } from '../hooks/hooks';
 import { toggleUserTheme, updateUserSettings } from '../features/users/slices/usersSlice';
 
 export type Theme = 'claro' | 'oscuro' | 'sistema';
@@ -15,7 +15,7 @@ const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 const STORAGE_KEY = 'app_theme';
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const dispatch = useAppDispath();
+  const dispatch = useAppDispatch();
   const currentUser = useAppSelector((state) => state.auth.user);
 
   const detectInitialTheme = (): Theme => {

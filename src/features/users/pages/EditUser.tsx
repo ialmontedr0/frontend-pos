@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
-import { useAppDispath, useAppSelector } from '../../../hooks/hooks';
+import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
 import {
   getUserById,
   clearSelectedUser,
@@ -25,7 +25,7 @@ import { BiKey, BiReset, BiSave, BiTrash, BiX } from 'react-icons/bi';
 
 export const EditUser: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
-  const dispatch = useAppDispath();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
   const [enabled, setEnabled] = useState<boolean>(false);

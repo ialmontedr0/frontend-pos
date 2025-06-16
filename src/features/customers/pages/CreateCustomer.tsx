@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
-import { useAppSelector, useAppDispath } from '../../../hooks/hooks';
+import { useAppSelector, useAppDispatch } from '../../../hooks/hooks';
 import type { RootState } from '../../../store/store';
 import { clearCustomerError, createCustomer } from '../slices/customerSlice';
 import type { CreateCustomerDTO } from '../dtos/create-customer.dto';
@@ -15,7 +15,7 @@ import { Textarea } from '../../../components/UI/TextArea/TextArea';
 import { Label } from '../../../components/UI/Label/Label';
 
 export const CreateCustomer: React.FC = () => {
-  const dispatch = useAppDispath();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
 

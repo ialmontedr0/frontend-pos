@@ -29,6 +29,18 @@ export const getAllSales = createAsyncThunk<Sale[], void, { rejectValue: string 
   }
 );
 
+export const getAllSalesForCurrentUser = createAsyncThunk<Sale[], void, { rejectValue: string }>(
+  'sales/getAllForCurrentUser',
+  async (_, { rejectWithValue }) => {
+    try {
+      const salesResponse = await salesService.getAllForCurrentUser();
+      return salesResponse.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
+
 export const getSaleById = createAsyncThunk<Sale, string, { rejectValue: string }>(
   'sales/getById',
   async (saleId, { rejectWithValue }) => {
@@ -137,6 +149,19 @@ const salesSlice = createSlice({
     builder.addCase(getAllSales.rejected, (state, action) => {
       (state.loading = false),
         (state.error = (action.payload as string) || 'Error obteniendo las ventas');
+    });
+
+    builder.addCase(getAllSalesForCurrentUser.pending, (state) => {
+      (state.loading = true), (state.error = null);
+    });
+
+    builder.addCase(getAllSalesForCurrentUser.fulfilled, (state, action: PayloadAction<Sale[]>) => {
+      (state.loading = false), (state.sales = action.payload);
+    });
+
+    builder.addCase(getAllSalesForCurrentUser.rejected, (state, action) => {
+      (state.loading = false),
+        (state.error = action.payload as string | 'Error obteniendo las ventas');
     });
 
     // === Obtener una venta por su ID

@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
 import type { RootState } from '../../../store/store';
-import { useAppDispath, useAppSelector } from '../../../hooks/hooks';
+import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
 import { getAllPayments, deletePayment } from '../slices/paymentsSlices';
 
 import type { Payment } from '../interfaces/PaymentInterface';
@@ -18,7 +18,7 @@ import { BiPlusCircle } from 'react-icons/bi';
 import moment from 'moment';
 
 export const Payments: React.FC = () => {
-  const dispatch = useAppDispath();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
 

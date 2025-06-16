@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
-import { useAppDispath, useAppSelector } from '../../../hooks/hooks';
+import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
 import type { RootState } from '../../../store/store';
 import { getAllUsers, deleteUser } from '../slices/usersSlice';
 import { resetPassword } from '../../auth/slices/authSlice';
@@ -20,7 +20,7 @@ import { BiListUl } from 'react-icons/bi';
 import { Card, type CardItem } from '../../../components/UI/Card/Card';
 
 export function Users() {
-  const dispatch = useAppDispath();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
   const [mode, setMode] = useState<'list' | 'grid'>('list');

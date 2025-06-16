@@ -7,12 +7,12 @@ import { getAllCategories, deleteCategory } from '../slices/categoriesSlice';
 import type { Category } from '../interfaces/CategoryInterface';
 import type { Column, Action } from '../../../../components/Table/types';
 import { Table } from '../../../../components/Table/Table';
-import { useAppDispath, useAppSelector } from '../../../../hooks/hooks';
+import { useAppDispatch, useAppSelector } from '../../../../hooks/hooks';
 import { Button } from '../../../../components/UI/Button/Button';
 import { BiPlusCircle } from 'react-icons/bi';
 
 export const Categories: React.FC = () => {
-  const dispatch = useAppDispath();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
 

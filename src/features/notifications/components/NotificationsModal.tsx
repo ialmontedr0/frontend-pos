@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useAppDispath, useAppSelector } from '../../../hooks/hooks';
+import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
 import {
   deleteNotification,
   getNotificationsForCurrentUser,
@@ -64,7 +64,7 @@ const timeSince = (dateStr: string) => {
 };
 
 export const NotificationsModal: React.FC<NotificationsModalProps> = ({ visible, onClose }) => {
-  const dispatch = useAppDispath();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { notifications, loading, error } = useAppSelector(
     (state: RootState) => state.notifications

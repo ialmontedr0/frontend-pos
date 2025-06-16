@@ -1,3 +1,5 @@
+import type { UserRole } from "../../users/interfaces/UserInterface";
+
 export interface LoginResponseDTO {
   access_token: string;
   refresh_token: string;
@@ -9,7 +11,7 @@ export interface LoginResponseDTO {
     correo: string;
     telefono: string;
     direccion?: string;
-    rol: string;
+    rol: UserRole;
     estado: string;
     configuracion: {
       tema: string;

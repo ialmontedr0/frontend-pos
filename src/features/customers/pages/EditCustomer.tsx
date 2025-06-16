@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
-import { useAppDispath, useAppSelector } from '../../../hooks/hooks';
+import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
 import {
   getCustomerById,
   clearSelectedCustomer,
@@ -20,7 +20,7 @@ import type { RootState } from '../../../store/store';
 
 export const EditCustomer: React.FC = () => {
   const { customerId } = useParams<{ customerId: string }>();
-  const dispatch = useAppDispath();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
 

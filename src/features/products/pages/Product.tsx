@@ -6,7 +6,7 @@ import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
 import type { RootState } from '../../../store/store';
-import { useAppDispath, useAppSelector } from '../../../hooks/hooks';
+import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
 import { getProductById, deleteProduct, clearSelectedProduct } from '../slices/productsSlice';
 
 import type { User } from '../../users/interfaces/UserInterface';
@@ -17,7 +17,7 @@ import type { Category } from '../categories/interfaces/CategoryInterface';
 
 export function Product() {
   const { productId } = useParams<{ productId: string }>();
-  const dispatch = useAppDispath();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
 

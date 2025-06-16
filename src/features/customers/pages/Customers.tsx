@@ -2,7 +2,7 @@ import { useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
-import { useAppDispath, useAppSelector } from '../../../hooks/hooks';
+import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
 import type { RootState } from '../../../store/store';
 import { getAllCustomers, deleteCustomer } from '../slices/customerSlice';
 import type { Customer } from '../interfaces/CustomerInterface';
@@ -12,7 +12,7 @@ import { Button } from '../../../components/UI/Button/Button';
 import { BiPlusCircle } from 'react-icons/bi';
 
 export function Customers() {
-  const dispatch = useAppDispath();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
 

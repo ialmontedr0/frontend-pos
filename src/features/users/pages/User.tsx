@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import moment from 'moment';
 
-import { useAppDispath, useAppSelector } from '../../../hooks/hooks';
+import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
 import type { RootState } from '../../../store/store';
 
 import { getUserById, clearSelectedUser } from '../slices/usersSlice';
@@ -14,7 +14,7 @@ import { BiArrowBack, BiEdit } from 'react-icons/bi';
 
 export function User() {
   const { userId } = useParams<{ userId: string }>();
-  const dispatch = useAppDispath();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const { user, loading, error } = useAppSelector((state: RootState) => state.users);

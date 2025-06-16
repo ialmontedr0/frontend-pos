@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useAppDispath, useAppSelector } from '../../../hooks/hooks';
+import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
 import { clearAuth, login } from '../slices/authSlice';
 import type { LoginDTO } from '../types/auth';
 import { useState } from 'react';
@@ -8,7 +8,7 @@ import { Input } from '../../../components/UI/Input/Input';
 import { Button } from '../../../components/UI/Button/Button';
 
 export const Login = () => {
-  const dispatch = useAppDispath();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [form, setForm] = useState<LoginDTO>({
     usuario: '',

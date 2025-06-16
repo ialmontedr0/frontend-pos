@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
-import { useAppSelector, useAppDispath } from '../../../../../hooks/hooks';
+import { useAppSelector, useAppDispatch } from '../../../../../hooks/hooks';
 import { updateUserSettings, resetUserSettings } from '../../../slices/usersSlice';
 import type { RootState } from '../../../../../store/store';
 
@@ -32,7 +32,7 @@ const timeZones = [
 ];
 
 export const UserSettings: React.FC = () => {
-  const dispatch = useAppDispath();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
 

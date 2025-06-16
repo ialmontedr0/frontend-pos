@@ -6,7 +6,7 @@ import { es } from 'date-fns/locale';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
-import { useAppDispath, useAppSelector } from '../../../hooks/hooks';
+import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
 import {
   getNotificationsForCurrentUser,
   markNotificationAsRead,
@@ -20,7 +20,7 @@ import { tipoMap } from '../components/NotificationsModal';
 import type { RootState } from '../../../store/store';
 
 export const Notifications: React.FC = () => {
-  const dispatch = useAppDispath();
+  const dispatch = useAppDispatch();
   const myAlert = withReactContent(Swal);
   const { notifications, loading, error } = useAppSelector(
     (state: RootState) => state.notifications

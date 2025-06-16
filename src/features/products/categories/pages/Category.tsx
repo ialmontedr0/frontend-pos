@@ -3,14 +3,14 @@ import { useNavigate, useParams } from 'react-router-dom';
 import moment from 'moment';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
-import { useAppSelector, useAppDispath } from '../../../../hooks/hooks';
+import { useAppSelector, useAppDispatch } from '../../../../hooks/hooks';
 import { getCategoryById, deleteCategory, clearSelectedCategory } from '../slices/categoriesSlice';
 import type { RootState } from '../../../../store/store';
 import type { User } from '../../../users/interfaces/UserInterface';
 import { usersService } from '../../../users/services/usersService';
 
 export const Category: React.FC = () => {
-  const dispatch = useAppDispath();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
   const { categoryId } = useParams<{ categoryId: string }>();

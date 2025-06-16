@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { clearAuth, logout } from '../../features/auth/slices/authSlice';
-import { useAppSelector, useAppDispath } from '../../hooks/hooks';
+import { useAppSelector, useAppDispatch } from '../../hooks/hooks';
 import {
   BiUser,
   BiGroup,
@@ -28,7 +28,7 @@ export interface LinkItem {
 
 export const Sidebar: React.FC<{ isOpen: boolean; onToggle: () => void }> = ({ isOpen }) => {
   const user = useAppSelector((state: RootState) => state.auth.user);
-  const dispatch = useAppDispath();
+  const dispatch = useAppDispatch();
   const role = user?.rol;
 
   const commonLinks: LinkItem[] = [

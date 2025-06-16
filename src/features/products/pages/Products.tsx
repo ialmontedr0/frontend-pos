@@ -4,7 +4,7 @@ import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
 import type { RootState } from '../../../store/store';
-import { useAppDispath, useAppSelector } from '../../../hooks/hooks';
+import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
 import { getAllProducts, deleteProduct, updateProduct } from '../slices/productsSlice';
 import type { Product } from '../interfaces/ProductInterface';
 import type { Column, Action } from '../../../components/Table/types';
@@ -15,7 +15,7 @@ import { Button } from '../../../components/UI/Button/Button';
 import { BiCabinet, BiCategory, BiPlusCircle } from 'react-icons/bi';
 
 export const Products: React.FC = () => {
-  const dispatch = useAppDispath();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
 
