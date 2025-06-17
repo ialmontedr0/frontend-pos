@@ -1,10 +1,9 @@
-import type { Sale } from '../../sales/interfaces/SaleInterface';
 
 export interface Payment {
   _id: string;
-  venta: string | Sale;
-  cliente: string;
-  usuario: string;
+  venta: { _id: string; codigo: string };
+  cliente: { _id: string; nombre: string };
+  usuario: { _id: string; usuario: string };
   metodoPago: 'efectivo' | 'credito' | 'tarjetaCreditoDebito' | 'puntos';
   montoPagado: number;
   referenciaExterna?: string;

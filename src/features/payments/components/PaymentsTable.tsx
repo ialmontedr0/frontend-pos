@@ -84,7 +84,7 @@ export const PaymentsTable: React.FC<PaymentsTableProps> = ({ data, loading, err
     <div className="p-6">
       <div className="flex flex-col gap-4">
         <h2 className="text-3xl font-semibold">Pagos</h2>
-        <div className="w-auto flex flex-wrap">
+        <div className="w-auto flex flex-wrap gap-4 my-2">
           <Button
             onClick={() => navigate('/payments/create')}
             icon={<BiPlusCircle size={24} />}

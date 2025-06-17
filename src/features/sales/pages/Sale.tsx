@@ -9,7 +9,7 @@ import { getSaleByCode, clearSelectedSale } from '../slices/salesSlice';
 
 import { Label } from '../../../components/UI/Label/Label';
 import { Button } from '../../../components/UI/Button/Button';
-import { BiArrowBack } from 'react-icons/bi';
+import { BiArrowBack, BiDownload } from 'react-icons/bi';
 import type { Column, Action } from '../../../components/Table/types';
 import { Table } from '../../../components/Table/Table';
 import type { Payment } from '../../payments/interfaces/PaymentInterface';
@@ -186,13 +186,20 @@ export const Sale: React.FC = () => {
         )}
       </div>
 
-      <div className="my-6 flex flex-wrap w-auto">
+      <div className="my-6 flex flex-wrap w-auto gap-2">
         <Button
           className="px-3 py-1 rounded-full"
           onClick={() => navigate('/sales')}
           icon={<BiArrowBack className="" size={20} />}
         >
           Volver
+        </Button>
+
+        <Button
+          className="bg-green-600 text-white hover:bg-green-700 transition-colors px-3 py-1 rounded-full"
+          icon={<BiDownload size={20} />}
+        >
+          Descargar Factura
         </Button>
       </div>
     </div>
