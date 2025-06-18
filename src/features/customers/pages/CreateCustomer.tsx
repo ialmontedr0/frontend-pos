@@ -13,14 +13,8 @@ import { Button } from '../../../components/UI/Button/Button';
 import { Input } from '../../../components/UI/Input/Input';
 import { Textarea } from '../../../components/UI/TextArea/TextArea';
 import { Label } from '../../../components/UI/Label/Label';
-import type { Customer } from '../interfaces/CustomerInterface';
 
-interface CreateCustomerProps {
-  onCreated: (customer: Customer) => void;
-  onClose: () => void;
-}
-
-export const CreateCustomer: React.FC<CreateCustomerProps> = ({ onClose, onCreated }) => {
+export const CreateCustomer: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
@@ -47,10 +41,9 @@ export const CreateCustomer: React.FC<CreateCustomerProps> = ({ onClose, onCreat
 
   useEffect(() => {
     if (createdCustomer) {
-      onCreated(createdCustomer);
       navigate('/customers');
     }
-  }, [createdCustomer, onCreated, navigate]);
+  }, [createdCustomer, navigate]);
 
   useEffect(() => {
     return () => {
@@ -169,7 +162,7 @@ export const CreateCustomer: React.FC<CreateCustomerProps> = ({ onClose, onCreat
           <Button
             type="button"
             variant="outline"
-            onClick={() => (onClose ? onClose() : navigate(-1))}
+            onClick={() => navigate(-1)}
           >
             Cancelar
           </Button>
