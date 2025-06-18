@@ -18,8 +18,8 @@ import { Button } from '../../../components/UI/Button/Button';
 
 export const CreateSale: React.FC = () => {
   const dispatch = useAppDispatch();
-    const navigate = useNavigate();
-   const myAlert = withReactContent(Swal);
+  const navigate = useNavigate();
+  const myAlert = withReactContent(Swal);
 
   const { products } = useAppSelector((state: RootState) => state.products);
   const { customers } = useAppSelector((state: RootState) => state.customers);
@@ -151,7 +151,7 @@ export const CreateSale: React.FC = () => {
         setCustomerQuery('');
         setSelectedProduct(null);
         setTempQuantity(1);
-        navigate('/sales')
+        navigate('/sales');
       });
   };
 

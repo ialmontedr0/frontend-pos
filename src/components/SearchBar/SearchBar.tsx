@@ -1,6 +1,7 @@
 import { useState, type ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { modules } from '../../constants/modules';
+import { Input } from '../UI/Input/Input';
 
 export function SearchBar() {
   const [query, setQuery] = useState<string>('');
@@ -15,12 +16,11 @@ export function SearchBar() {
 
   return (
     <div className="relative">
-      <input
+      <Input
         type="text"
         value={query}
         onChange={(e: ChangeEvent<HTMLInputElement>) => setQuery(e.target.value)}
         placeholder="Buscar"
-        className="px-3 py-1 border border-slate bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded focus:ring focus:ring-indigo-500"
       />
       {query && filtered.length > 0 && (
         <ul className="absolute mt-1 w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded shadow-lg z-10">

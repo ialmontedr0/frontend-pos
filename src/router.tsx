@@ -45,6 +45,7 @@ import { CreateSale } from './features/sales/pages/CreateSale';
 import Payments from './features/payments/pages/Payments';
 import { Sale } from './features/sales/pages/Sale';
 import { Payment } from './features/payments/pages/Payment';
+import { CreatePayment } from './features/payments/pages/CreatePayment';
 
 const routes: RouteObject[] = [
   {
@@ -95,7 +96,7 @@ const routes: RouteObject[] = [
           { path: '/user/settings', element: <UserSettings /> },
 
           { path: '/customers', element: <Customers /> },
-          { path: '/customers/create', element: <CreateCustomer  /> },
+          { path: '/customers/create', element: <CreateCustomer /> },
           { path: '/customers/:customerId', element: <Customer /> },
           { path: '/customers/edit/:customerId', element: <EditCustomer /> },
 
@@ -121,6 +122,7 @@ const routes: RouteObject[] = [
           { path: 'sales/:codigo', element: <Sale /> },
 
           { path: '/payments', element: <Payments /> },
+          { path: '/payments/create', element: <CreatePayment /> },
           { path: '/payments/:paymentId', element: <Payment /> },
 
           { path: '/notifications', element: <Notifications /> },
