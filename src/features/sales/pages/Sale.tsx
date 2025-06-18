@@ -24,9 +24,21 @@ export const Sale: React.FC = () => {
   const { sale, loading, error } = useAppSelector((state: RootState) => state.sales);
 
   const paymentColumns: Column<Payment>[] = [
-    { header: 'Metodo pago', accessor: 'metodoPago' },
-    { header: 'Fecha', accessor: 'fecha' },
-    { header: 'Monto', accessor: 'montoPagado' },
+    {
+      header: 'Metodo pago',
+      accessor: 'metodoPago',
+      render: (value: string) => `${renderPaymentMethod(value)}`,
+    },
+    {
+      header: 'Fecha',
+      accessor: 'fecha',
+      render: (value: string) => `${moment(value).format('DD/MM/YYYY hh:mm a')}`,
+    },
+    {
+      header: 'Monto',
+      accessor: 'montoPagado',
+      render: (value: number) => `RD$ ${value.toFixed(2)}`,
+    },
   ];
 
   const paymentActions: Action<Payment>[] = [
@@ -78,6 +90,21 @@ export const Sale: React.FC = () => {
     );
   }
 
+  const renderPaymentMethod = (method: string) => {
+    switch (method) {
+      case 'efectivo':
+        return 'Efectivo';
+      case 'credito':
+        return 'Credito';
+      case 'tarjetaCreditoDebito':
+        return 'Tarjeta';
+      case 'puntos':
+        return 'Puntos';
+      default:
+        'Unknown';
+    }
+  };
+
   if (!loading && error) {
     return (
       <div className="p-6">
@@ -119,22 +146,22 @@ export const Sale: React.FC = () => {
 
         <div>
           <Label htmlFor="fecha">Fecha</Label>
-          <p>{moment(sale.fecha).format('DD-MM-YYYY, hh:mm:ss A')}</p>
+          <p>{moment(sale.fecha).locale('es-do').format('llll')}</p>
         </div>
 
         <div>
           <Label htmlFor="estado">Estado</Label>
           <p
-            className={`w-auto px-2 py-1 rounded-full text-white text-xs font-semibold
+            className={`w-fit px-4 py-1 rounded-full text-white text-xs font-semibold
                 ${sale.estado === 'completada' ? 'bg-green-600' : 'bg-amber-500'}`}
           >
-            {sale.estado}
+            {sale.estado.charAt(0).toUpperCase() + sale.estado.slice(1)}
           </p>
         </div>
 
         <div>
           <Label htmlFor="metodoPago">Metodo Pago</Label>
-          <p>{sale.metodoPago}</p>
+          <p>{renderPaymentMethod(sale.metodoPago)}</p>
         </div>
 
         <div>

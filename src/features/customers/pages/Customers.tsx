@@ -24,10 +24,10 @@ export function Customers() {
 
   const customerColumns: Column<Customer>[] = [
     { header: 'Nombre', accessor: 'nombre' },
-    { header: 'Telefono', accessor: 'telefono' },
+    { header: 'Telefono', accessor: 'telefono', render: (value: string) => `${value || '-'}` },
     { header: 'Correo', accessor: 'correo', render: (value: string) => `${value || 'Sin correo'}` },
     { header: 'Direccion', accessor: 'direccion', render: (value: string) => `${value || '--'}` },
-    { header: 'Tipo', accessor: 'tipo' }
+    { header: 'Tipo', accessor: 'tipo' },
   ];
 
   const customerActions: Action<Customer>[] = [

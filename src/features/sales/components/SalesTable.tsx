@@ -34,7 +34,7 @@ export const SalesTable: React.FC<SalesTableProps> = ({ data, loading, error }) 
     {
       header: 'Fecha',
       accessor: 'fecha',
-      render: (val: string | Date) => `${moment(val).format('DD-MM-YYYY, hh:mm A')}`,
+      render: (val: string | Date) => `${moment(val).format('DD/MM/YYYY, hh:mm A')}`,
     },
     {
       header: 'Estado',
@@ -42,7 +42,7 @@ export const SalesTable: React.FC<SalesTableProps> = ({ data, loading, error }) 
       render: (value: string) => {
         const base = `px-2 py-1 rounded-full text-white text-xs font-semibold`;
         const color = value === 'completada' ? 'bg-green-600' : 'bg-amber-500';
-        return <span className={`${base} ${color}`}>{value}</span>;
+        return <span className={`${base} ${color}`}>{value.charAt(0).toUpperCase() + value.slice(1)}</span>;
       },
     },
     {
@@ -90,12 +90,12 @@ export const SalesTable: React.FC<SalesTableProps> = ({ data, loading, error }) 
     <div className="p-6">
       <div className="flex flex-col gap-4">
         <h2 className="text-3xl font-semibold">Ventas</h2>
-        <div className="w-auto flex flex-wrap">
+        <div className="w-auto flex flex-wrap gap-2">
           <Button
             icon={<BiPlusCircle size={24} />}
             iconPosition="right"
             type="button"
-            className="border border-gray-900 px-4 py-1 rounded-md text-white bg-blue-900 dark:bg-blue-400 cursor-pointer hover:bg-blue-800 transition-colors"
+            className="border border-gray-900 px-4 rounded-full py-1 rounded-md text-white bg-blue-900 dark:bg-blue-400 cursor-pointer hover:bg-blue-800 transition-colors"
             onClick={() => navigate('/sales/create')}
           >
             Nueva venta
@@ -107,7 +107,7 @@ export const SalesTable: React.FC<SalesTableProps> = ({ data, loading, error }) 
       <Table
         columns={saleColumns}
         data={data}
-        defaultPageSize={5}
+        defaultPageSize={10}
         pageSizeOptions={[5, 10]}
         actions={saleActions}
       />
