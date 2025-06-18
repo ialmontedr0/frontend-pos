@@ -13,8 +13,14 @@ import { Button } from '../../../components/UI/Button/Button';
 import { Input } from '../../../components/UI/Input/Input';
 import { Textarea } from '../../../components/UI/TextArea/TextArea';
 import { Label } from '../../../components/UI/Label/Label';
+import type { Customer } from '../interfaces/CustomerInterface';
 
-export const CreateCustomer: React.FC = () => {
+interface CreateCustomerProps {
+  onCreated: (customer: Customer) => void;
+  onClose: () => void;
+}
+
+export const CreateCustomer: React.FC<CreateCustomerProps> = ({ onClose, onCreated }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
@@ -41,9 +47,10 @@ export const CreateCustomer: React.FC = () => {
 
   useEffect(() => {
     if (createdCustomer) {
+      onCreated(createdCustomer);
       navigate('/customers');
     }
-  }, [createdCustomer, navigate]);
+  }, [createdCustomer, onCreated, navigate]);
 
   useEffect(() => {
     return () => {
@@ -159,7 +166,11 @@ export const CreateCustomer: React.FC = () => {
           <Button type="submit" className="bg-green-600 hover:bg-green-700 text-white">
             {loading ? 'Creando...' : 'Crear Cliente'}
           </Button>
-          <Button type="button" variant="outline" onClick={() => navigate('/customers')}>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => (onClose ? onClose() : navigate(-1))}
+          >
             Cancelar
           </Button>
         </div>

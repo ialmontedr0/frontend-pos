@@ -7,6 +7,7 @@ export interface Customer {
   telefono: string;
   correo?: string;
   direccion?: string;
+  tipo: 'express' | 'comun';
   historialCompras: Sale[];
   createdAt: string;
   updatedAt?: string;

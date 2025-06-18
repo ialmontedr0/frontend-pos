@@ -41,7 +41,7 @@ import { ValidateGuard } from './features/auth/guards/ValidateGuard';
 import { ChangeGuard } from './features/auth/guards/ChangeGuard';
 import { Inventory } from './features/products/inventory/pages/Inventory';
 import Sales from './features/sales/pages/Sales';
-import { CreateSale } from './features/sales/pages/CreateSale';
+import { CreateSale } from './features/sales/components/CreateSale';
 import Payments from './features/payments/pages/Payments';
 import { Sale } from './features/sales/pages/Sale';
 import { Payment } from './features/payments/pages/Payment';

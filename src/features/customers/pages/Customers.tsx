@@ -27,6 +27,7 @@ export function Customers() {
     { header: 'Telefono', accessor: 'telefono' },
     { header: 'Correo', accessor: 'correo', render: (value: string) => `${value || 'Sin correo'}` },
     { header: 'Direccion', accessor: 'direccion', render: (value: string) => `${value || '--'}` },
+    { header: 'Tipo', accessor: 'tipo' }
   ];
 
   const customerActions: Action<Customer>[] = [
