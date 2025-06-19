@@ -18,6 +18,7 @@ import {
 import type { Notification } from '../interfaces/NotificationInterface';
 import { tipoMap } from '../components/NotificationsModal';
 import type { RootState } from '../../../store/store';
+import Spinner from '../../../components/UI/Spinner/Spinner';
 
 export const Notifications: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -191,9 +192,9 @@ export const Notifications: React.FC = () => {
         </div>
       </div>
 
-      {loading && <div className="text-center text-gray-500 dark:text-gray-400">Cargando...</div>}
+      {loading && <Spinner />}
 
-      {loading && <div className="text-center text-red-600 dark:text-gray-400">Error: {error}</div>}
+      {error && <div className="text-center text-red-600 dark:text-gray-400">Error: {error}</div>}
 
       {!loading && notifications.length === 0 && (
         <div className="text-center text-gray-500 dark:text-gray-400">No hay notificaciones...</div>

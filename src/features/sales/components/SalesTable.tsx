@@ -9,6 +9,7 @@ import { Table } from '../../../components/Table/Table';
 import { Button } from '../../../components/UI/Button/Button';
 import { BiPlusCircle } from 'react-icons/bi';
 import moment from 'moment';
+import Spinner from '../../../components/UI/Spinner/Spinner';
 
 interface SalesTableProps {
   data: Sale[] | null;
@@ -42,7 +43,11 @@ export const SalesTable: React.FC<SalesTableProps> = ({ data, loading, error }) 
       render: (value: string) => {
         const base = `px-2 py-1 rounded-full text-white text-xs font-semibold`;
         const color = value === 'completada' ? 'bg-green-600' : 'bg-amber-500';
-        return <span className={`${base} ${color}`}>{value.charAt(0).toUpperCase() + value.slice(1)}</span>;
+        return (
+          <span className={`${base} ${color}`}>
+            {value.charAt(0).toUpperCase() + value.slice(1)}
+          </span>
+        );
       },
     },
     {
@@ -64,14 +69,6 @@ export const SalesTable: React.FC<SalesTableProps> = ({ data, loading, error }) 
     navigate('/dashboard');
   };
 
-  if (loading) {
-    return (
-      <div>
-        <p>Cargando ventas...</p>
-      </div>
-    );
-  }
-
   if (!loading && error) {
     return (
       <div>
@@ -79,11 +76,9 @@ export const SalesTable: React.FC<SalesTableProps> = ({ data, loading, error }) 
       </div>
     );
   }
-  
+
   if (!data || data.length === 0) {
-    return (
-        <p className='text-gray-500'>No hay ventas para mostrar</p>
-    )
+    return <p className="text-gray-500">No hay ventas para mostrar</p>;
   }
 
   return (
@@ -104,6 +99,8 @@ export const SalesTable: React.FC<SalesTableProps> = ({ data, loading, error }) 
         </div>
       </div>
 
+      {loading && <Spinner />}
+
       <Table
         columns={saleColumns}
         data={data}
@@ -114,4 +111,3 @@ export const SalesTable: React.FC<SalesTableProps> = ({ data, loading, error }) 
     </div>
   );
 };
-

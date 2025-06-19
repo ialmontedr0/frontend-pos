@@ -10,6 +10,7 @@ import { Table } from '../../../../components/Table/Table';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/hooks';
 import { Button } from '../../../../components/UI/Button/Button';
 import { BiPlusCircle } from 'react-icons/bi';
+import Spinner from '../../../../components/UI/Spinner/Spinner';
 
 export const Categories: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -96,14 +97,14 @@ export const Categories: React.FC = () => {
       <Button
         icon={<BiPlusCircle size={24} />}
         type="button"
-        iconPosition='right'
+        iconPosition="right"
         className="border my-4 border-gray-900 px-4 py-1 rounded-md text-white bg-blue-900 dark:bg-blue-400 cursor-pointer hover:bg-blue-800 transition-colors"
         onClick={createCategory}
       >
         Nueva Categoria
       </Button>
 
-      {loading && <div>Cargando...</div>}
+      {loading && <Spinner />}
       {!loading && categories.length === 0 && <div>No hay categorias.</div>}
       {error && <div className="text-sm text-red-600">Error: {error}</div>}
 

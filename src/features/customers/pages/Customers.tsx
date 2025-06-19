@@ -10,6 +10,7 @@ import type { Column, Action } from '../../../components/Table/types';
 import { Table } from '../../../components/Table/Table';
 import { Button } from '../../../components/UI/Button/Button';
 import { BiPlusCircle } from 'react-icons/bi';
+import Spinner from '../../../components/UI/Spinner/Spinner';
 
 export function Customers() {
   const dispatch = useAppDispatch();
@@ -110,7 +111,7 @@ export function Customers() {
         </Button>
       </div>
 
-      {loading && <div>Cargando...</div>}
+      {loading && <Spinner />}
 
       {!loading && customers.length === 0 && <div>No hay clientes</div>}
 

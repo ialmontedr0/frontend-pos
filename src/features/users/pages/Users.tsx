@@ -18,6 +18,7 @@ import { BiPencil, BiPlusCircle, BiShow } from 'react-icons/bi';
 import { BiGrid } from 'react-icons/bi';
 import { BiListUl } from 'react-icons/bi';
 import { Card, type CardItem } from '../../../components/UI/Card/Card';
+import Spinner from '../../../components/UI/Spinner/Spinner';
 
 export function Users() {
   const dispatch = useAppDispatch();
@@ -182,7 +183,6 @@ export function Users() {
     [dispatch]
   );
 
-  if (loading) return <div>Cargando...</div>;
   if (error) return <div>Error {error}</div>;
 
   return (
@@ -205,6 +205,8 @@ export function Users() {
           <BiGrid className="dark:text-white" size={28} />
         </button>
       </div>
+
+      {loading && <Spinner />}
 
       {mode === 'list' ? (
         <Table

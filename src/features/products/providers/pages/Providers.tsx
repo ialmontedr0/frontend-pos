@@ -11,6 +11,7 @@ import { useAppDispatch, useAppSelector } from '../../../../hooks/hooks';
 import type { Provider } from '../interfaces/ProviderInterface';
 import type { Column, Action } from '../../../../components/Table/types';
 import { Table } from '../../../../components/Table/Table';
+import Spinner from '../../../../components/UI/Spinner/Spinner';
 
 export const Providers: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -103,7 +104,7 @@ export const Providers: React.FC = () => {
         Nuevo Proveedor +
       </button>
 
-      {loading && <div>Cargando...</div>}
+      {loading && <Spinner />}
       {!loading && providers.length === 0 && <div>No hay proveedores</div>}
       {error && <div className="text-sm text-red-600">Error: {error}</div>}
 

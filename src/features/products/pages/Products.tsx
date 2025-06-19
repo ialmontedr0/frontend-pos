@@ -13,6 +13,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { ProductPriceModal } from '../components/ProductStockModal/ProductPriceModal';
 import { Button } from '../../../components/UI/Button/Button';
 import { BiCabinet, BiCategory, BiPlusCircle } from 'react-icons/bi';
+import Spinner from '../../../components/UI/Spinner/Spinner';
 
 export const Products: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -113,7 +114,6 @@ export const Products: React.FC = () => {
     [dispatch, navigate]
   );
 
-  if (loading) return <div>Cargando...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
@@ -151,6 +151,8 @@ export const Products: React.FC = () => {
           </Button>
         </div>
       </div>
+
+      {loading && <Spinner />}
 
       <Table
         columns={productColumns}

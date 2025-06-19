@@ -23,6 +23,7 @@ import providersReducer from '../features/products/providers/slices/providersSli
 import productsReducer from '../features/products/slices/productsSlice';
 import salesReducer from '../features/sales/slices/salesSlice';
 import paymentsReducer from '../features/payments/slices/paymentsSlices';
+import inventoryReducer from '../features/products/inventory/slices/inventorySlice';
 
 const persistConfig = {
   key: 'root',
@@ -48,6 +49,7 @@ export const api = createApi({
     'Customer',
     'Product',
     'Category',
+    'Inventory',
     'Sale',
     'Payment',
     'Invoice',
@@ -67,6 +69,7 @@ const rootReducer = combineReducers({
   products: productsReducer,
   sales: salesReducer,
   payments: paymentsReducer,
+  inventory: inventoryReducer,
   notifications: notificationsReducer,
   [api.reducerPath]: api.reducer,
 });

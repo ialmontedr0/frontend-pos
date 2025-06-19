@@ -14,6 +14,7 @@ import { Button } from '../../../components/UI/Button/Button';
 import { BiPlusCircle } from 'react-icons/bi';
 import moment from 'moment';
 import { Table } from '../../../components/Table/Table';
+import Spinner from '../../../components/UI/Spinner/Spinner';
 
 interface PaymentsTableProps {
   data: Payment[] | null;
@@ -102,7 +103,7 @@ export const PaymentsTable: React.FC<PaymentsTableProps> = ({ data, loading, err
                   icon: 'success',
                   timer: 5000,
                   timerProgressBar: true,
-                })
+                });
               })
               .catch((error: any) => {
                 myAlert.fire({
@@ -155,6 +156,8 @@ export const PaymentsTable: React.FC<PaymentsTableProps> = ({ data, loading, err
           </Button>
         </div>
       </div>
+
+      {loading && <Spinner />}
 
       <Table
         columns={paymentColumns}
