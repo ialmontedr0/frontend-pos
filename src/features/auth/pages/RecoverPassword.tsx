@@ -4,6 +4,7 @@ import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
 import { recoverPassword, clearRecoveryState } from '../slices/authSlice';
+import Spinner from '../../../components/UI/Spinner/Spinner';
 
 export const RecoverPassword = () => {
   const dispatch = useAppDispatch();
@@ -44,14 +45,14 @@ export const RecoverPassword = () => {
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-white">
+        <h2 className="mt-4 text-3xl font-semibold tracking-tight text-black">
           Recuperacion de contraseña
         </h2>
       </div>
-      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+      <div className="mt-4 sm:mx-auto sm:w-full sm:max-w-sm">
         <form onSubmit={handleRecoverPass} className="space-y-6">
           <div>
-            <label htmlFor="usuario" className="text-white">
+            <label htmlFor="usuario" className="text-black">
               Nombre de usuario
             </label>
             <div className="mt-2">
@@ -59,23 +60,27 @@ export const RecoverPassword = () => {
                 id="usuario"
                 name="usuario"
                 type="text"
+                placeholder="Ingresa nombre de usuario Ej. user"
                 value={usuario}
                 onChange={(e) => setUsuario(e.target.value)}
                 required
                 autoComplete="usuario"
-                className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-2 focus:outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                className="block w-full px-3 py-1.5 border border-gray-300 rounded-full
+                  bg-gray-200 text-sm font-semibold text-gray-600 placeholder-gray-400
+                  "
               />
             </div>
           </div>
 
           {error && <div className="mb-4 text-red-600 bg-red-100 p-2 rounded">{error}</div>}
 
-          <div>
+          <div className="w-full flex flex-wrap gap-2">
             <button
               type="submit"
-              className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="flex w-fit justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              disabled={loading}
             >
-              {loading ? 'Validando...' : 'Validar'}
+              {loading ? <Spinner /> : 'Validar'}
             </button>
 
             <button

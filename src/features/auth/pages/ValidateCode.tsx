@@ -60,18 +60,16 @@ export const ValidateCode = () => {
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-white">
-          Validar Codigo
-        </h2>
+        <h2 className="mt-4 text-2xl/9 font-bold tracking-tight text-black">Validar Codigo</h2>
       </div>
-      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+      <div className="mt-4 sm:mx-auto sm:w-full sm:max-w-sm">
         <form onSubmit={handleSubmit} className="space-y-6">
-          <p className="text-white">
+          <p className="text-blac">
             Ingresa el codigo enviado al correo electronico del usuario{' '}
             <strong>{recoveryUser}</strong>.
           </p>
           <div>
-            <label htmlFor="codigo" className="text-white">
+            <label htmlFor="codigo" className="text-black">
               Codigo (6 caracteres A-Z, 0-9)
             </label>
             <div className="mt-2">
@@ -86,18 +84,20 @@ export const ValidateCode = () => {
                 }}
                 placeholder="ABC123"
                 required
-                className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-2 focus:outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                className="block w-full px-3 py-1.5 border border-gray-300 rounded-full
+                  bg-gray-200 text-sm font-semibold text-gray-600 placeholder-gray-400
+                  "
               />
-              <p className="mt-1 text-sm text-white">Intentos restantes: {10 - attemps}</p>
+              <p className="mt-1 text-sm text-black">Intentos restantes: {10 - attemps}</p>
             </div>
 
-            {error && <div className="mb-4 text-red-600 bg-red-100 p-2 rounded">{error}</div>}
+            {error && <div className="text-red-600 text-sm font-semibold py-2">{error}</div>}
           </div>
 
-          <div className="flex justify-between">
+          <div className="flex flex-wrap gap-2 justify-start">
             <button
               type="submit"
-              className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="cursor-pointer flex w-fit justify-center rounded-full bg-indigo-600 px-5 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               disabled={loading || attemps >= 10}
             >
               {loading ? 'Validando...' : 'Validar codigo'}
@@ -106,7 +106,7 @@ export const ValidateCode = () => {
             <button
               type="button"
               onClick={cancel}
-              className="flex-w-full justify-center rounded-md bg-black px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-black-200 focus-visible:outline-20 focus:visible:otuline-offset focus:visible:otuline-black-400"
+              className="cursor-pointer flex-w-full justify-center rounded-full bg-black px-5 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-black-200 focus-visible:outline-20 focus:visible:otuline-offset focus:visible:otuline-black-400"
             >
               Cancelar
             </button>
