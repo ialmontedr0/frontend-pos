@@ -138,7 +138,7 @@ export const ChangePassword = () => {
             <button
               type="submit"
               disabled={loading || Object.values(validations).includes(false)}
-              className="flex w-fit justify-center rounded-full bg-indigo-600 px-5 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="cursor-pointer flex w-fit justify-center rounded-full bg-indigo-600 px-5 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               {loading ? 'Guardando...' : 'Cambiar'}
             </button>
@@ -146,7 +146,7 @@ export const ChangePassword = () => {
             <button
               type="button"
               onClick={cancel}
-              className="flex-w-fit justify-center rounded-full bg-black px-5 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-black-200 focus-visible:outline-20 focus:visible:otuline-offset focus:visible:otuline-black-400"
+              className="cursor-pointer flex-w-fit justify-center rounded-full bg-black px-5 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-black-200 focus-visible:outline-20 focus:visible:otuline-offset focus:visible:otuline-black-400"
             >
               Cancelar
             </button>

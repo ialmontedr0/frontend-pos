@@ -5,7 +5,6 @@ import type { LoginDTO } from '../types/auth';
 import { useState } from 'react';
 import logoFull from '../../../assets/logo_full.png';
 import { Input } from '../../../components/UI/Input/Input';
-import { Button } from '../../../components/UI/Button/Button';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 
 export const Login = () => {
@@ -83,9 +82,13 @@ export const Login = () => {
             {error && <div className="mb-4 text-red-600 bg-red-100 p-2 rounded">{error}</div>}
 
             <div className="flex justify-center">
-              <Button type="submit" className="rounded-full px-6 py-1 dark:bg-blue-800 dark:text-white" disabled={loading}>
+              <button
+                type="submit"
+                className="cursor-pointer flex w-fit justify-center rounded-full bg-indigo-600 px-5 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                disabled={loading}
+              >
                 {loading ? <Spinner /> : 'Ingresar'}
-              </Button>
+              </button>
             </div>
           </form>
         </div>

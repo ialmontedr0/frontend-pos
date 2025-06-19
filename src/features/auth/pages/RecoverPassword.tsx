@@ -77,7 +77,7 @@ export const RecoverPassword = () => {
           <div className="w-full flex flex-wrap gap-2">
             <button
               type="submit"
-              className="flex w-fit justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="cursor-pointer flex w-fit justify-center rounded-full bg-indigo-600 px-5 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               disabled={loading}
             >
               {loading ? <Spinner /> : 'Validar'}
@@ -86,7 +86,7 @@ export const RecoverPassword = () => {
             <button
               type="button"
               onClick={cancel}
-              className="flex-w-full justify-center rounded-md bg-black px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-black-200 focus-visible:outline-20 focus:visible:otuline-offset focus:visible:otuline-black-400"
+              className="cursor-pointer flex-w-full justify-center rounded-full bg-black px-5 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-black-200 focus-visible:outline-20 focus:visible:otuline-offset focus:visible:otuline-black-400"
             >
               Cancelar
             </button>
