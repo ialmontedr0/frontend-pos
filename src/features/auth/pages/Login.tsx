@@ -4,7 +4,7 @@ import { clearAuth, login } from '../slices/authSlice';
 import type { LoginDTO } from '../types/auth';
 import { useState } from 'react';
 import logoFull from '../../../assets/logo_full.png';
-import { Input } from '../../../components/UI/Input/Input';
+import Input from '../../../components/UI/Input/Input';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 
 export const Login = () => {
@@ -48,7 +48,6 @@ export const Login = () => {
                   name="usuario"
                   value={form.usuario}
                   onChange={(e) => setForm({ ...form, usuario: e.target.value })}
-                  required
                 />
               </div>
             </div>
@@ -73,7 +72,7 @@ export const Login = () => {
                   name="contrasena"
                   id="contrasena"
                   value={form.contrasena}
-                  autoComplete="current-password"
+                  hint="current-password"
                   onChange={(e) => setForm({ ...form, contrasena: e.target.value })}
                 />
               </div>

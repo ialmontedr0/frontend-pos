@@ -11,7 +11,7 @@ import type { RootState } from '../../../../../store/store';
 
 import { Label } from '../../../../../components/UI/Label/Label';
 import { Select } from '../../../../../components/UI/Select/Select';
-import { Button } from '../../../../../components/UI/Button/Button';
+import Button from '../../../../../components/UI/Button/Button';
 import { BiArrowBack, BiReset, BiSave } from 'react-icons/bi';
 
 type FormValues = {
@@ -262,12 +262,12 @@ export const UserSettings: React.FC = () => {
             className="dark:bg-white dark:text-black"
             type="submit"
             disabled={isDirty}
-            icon={<BiSave size={20} />}
+            startIcon={<BiSave size={20} />}
           >
             Guardar ajustes
           </Button>
           <Button
-            icon={<BiReset size={20} />}
+            startIcon={<BiReset size={20} />}
             type="button"
             onClick={resetSettings}
             className="bg-green-600 hover:bg-green-800 dark:bg-green-700 hover:bg-green-900 dark:text-white transition-colors"
@@ -277,8 +277,8 @@ export const UserSettings: React.FC = () => {
           <Button
             className="dark:bg-white dark:text-black"
             type="button"
-            variant="secondary"
-            icon={<BiArrowBack size={20} onClick={goBack} />}
+            variant="outline"
+            startIcon={<BiArrowBack size={20} onClick={goBack} />}
           >
             Volver
           </Button>

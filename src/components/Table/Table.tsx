@@ -1,3 +1,4 @@
+//src/components/Table/Table.tsx
 import { useState, useMemo } from 'react';
 import type { DataTableProps } from './types';
 
@@ -68,7 +69,21 @@ export function Table<T extends { [key: string]: any }>({
               ))}
               {actions.length > 0 && (
                 <td className="px-4 py-3 whitespace-nowrap flex space-x-2">
-                  {actions.map((act, i) => (
+                  {actions.map(
+                    (act, i) => {
+                      const rendered = act.render ? act.render(row) : act.label;
+                      if (!rendered) return null;
+
+                      return (
+                        <button
+                          key={i}
+                          onClick={() => act.onClick(row)}
+                          className="px-2 py-1 rounded-full text-xs font-medium bg-indigo-500 hover:bg-indigo-600 text-white focus:ouline-none focus:ring-2 focus:ring-offset-1 focus:ring-indigo-400"
+                        >
+                          {rendered}
+                        </button>
+                      );
+                    } /* (
                     <button
                       key={i}
                       onClick={() => act.onClick(row)}
@@ -79,7 +94,8 @@ export function Table<T extends { [key: string]: any }>({
                     >
                       {act.render ? act.render(row) : act.label}
                     </button>
-                  ))}
+                  ) */
+                  )}
                 </td>
               )}
             </tr>
@@ -91,7 +107,7 @@ export function Table<T extends { [key: string]: any }>({
           <button
             onClick={() => goToPage(page - 1)}
             disabled={page === pageCount}
-            className="px-3 py-1 mx-1 bg-white dark:bg-slate-800 dark:text-white border rounded disabled:opacity-50"
+            className="px-5 py-1 mx-1 text-sm cursor-pointer bg-white text-black dark:bg-slate-800 dark:text-white border rounded-full disabled:opacity-50"
           >
             « Anterior
           </button>
@@ -101,13 +117,13 @@ export function Table<T extends { [key: string]: any }>({
           <button
             onClick={() => goToPage(page + 1)}
             disabled={page === pageCount}
-            className="px-3 py-1 mx-1 bg-white dark:bg-slate-800 dark:text-white border rounded disabled:opacity-50"
+            className="px-5 py-1 mx-1 text-sm cursor-pointer bg-white text-black dark:bg-slate-800 dark:text-white border rounded-full disabled:opacity-50"
           >
             Siguiente »
           </button>
         </div>
         <div>
-          <label className="text-sm text-slate-700 dark:text-slate-300">
+          <label className="text-sm text-slate-900 dark:text-slate-300">
             Filas por pagina:{' '}
             <select
               value={pageSize}

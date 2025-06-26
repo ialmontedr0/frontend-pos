@@ -11,9 +11,9 @@ import { clearProviderError, createProvider } from '../slices/providersSlice';
 
 import type { CreateProviderDTO } from '../dtos/create-provider.dto';
 
-import { Button } from '../../../../components/UI/Button/Button';
+import  Button from '../../../../components/UI/Button/Button';
 import { Label } from '../../../../components/UI/Label/Label';
-import { Input } from '../../../../components/UI/Input/Input';
+import Input  from '../../../../components/UI/Input/Input';
 
 export const CreateProvider: React.FC = () => {
   const dispatch = useAppDispatch();

@@ -144,37 +144,3 @@ export const Sidebar: React.FC<{ isOpen: boolean; onToggle: () => void }> = ({ i
     </aside>
   );
 };
-
-/* Generate a Users Page for a PoS web app minimalist, professional and advanced with a Header and Sidebar 
-
-Header contains in horizontal order:
-Button toggle show/hide Sidebar
-Search Bar
-Current page title
-Notifications show/hide icon
-Theme toggle icon
-Profile icon
-Current Time
-Logout Icon
-
-Sidebar contains:
-Button close Sidebar
-Links to:
-Usuarios
-Clientes
-Productos
-Inventario
-Ventas
-Facturas
-Cash Registers
-_________________
-Notificaciones
-Perfil
-Configuracion
-Logout
-
-El body de la pagina debe contener un table de ejemplo con los siguientes encabezados:
-Foto   |    Usuario   |   Nombre   |    Correo   |   Telefono   |   Rol   |    Estado   |   Acciones
-
-Acciones:
-Ver, Editar, Restablecer contrasena, Eliminar */

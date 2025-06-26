@@ -13,8 +13,8 @@ import {
 } from '../slices/customerSlice';
 import type { UpdateCustomerDTO } from '../dtos/update-customer.dto';
 
-import { Button } from '../../../components/UI/Button/Button';
-import { Input } from '../../../components/UI/Input/Input';
+import Button from '../../../components/UI/Button/Button';
+import Input from '../../../components/UI/Input/Input';
 import { Label } from '../../../components/UI/Label/Label';
 import type { RootState } from '../../../store/store';
 
@@ -221,7 +221,6 @@ export const EditCustomer: React.FC = () => {
           </Button>
           <Button
             type="button"
-            variant="destructive"
             onClick={() => onDelCustomer(customer._id)}
             className="bg-red-600 hover:bg-red-700"
           >

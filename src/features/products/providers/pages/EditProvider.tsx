@@ -13,8 +13,8 @@ import type { RootState } from '../../../../store/store';
 import { useForm } from 'react-hook-form';
 import type { UpdateProviderDTO } from '../dtos/update-provider.dto';
 import { Label } from '../../../../components/UI/Label/Label';
-import { Input } from '../../../../components/UI/Input/Input';
-import { Button } from '../../../../components/UI/Button/Button';
+import Input from '../../../../components/UI/Input/Input';
+import Button from '../../../../components/UI/Button/Button';
 import { BiSave, BiTrash, BiX } from 'react-icons/bi';
 
 export const EditProvider: React.FC = () => {
@@ -236,30 +236,32 @@ export const EditProvider: React.FC = () => {
           <div className="flex flex-wrap justify-end gap-2 pt-4 border-t dark:border-gray-700">
             <Button
               type="submit"
-              icon={<BiSave size={28} />}
-              iconPosition="left"
+              startIcon={<BiSave size={28} />}
               className="bg-transparent hover:bg-gray-200 text-black"
               aria-label="Guardar"
-              title="Guardar"
-            ></Button>
+            >
+              Guardar
+            </Button>
 
             <Button
               type="button"
-              icon={<BiTrash size={28} />}
-              variant="destructive"
+              startIcon={<BiTrash size={28} />}
               onClick={() => onDelProvider(provider._id)}
               className="bg-transparent hover:bg-gray-200 text-red-600"
               aria-label="Eliminar"
-              title="Eliminar"
-            ></Button>
+            >
+              Eliminar
+            </Button>
 
             <Button
               type="button"
-              icon={<BiX size={28} />}
+              startIcon={<BiX size={28} />}
               variant="outline"
               onClick={cancel}
               className="bg-transparent text-black"
-            ></Button>
+            >
+              Cancelar
+            </Button>
           </div>
         </div>
       </form>

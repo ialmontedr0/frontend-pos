@@ -10,8 +10,8 @@ import type { Product } from '../interfaces/ProductInterface';
 import type { Column, Action } from '../../../components/Table/types';
 import { Table } from '../../../components/Table/Table';
 import { useCallback, useEffect, useState } from 'react';
-import { ProductPriceModal } from '../components/ProductStockModal/ProductPriceModal';
-import { Button } from '../../../components/UI/Button/Button';
+import { ProductPriceModal } from '../components/ProductPriceModal/ProductPriceModal';
+import Button from '../../../components/UI/Button/Button';
 import { BiCabinet, BiCategory, BiPlusCircle } from 'react-icons/bi';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 
@@ -125,21 +125,21 @@ export const Products: React.FC = () => {
           <Button
             onClick={() => createProduct()}
             className="border border-gray-900 px-4 py-1 rounded-md text-white bg-blue-900 dark:bg-blue-400 cursor-pointer hover:bg-blue-800 transition-colors"
-            icon={<BiPlusCircle size={24} />}
+            startIcon={<BiPlusCircle size={24} />}
           >
             Nuevo Producto
           </Button>
           <Button
             onClick={() => navigate('/products/categories')}
             className="px-4 py-1 rounded-md font-light text-white bg-green-900 dark:bg-green-400 cursor-pointer hover:bg-green-800 transition-colors"
-            icon={<BiCategory size={24} />}
+            startIcon={<BiCategory size={24} />}
           >
             Categorias
           </Button>
           <Button
             onClick={() => navigate('/products/providers')}
             className="px-4 py-1 rounded-md text-white bg-purple-900 dark:bg-purple-400 cursor-pointer hover:bg-purple-800 transition-colors"
-            icon={<BiCabinet size={24} />}
+            startIcon={<BiCabinet size={24} />}
           >
             Proveedores
           </Button>

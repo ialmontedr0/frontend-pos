@@ -1,12 +1,12 @@
 import { createBrowserRouter, type RouteObject, Navigate } from 'react-router-dom';
 
-import AppLayout from './layouts/AppLayout';
+import { AppLayout } from './layouts/AppLayout';
 import { Login } from './features/auth/pages/Login';
 import { RecoverPassword } from './features/auth/pages/RecoverPassword';
 import { ValidateCode } from './features/auth/pages/ValidateCode';
 import { ChangePassword } from './features/auth/pages/ChangePassword';
 
-import { Dashboard } from './components/Dashboard/Dashboard';
+import { Dashboard } from './pages/Dashboard/Dashboard';
 import { Users } from './features/users/pages/Users';
 import { User } from './features/users/pages/User';
 import { CreateUser } from './features/users/pages/CreateUser';
@@ -46,12 +46,18 @@ import Payments from './features/payments/pages/Payments';
 import { Sale } from './features/sales/pages/Sale';
 import { Payment } from './features/payments/pages/Payment';
 import { CreatePayment } from './features/payments/pages/CreatePayment';
+import CashRegisters from './features/cash-registers/pages/CashRegisters';
+import { CashRegister } from './features/cash-registers/pages/CashRegister';
+import { EditRegister } from './features/cash-registers/pages/EditRegister';
+import { CreateRegister } from './features/cash-registers/pages/CreateRegister';
+import { LogInPage } from './features/auth/pages/LogInPage';
+import UserProfilePage from './features/users/user/components/UserProfile/UserProfile';
 
 const routes: RouteObject[] = [
   {
     element: <PublicRoute />,
     children: [
-      { path: '/auth/login', element: <Login /> },
+      { path: '/auth/login', element: <LogInPage /> },
       {
         path: '/auth/recover-password',
         element: (
@@ -92,7 +98,7 @@ const routes: RouteObject[] = [
           { path: '/users/:userId', element: <User /> },
           { path: '/users/edit/:userId', element: <EditUser /> },
 
-          { path: '/user/profile', element: <UserProfile /> },
+          { path: '/user/profile', element: <UserProfilePage /> },
           { path: '/user/settings', element: <UserSettings /> },
 
           { path: '/customers', element: <Customers /> },
@@ -124,6 +130,11 @@ const routes: RouteObject[] = [
           { path: '/payments', element: <Payments /> },
           { path: '/payments/create', element: <CreatePayment /> },
           { path: '/payments/:paymentId', element: <Payment /> },
+
+          { path: '/cash-registers', element: <CashRegisters /> },
+          { path: '/cash-registers/:codigo', element: <CashRegister /> },
+          { path: '/cash-registers/edit/:codigo', element: <EditRegister /> },
+          { path: '/cash-registers/create', element: <CreateRegister /> },
 
           { path: '/notifications', element: <Notifications /> },
 

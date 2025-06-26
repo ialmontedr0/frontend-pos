@@ -8,7 +8,7 @@ import type { RootState } from '../../../store/store';
 import { getSaleByCode, clearSelectedSale } from '../slices/salesSlice';
 
 import { Label } from '../../../components/UI/Label/Label';
-import { Button } from '../../../components/UI/Button/Button';
+import Button  from '../../../components/UI/Button/Button';
 import { BiArrowBack, BiDownload } from 'react-icons/bi';
 import type { Column, Action } from '../../../components/Table/types';
 import { Table } from '../../../components/Table/Table';
@@ -117,7 +117,7 @@ export const Sale: React.FC = () => {
     return (
       <div className="p-6">
         <p className="text-gray-600">No existe la venta..</p>
-        <Button icon={<BiArrowBack size={20} />}>Volver</Button>
+        <Button startIcon={<BiArrowBack size={20} />}>Volver</Button>
       </div>
     );
   }
@@ -217,14 +217,14 @@ export const Sale: React.FC = () => {
         <Button
           className="px-3 py-1 rounded-full"
           onClick={() => navigate('/sales')}
-          icon={<BiArrowBack className="" size={20} />}
+          startIcon={<BiArrowBack className="" size={20} />}
         >
           Volver
         </Button>
 
         <Button
           className="bg-green-600 text-white hover:bg-green-700 transition-colors px-3 py-1 rounded-full"
-          icon={<BiDownload size={20} />}
+          startIcon={<BiDownload size={20} />}
         >
           Descargar Factura
         </Button>

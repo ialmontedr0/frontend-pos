@@ -8,7 +8,7 @@ import { getAllCustomers, deleteCustomer } from '../slices/customerSlice';
 import type { Customer } from '../interfaces/CustomerInterface';
 import type { Column, Action } from '../../../components/Table/types';
 import { Table } from '../../../components/Table/Table';
-import { Button } from '../../../components/UI/Button/Button';
+import Button from '../../../components/UI/Button/Button';
 import { BiPlusCircle } from 'react-icons/bi';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 
@@ -101,9 +101,8 @@ export function Customers() {
       <h2 className="text-2xl font-semibold text-black dark:text-white mb-2">Clientes</h2>
       <div className="py-2 flex flex-row gap-2 my-2">
         <Button
-          icon={<BiPlusCircle size={24} />}
+          startIcon={<BiPlusCircle size={24} />}
           className="border border-gray-900 px-4 py-1 rounded-md text-white bg-blue-900 dark:bg-blue-400 cursor-pointer hover:bg-blue-800 transition-colors"
-          iconPosition="right"
           type="button"
           onClick={createCustomer}
         >

@@ -11,8 +11,8 @@ import { changePassword } from '../../slices/profileSlice';
 import { resetPassword as resetUserPassword, clearAuth } from '../../../../auth/slices/authSlice';
 
 import { Label } from '../../../../../components/UI/Label/Label';
-import { Input } from '../../../../../components/UI/Input/Input';
-import { Button } from '../../../../../components/UI/Button/Button';
+import Input from '../../../../../components/UI/Input/Input';
+import Button from '../../../../../components/UI/Button/Button';
 import { BiReset, BiSave } from 'react-icons/bi';
 
 type SecurityForm = {
@@ -234,7 +234,7 @@ export const UserSecurity: React.FC = () => {
 
         <div className="mt-6 flex flex-wrap gap-2 justify-end">
           <Button
-            icon={<BiSave size={20} />}
+            startIcon={<BiSave size={20} />}
             type="submit"
             disabled={isSubmitting}
             className="bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 dark:text-white text-white transition-colors"
@@ -243,7 +243,7 @@ export const UserSecurity: React.FC = () => {
           </Button>
 
           <Button
-            icon={<BiReset size={20} />}
+            startIcon={<BiReset size={20} />}
             className="transition-colors dark:bg-white"
             type="button"
             onClick={resetPassword}

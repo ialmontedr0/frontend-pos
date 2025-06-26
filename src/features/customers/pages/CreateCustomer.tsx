@@ -9,8 +9,8 @@ import type { RootState } from '../../../store/store';
 import { clearCustomerError, createCustomer } from '../slices/customerSlice';
 import type { CreateCustomerDTO } from '../dtos/create-customer.dto';
 
-import { Button } from '../../../components/UI/Button/Button';
-import { Input } from '../../../components/UI/Input/Input';
+import  Button  from '../../../components/UI/Button/Button';
+import  Input  from '../../../components/UI/Input/Input';
 import { Textarea } from '../../../components/UI/TextArea/TextArea';
 import { Label } from '../../../components/UI/Label/Label';
 

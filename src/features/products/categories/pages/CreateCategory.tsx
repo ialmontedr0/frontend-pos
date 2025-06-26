@@ -7,9 +7,9 @@ import { useAppSelector, useAppDispatch } from '../../../../hooks/hooks';
 import type { RootState } from '../../../../store/store';
 import { clearCategoryError, createCategory } from '../slices/categoriesSlice';
 import type { CreateCategoryDTO } from '../dtos/create-category.dto';
-import { Button } from '../../../../components/UI/Button/Button';
+import  Button  from '../../../../components/UI/Button/Button';
 import { Label } from '../../../../components/UI/Label/Label';
-import { Input } from '../../../../components/UI/Input/Input';
+import  Input  from '../../../../components/UI/Input/Input';
 
 export const CreateCategory: React.FC = () => {
   const dispatch = useAppDispatch();

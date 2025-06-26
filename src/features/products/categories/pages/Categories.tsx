@@ -8,7 +8,7 @@ import type { Category } from '../interfaces/CategoryInterface';
 import type { Column, Action } from '../../../../components/Table/types';
 import { Table } from '../../../../components/Table/Table';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/hooks';
-import { Button } from '../../../../components/UI/Button/Button';
+import  Button  from '../../../../components/UI/Button/Button';
 import { BiPlusCircle } from 'react-icons/bi';
 import Spinner from '../../../../components/UI/Spinner/Spinner';
 
@@ -95,9 +95,8 @@ export const Categories: React.FC = () => {
       <h2 className="text-2xl font-semibold text-black dark:text-white mb-4">Categorias</h2>
 
       <Button
-        icon={<BiPlusCircle size={24} />}
+        startIcon={<BiPlusCircle size={24} />}
         type="button"
-        iconPosition="right"
         className="border my-4 border-gray-900 px-4 py-1 rounded-md text-white bg-blue-900 dark:bg-blue-400 cursor-pointer hover:bg-blue-800 transition-colors"
         onClick={createCategory}
       >

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ModalPortal } from '../../../../components/ModalPortal/ModalPortal';
 import type { Product } from '../../interfaces/ProductInterface';
-import { Button } from '../../../../components/UI/Button/Button';
+import  Button  from '../../../../components/UI/Button/Button';
 
 interface ProductModalProps {
   product: Product;

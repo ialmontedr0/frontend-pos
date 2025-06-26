@@ -1,7 +1,7 @@
 import { useState, type ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { modules } from '../../constants/modules';
-import { Input } from '../UI/Input/Input';
+import  Input from '../UI/Input/Input';
 
 export function SearchBar() {
   const [query, setQuery] = useState<string>('');

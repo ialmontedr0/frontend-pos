@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '../../contexts/ThemeContext';
 import { clearAuth, logout } from '../../features/auth/slices/authSlice';
 import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
@@ -21,9 +21,37 @@ export function Header({ onToggleSidebar }: HeaderProps) {
   const enabled = theme === 'oscuro';
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  const currentPath = location.pathname;
 
   const user = useAppSelector((state: RootState) => state.auth.user);
   const unreadCount = useAppSelector(selectUnreadCount);
+
+  const routeTitles: { [path: string]: string } = {
+    '/dashboard': 'Dashboard',
+    '/users': 'Usuarios',
+    '/customers': 'Clientes',
+    '/products': 'Productos',
+    '/sales': 'Ventas',
+    '/payments': 'Pagos',
+    '/notifications': 'Notificaciones',
+    '/cash-registers': 'Cajas',
+    '/stats': 'Estadisticas',
+    '/sync-logs': 'Sync Logs',
+    '/user/profile': 'Perfil',
+    '/user/settings': 'Configuracion',
+  };
+
+  let headerTitle = routeTitles[currentPath] ?? '';
+
+  if (!headerTitle) {
+    for (const path in routeTitles) {
+      if (currentPath.startsWith(path)) {
+        headerTitle = routeTitles[path];
+        break;
+      }
+    }
+  }
 
   const handleLogout = async () => {
     await dispatch(logout());
@@ -58,6 +86,7 @@ export function Header({ onToggleSidebar }: HeaderProps) {
         </button>
 
         <SearchBar />
+        {headerTitle && <h1 className="text-xl font-semibold">{headerTitle}</h1>}
       </div>
       <div className="flex items-center space-x-4">
         <div className="relative">
@@ -117,7 +146,7 @@ export function Header({ onToggleSidebar }: HeaderProps) {
           onClick={handleLogout}
           className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-800 hover:cursor-pointer"
         >
-          <BiLogOut className='w-5 h-5 text-red-600'/>
+          <BiLogOut className="w-5 h-5 text-red-600" />
         </button>
       </div>
     </header>

@@ -9,8 +9,8 @@ import type { RootState } from '../../../../../store/store';
 import { updateUser, getUserById } from '../../../slices/usersSlice';
 
 import { Label } from '../../../../../components/UI/Label/Label';
-import { Input } from '../../../../../components/UI/Input/Input';
-import { Button } from '../../../../../components/UI/Button/Button';
+import Input from '../../../../../components/UI/Input/Input';
+import Button from '../../../../../components/UI/Button/Button';
 import { Textarea } from '../../../../../components/UI/TextArea/TextArea';
 import { BiArrowBack, BiSave } from 'react-icons/bi';
 
@@ -171,15 +171,15 @@ export const UserInfo: React.FC = () => {
 
             <div className="mt-6 flex flex-row gap-2 justify-end">
               <Button
-                icon={<BiArrowBack size={20} />}
-                variant="secondary"
+                startIcon={<BiArrowBack size={20} />}
+                variant="primary"
                 type="button"
                 onClick={() => navigate('/dashboard')}
               >
                 Volver
               </Button>
               <Button
-                icon={<BiSave size={20} />}
+                startIcon={<BiSave size={20} />}
                 type="submit"
                 className="bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 dark:text-white text-white"
               >

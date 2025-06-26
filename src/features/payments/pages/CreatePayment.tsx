@@ -10,9 +10,9 @@ import { createPayment } from '../slices/paymentsSlices';
 import { clearSelectedSale, getSaleByCode } from '../../sales/slices/salesSlice';
 
 import type { Sale } from '../../sales/interfaces/SaleInterface';
-import { Button } from '../../../components/UI/Button/Button';
+import  Button  from '../../../components/UI/Button/Button';
 import { Label } from '../../../components/UI/Label/Label';
-import { Input } from '../../../components/UI/Input/Input';
+import  Input  from '../../../components/UI/Input/Input';
 import { BiEraser, BiGlasses, BiSave, BiX } from 'react-icons/bi';
 import { Select } from '../../../components/UI/Select/Select';
 
@@ -125,7 +125,7 @@ export const CreatePayment: React.FC = () => {
 
             <Button
               className="bg-trasnparent hover:bg-gray-100 text-black border border-gray-100"
-              icon={<BiGlasses size={24} onClick={() => onLoadSale(saleQuery)} />}
+              startIcon={<BiGlasses size={24} onClick={() => onLoadSale(saleQuery)} />}
             ></Button>
           </div>
         </div>
@@ -189,7 +189,7 @@ export const CreatePayment: React.FC = () => {
                 />
                 <Button
                   className="bg-transparent hover:bg-gray-200 transition-colors text-black"
-                  icon={<BiEraser size={20} />}
+                  startIcon={<BiEraser size={20} />}
                   onClick={clearPaymentAmount}
                 ></Button>
               </div>
@@ -215,7 +215,7 @@ export const CreatePayment: React.FC = () => {
       <div className="flex flex-grow gap-2 my-2">
         <Button
           className="px-3 rounded-full py-1 bg-blue-800 hover:bg-blue-900 disabled-[bg-blue-200] transition-colors"
-          icon={<BiSave size={20} />}
+          startIcon={<BiSave size={20} />}
           onClick={handleSubmit}
           disabled={!paymentAmount}
         >
@@ -223,14 +223,14 @@ export const CreatePayment: React.FC = () => {
         </Button>
         <Button
           className="px-3 py-1 bg-white rounded-full hover:bg-gray-200 transition-colors border border-gray-500 text-black "
-          icon={<BiEraser size={20} />}
+          startIcon={<BiEraser size={20} />}
           onClick={clear}
         >
           Limpiar
         </Button>
         <Button
           className="rounded-full px-3 py-1 bg-red-600 hover:bg-red-700 transition-colors"
-          icon={<BiX size={20} />}
+          startIcon={<BiX size={20} />}
           onClick={cancel}
         >
           Cancelar

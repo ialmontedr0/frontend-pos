@@ -23,6 +23,7 @@ import providersReducer from '../features/products/providers/slices/providersSli
 import productsReducer from '../features/products/slices/productsSlice';
 import salesReducer from '../features/sales/slices/salesSlice';
 import paymentsReducer from '../features/payments/slices/paymentsSlices';
+import cashRegistersReducer from '../features/cash-registers/slices/cashRegisterSlice';
 import inventoryReducer from '../features/products/inventory/slices/inventorySlice';
 
 const persistConfig = {
@@ -52,8 +53,10 @@ export const api = createApi({
     'Inventory',
     'Sale',
     'Payment',
+    'CashRegister',
     'Invoice',
     'Notification',
+    'Stats',
   ],
   endpoints: () => ({
     // ex getUsers: builder.query<User[], void>({ query: () => '/users' })
@@ -69,6 +72,7 @@ const rootReducer = combineReducers({
   products: productsReducer,
   sales: salesReducer,
   payments: paymentsReducer,
+  cashRegisters: cashRegistersReducer,
   inventory: inventoryReducer,
   notifications: notificationsReducer,
   [api.reducerPath]: api.reducer,

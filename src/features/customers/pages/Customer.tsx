@@ -11,7 +11,7 @@ import { usersService } from '../../users/services/usersService';
 import type { Column, Action } from '../../../components/Table/types';
 import { Table } from '../../../components/Table/Table';
 import type { Sale } from '../../sales/interfaces/SaleInterface';
-import { Button } from '../../../components/UI/Button/Button';
+import  Button  from '../../../components/UI/Button/Button';
 import { BiArrowBack, BiEdit, BiTrash } from 'react-icons/bi';
 
 export const Customer: React.FC = () => {
@@ -215,21 +215,21 @@ export const Customer: React.FC = () => {
           <Button
             onClick={() => navigate('/customers')}
             className=""
-            icon={<BiArrowBack size={20} />}
+            startIcon={<BiArrowBack size={20} />}
           >
             Atras
           </Button>
           <Button
             onClick={() => navigate(`/customers/edit/${customer?._id}`)}
             className="bg-green-600 text-white dark:bg-green-500 hover:bg-green-800 dark:hover:bg-green-700"
-            icon={<BiEdit size={20} />}
+            startIcon={<BiEdit size={20} />}
           >
             Editar
           </Button>
           <Button
             onClick={() => handleDeleteCustomer(customer!._id)}
             className="bg-red-600 text-white dark:bg-red-500 hover:bg-red-800 dark:hover:bg-red-700"
-            icon={<BiTrash size={20} />}
+            startIcon={<BiTrash size={20} />}
           >
             Eliminar
           </Button>

@@ -8,9 +8,12 @@ import type { RootState } from '../../../store/store';
 import { getUserById, clearSelectedUser } from '../slices/usersSlice';
 import { usersService } from '../services/usersService';
 
+import { parseUserRole } from '../../../utils/commonFunctions';
+
 import type { User } from '../interfaces/UserInterface';
-import { Button } from '../../../components/UI/Button/Button';
+import Button from '../../../components/UI/Button/Button';
 import { BiArrowBack, BiEdit } from 'react-icons/bi';
+import Badge from '../../../components/UI/Badge/Badge';
 
 export function User() {
   const { userId } = useParams<{ userId: string }>();
@@ -137,9 +140,13 @@ export function User() {
 
           <div>
             <p className="text-gray-500 dark:text-gray-400 text-sm">Rol</p>
-            <p className="text-gray-800 dark:text-gray-200">
-              {user.rol.charAt(0).toUpperCase() + user.rol.slice(1)}
-            </p>
+            <p className="text-gray-800 dark:text-gray-200">{parseUserRole(user.rol)}</p>
+          </div>
+
+          <div>
+            <p className="text-gray-500 dark:text-gray-400 text-sm">Direccion</p>
+            <p className="text-gray-800 dark:text-gray-200">{user.direccion}</p>
+            <p></p>
           </div>
 
           {user.createdBy && (
@@ -179,33 +186,27 @@ export function User() {
           </div>
 
           <div>
-            <p className="text-gray-500 dark:text-gray-400 text-sm">Estado</p>
-            <p
-              className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${
-                user.estado === 'activo'
-                  ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                  : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-              }`}
-            >
-              {user.estado.charAt(0).toUpperCase() + user.estado.slice(1)}
-            </p>
+            {user.estado ? (
+              <Badge color="success">Activo</Badge>
+            ) : (
+              <Badge color="error">Inactivo</Badge>
+            )}
           </div>
         </div>
         <div className="mt-6 flex flex-col sm:flex-row items-center justify-end space-y-2 sm:space-y-0 sm:space-x-4">
           <Button
-            variant="secondary"
+            size="sm"
             className="px-2 py-1"
-            icon={<BiArrowBack size={20} />}
+            startIcon={<BiArrowBack size={20} />}
             onClick={() => navigate('/users')}
           >
             Volver
           </Button>
 
           <Button
-            icon={<BiEdit size={20} />}
-            iconPosition='right'
+            size="sm"
+            startIcon={<BiEdit size={20} />}
             onClick={() => navigate(`/users/edit/${user._id}`)}
-            variant="default"
           >
             Editar
           </Button>

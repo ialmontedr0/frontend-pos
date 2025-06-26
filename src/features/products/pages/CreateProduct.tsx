@@ -11,9 +11,9 @@ import { clearProductError, createProduct } from '../slices/productsSlice';
 
 import type { CreateProductDTO } from '../dtos/create-product.dto';
 
-import { Button } from '../../../components/UI/Button/Button';
+import Button from '../../../components/UI/Button/Button';
 import { Label } from '../../../components/UI/Label/Label';
-import { Input } from '../../../components/UI/Input/Input';
+import Input from '../../../components/UI/Input/Input';
 import { Textarea } from '../../../components/UI/TextArea/TextArea';
 import { Select } from '../../../components/UI/Select/Select';
 
@@ -285,7 +285,7 @@ export const CreateProduct: React.FC = () => {
 
         <div>
           <Button type="submit">{loading ? 'Creando...' : 'Crear'}</Button>
-          <Button onClick={() => cancel()} type="button" variant="default">
+          <Button onClick={() => cancel()} type="button" variant="outline">
             Cancelar
           </Button>
         </div>

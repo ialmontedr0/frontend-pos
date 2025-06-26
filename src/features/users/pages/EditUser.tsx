@@ -15,13 +15,13 @@ import {
 import { resetPassword } from '../../auth/slices/authSlice';
 import type { UpdateUserDTO } from '../dtos/update-user.dto';
 
-import { Button } from '../../../components/UI/Button/Button';
-import { Input } from '../../../components/UI/Input/Input';
-import { Textarea } from '../../../components/UI/TextArea/TextArea';
+import Button from '../../../components/UI/Button/Button';
+import Input from '../../../components/UI/Input/Input';
 import { Label } from '../../../components/UI/Label/Label';
 import { Select } from '../../../components/UI/Select/Select';
 import { ToggleSwitch } from '../../../components/UI/Switch/Switch';
 import { BiKey, BiReset, BiSave, BiTrash, BiX } from 'react-icons/bi';
+import { myAlertSuccess } from '../../../utils/commonFunctions';
 
 export const EditUser: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
@@ -108,6 +108,7 @@ export const EditUser: React.FC = () => {
       .then((result) => {
         if (result.isConfirmed) {
           dispatch(updateUser({ userId: user!._id, updateUserDTO })).then(() => {
+            myAlertSuccess(`Usuario actualizado`, `Se ha actualizado el usuario con exito`);
             navigate(`/users/${userId}`);
           });
         }
@@ -293,7 +294,7 @@ export const EditUser: React.FC = () => {
 
             <div className="col-span-full">
               <Label htmlFor="direccion">Direccion</Label>
-              <Textarea id="direccion" rows={3} {...register('direccion')} />
+              <Input id="direccion" {...register('direccion')} />
             </div>
           </div>
         </div>
@@ -302,11 +303,11 @@ export const EditUser: React.FC = () => {
 
         {/** Botones */}
         <div className="flex flex-wrap justify-end gap-3 pt-4 border-t dark:border-gray-700">
-          <Button icon={<BiSave size={20} />} type="submit" variant="default">
+          <Button startIcon={<BiSave size={20} />} type="submit">
             Guardar
           </Button>
           <Button
-            icon={<BiKey size={20} />}
+            startIcon={<BiKey size={20} />}
             type="button"
             className="bg-green-800 hover:bg-green-700"
             onClick={onResetPwd}
@@ -314,22 +315,17 @@ export const EditUser: React.FC = () => {
             Restablecer contrasena
           </Button>
           <Button
-            icon={<BiReset size={20} />}
+            startIcon={<BiReset size={20} />}
             type="button"
             className="bg-green-600 hover:bg-green-500"
             onClick={onResetPrefs}
           >
             Restablecer preferencias
           </Button>
-          <Button
-            icon={<BiTrash size={20} />}
-            type="button"
-            variant="destructive"
-            onClick={onDelUser}
-          >
+          <Button startIcon={<BiTrash size={20} />} type="button" onClick={onDelUser}>
             Eliminar usuario
           </Button>
-          <Button icon={<BiX size={20} />} type="button" variant="secondary" onClick={cancel}>
+          <Button startIcon={<BiX size={20} />} type="button" onClick={cancel}>
             Cancelar
           </Button>
         </div>

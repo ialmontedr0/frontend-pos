@@ -10,7 +10,7 @@ import { deletePayment } from '../slices/paymentsSlices';
 import type { Payment } from '../interfaces/PaymentInterface';
 import type { Column, Action } from '../../../components/Table/types';
 
-import { Button } from '../../../components/UI/Button/Button';
+import  Button  from '../../../components/UI/Button/Button';
 import { BiPlusCircle } from 'react-icons/bi';
 import moment from 'moment';
 import { Table } from '../../../components/Table/Table';
@@ -147,8 +147,7 @@ export const PaymentsTable: React.FC<PaymentsTableProps> = ({ data, loading, err
         <div className="w-auto flex flex-wrap gap-4 my-2">
           <Button
             onClick={() => navigate('/payments/create')}
-            icon={<BiPlusCircle size={24} />}
-            iconPosition="right"
+            startIcon={<BiPlusCircle size={24} />}
             type="button"
             className="border border-gray-900 px-4 py-1 rounded-full text-white bg-blue-900 dark:bg-blue-400 cursor-pointer hover:bg-blue-800 transition-colors"
           >

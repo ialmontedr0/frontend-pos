@@ -9,8 +9,8 @@ import { createUser, clearUserError } from '../slices/usersSlice';
 import type { CreateUserDTO } from '../dtos/create-user.dto';
 
 // Componentes reutilizables
-import { Button } from '../../../components/UI/Button/Button';
-import { Input } from '../../../components/UI/Input/Input';
+import  Button  from '../../../components/UI/Button/Button';
+import  Input  from '../../../components/UI/Input/Input';
 import { Textarea } from '../../../components/UI/TextArea/TextArea';
 import { Label } from '../../../components/UI/Label/Label';
 import { Select } from '../../../components/UI/Select/Select';
@@ -227,10 +227,10 @@ export const CreateUser: React.FC = () => {
         {error && <p className="text-center text-red-600 bg-red-100 p-2 rounded-md">{error}</p>}
 
         <div className="flex justify-end pt-4 gap-2 dark:border-gray-700">
-          <Button icon={<BiSave size={20} />} type="submit" variant="default">
+          <Button startIcon={<BiSave size={20} />} type="submit" variant="primary">
             {loading ? 'Creando...' : 'Guardar usuario'}
           </Button>
-          <Button icon={<BiX size={20} />} type="button" variant="secondary" onClick={cancel}>
+          <Button startIcon={<BiX size={20} />} type="button" variant="outline" onClick={cancel}>
             Cancelar
           </Button>
         </div>

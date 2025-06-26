@@ -1,130 +1,50 @@
-import React from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '../../../lib/utils';
-
-const buttonVariants = cva(
-  'inline-flex cursor-pointer items-center justify-center whitespace-nowrap rounded-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus:visible::ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
-  {
-    variants: {
-      variant: {
-        default:
-          'bg-[#4d39f6] text-white hover:bg-[#4f39f8] focus-visible:ring-[#e5e7eb] dark:bg-[#4b5563] dark:text-gray-900 dark:hover:bg-[#4b5563] dark:focus-visible:ring-[#6c55fa]',
-        secondary:
-          'bg-gray-100 text-gray-900 hover:bg-gray-200 focus-visible:ring-gray-950 dark:bg-gray-800 dark:text-gray-50 dark:hover:bg-gray-700 dark:focus-visible:ring-gray-50',
-        outline:
-          'border border-gray-200 bg-white hover:bg-gray-100 hover:text-gray-900 focus-visible:ring-gray-950 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus-visible:ring-gray-50',
-        destructive:
-          'bg-red-500 text-white hover:bg-red-600 focus:visible:ring-red-500 dark:bg-red-700 dark:text-white dark:hover:bg-red-800 dark:focus-visible:ring-red-700',
-      },
-      size: {
-        default: 'h-10 px-4 py-1',
-        sm: 'h-8 rounded-md px-3',
-        lg: 'h-11 rounded-md px-8',
-        icon: 'h-10 w-10',
-      },
-    },
-    defaultVariants: {
-      variant: 'default',
-      size: 'default',
-    },
-  }
-);
-
-export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
-  asChild?: boolean;
-  icon?: React.ReactNode;
-  iconPosition?: 'left' | 'right';
-  hideTextOnMobile?: boolean;
+interface ButtonProps {
+  type?: 'submit' | 'button';
+  children?: React.ReactNode;
+  size?: 'sm' | 'md';
+  variant?: 'primary' | 'outline';
+  startIcon?: React.ReactNode;
+  endIcon?: React.ReactNode;
+  onClick?: () => void;
+  disabled?: boolean;
+  className?: string;
 }
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  (
-    {
-      className,
-      variant,
-      size,
-      asChild = false,
-      icon,
-      iconPosition = 'left',
-      hideTextOnMobile = false,
-      children,
-      ...props
-    },
-    ref
-  ) => {
-    const Comp = asChild ? 'span' : 'button';
+const Button: React.FC<ButtonProps> = ({
+  type = 'button',
+  children,
+  size = 'md',
+  variant = 'primary',
+  startIcon,
+  endIcon,
+  onClick,
+  className = '',
+  disabled,
+}) => {
+  const sizeClasses = {
+    sm: 'px-4 py-3 text-sm',
+    md: 'px-5 py-3.5 text-sm',
+  };
+  const variantClasses = {
+    primary: 'bg-brand-500 text-white shadow-theme-xs hover:bg-brand-600 disabled:bg-brand-300',
+    outline:
+      'bg-white text-white-700 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-white/[0.03] dark:hover:text-gray-300',
+  };
 
-    const renderContent = () => {
-      const iconSpacingClasses = iconPosition === 'left' ? 'mr-2' : 'ml-2';
+  return (
+    <button
+      type={type}
+      className={`inline-flex items-center justify-center gap-2 rounded-lg transition ${className} ${
+        sizeClasses[size]
+      } ${variantClasses[variant]} ${disabled ? 'cursor-not-allowed opacity-50' : ''}`}
+      onClick={onClick}
+      disabled={disabled}
+    >
+      {startIcon && <span className="flex items-center">{startIcon}</span>}
+      {children}
+      {endIcon && <span className="flex items-center">{endIcon}</span>}
+    </button>
+  );
+};
 
-      // Si no hay hijos (texto) y si hay icono, el boton es solo un icono
-      if (!children && icon) {
-        return icon;
-      }
-
-      return (
-        <>
-          {/** Renderizar el icono si esta presente */}
-          {icon && iconPosition === 'left' && (
-            <span
-              className={cn('inline-flex items-center justify-center', {
-                'sm:hidden': hideTextOnMobile && children,
-                block: !children && icon,
-                [iconSpacingClasses]: children,
-              })}
-            >
-              {icon}
-            </span>
-          )}
-
-          {/** Renderiza el texto (children) */}
-          {children && (
-            <span
-              className={cn({
-                'hidden sm:inline': hideTextOnMobile && icon,
-              })}
-            >
-              {children}
-            </span>
-          )}
-
-          {/** Renderiza el icono si esta presente y el la posicion derecha */}
-          {icon && iconPosition === 'right' && (
-            <span
-              className={cn('inline-flex items-center justify-center', {
-                'sm:hidden': hideTextOnMobile && children,
-                block: !children && icon,
-                [iconSpacingClasses]: children,
-              })}
-            >
-              {icon}
-            </span>
-          )}
-        </>
-      );
-    };
-
-    return (
-      <Comp
-        className={cn(buttonVariants({ variant, size, className }), {
-          // Ajusta el padding si se muestra el icono en movil
-          // No hay texto en el boton completo
-          // Prop hideTextOnMobile
-          'px-2 w-10': hideTextOnMobile && icon && !children,
-          'sm:px-4 sm:w-auto': hideTextOnMobile && icon && !children,
-          'px-2': hideTextOnMobile && icon && children,
-          'sm:px-4 sm:py-2': hideTextOnMobile && icon && children,
-        })}
-        ref={ref}
-        {...props}
-      >
-        {renderContent()}
-      </Comp>
-    );
-  }
-);
-Button.displayName = 'Button';
-
-export { Button, buttonVariants };
+export default Button;

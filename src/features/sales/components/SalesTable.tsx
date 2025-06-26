@@ -6,7 +6,7 @@ import type { Sale } from '../interfaces/SaleInterface';
 import type { Column, Action } from '../../../components/Table/types';
 import { Table } from '../../../components/Table/Table';
 
-import { Button } from '../../../components/UI/Button/Button';
+import  Button  from '../../../components/UI/Button/Button';
 import { BiPlusCircle } from 'react-icons/bi';
 import moment from 'moment';
 import Spinner from '../../../components/UI/Spinner/Spinner';
@@ -87,8 +87,7 @@ export const SalesTable: React.FC<SalesTableProps> = ({ data, loading, error }) 
         <h2 className="text-3xl font-semibold">Ventas</h2>
         <div className="w-auto flex flex-wrap gap-2">
           <Button
-            icon={<BiPlusCircle size={24} />}
-            iconPosition="right"
+            startIcon={<BiPlusCircle size={24} />}
             type="button"
             className="border border-gray-900 px-4 rounded-full py-1 rounded-md text-white bg-blue-900 dark:bg-blue-400 cursor-pointer hover:bg-blue-800 transition-colors"
             onClick={() => navigate('/sales/create')}

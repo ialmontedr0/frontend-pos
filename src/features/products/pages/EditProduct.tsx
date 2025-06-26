@@ -15,8 +15,8 @@ import {
 } from '../slices/productsSlice';
 import type { UpdateProductDTO } from '../dtos/update-product.dto';
 
-import { Button } from '../../../components/UI/Button/Button';
-import { Input } from '../../../components/UI/Input/Input';
+import Button from '../../../components/UI/Button/Button';
+import Input from '../../../components/UI/Input/Input';
 import { Label } from '../../../components/UI/Label/Label';
 import { SearchSelect } from '../../../components/SearchSelect/SearchSelect';
 import { Textarea } from '../../../components/UI/TextArea/TextArea';
@@ -381,18 +381,17 @@ export const EditProduct: React.FC = () => {
           {error && <div className="text-red-600">Error: {error}</div>}
 
           <div className="flex flex-wrap justify-end gap-3 pt-4 border-t dark:border-gray-700">
-            <Button icon={<BiSave size={20} />} type="submit" className="">
+            <Button startIcon={<BiSave size={20} />} type="submit" className="">
               Guardar
             </Button>
             <Button
-              icon={<BiTrash size={20} />}
+              startIcon={<BiTrash size={20} />}
               type="button"
-              variant="destructive"
               onClick={() => onDelProduct(product._id)}
             >
               Eliminar
             </Button>
-            <Button icon={<BiX size={20} />} type="button" variant="outline" onClick={cancel}>
+            <Button startIcon={<BiX size={20} />} type="button" variant="outline" onClick={cancel}>
               Cancelar
             </Button>
           </div>

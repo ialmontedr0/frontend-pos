@@ -1,3 +1,4 @@
+//src/components/Table/types.ts
 export interface Column<T> {
   header: string;
   accessor: keyof T;

@@ -1,5 +1,7 @@
 import { createRoot } from 'react-dom/client';
 import './index.css';
+import 'swiper/swiper-bundle.css';
+import 'flatpickr/dist/flatpickr.css';
 
 import { Provider } from 'react-redux';
 import { store, persistor } from './store/store';
@@ -8,6 +10,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { RouterProvider } from 'react-router-dom';
+import { AppWrapper } from './components/common/PageMeta';
 import { router } from './router';
 
 const queryClient = new QueryClient({
@@ -22,7 +25,9 @@ createRoot(document.getElementById('root')!).render(
     <PersistGate loading={null} persistor={persistor}>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider>
-          <RouterProvider router={router} />
+          <AppWrapper>
+            <RouterProvider router={router} />
+          </AppWrapper>
         </ThemeProvider>
       </QueryClientProvider>
     </PersistGate>

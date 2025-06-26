@@ -14,7 +14,7 @@ import { createSale } from '../slices/salesSlice';
 import type { CreateSaleDTO } from '../dtos/create-sale.dto';
 
 import { Label } from '../../../components/UI/Label/Label';
-import { Input } from '../../../components/UI/Input/Input';
+import  Input  from '../../../components/UI/Input/Input';
 import { BiTrash } from 'react-icons/bi';
 
 

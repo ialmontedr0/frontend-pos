@@ -14,7 +14,7 @@ import { BiTrash } from 'react-icons/bi';
 import { createSale } from '../slices/salesSlice';
 import { getAllCustomers } from '../../customers/slices/customerSlice';
 import { getAllProducts } from '../../products/slices/productsSlice';
-import { Button } from '../../../components/UI/Button/Button';
+import Button from '../../../components/UI/Button/Button';
 
 export const CreateSale: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -152,6 +152,15 @@ export const CreateSale: React.FC = () => {
         setSelectedProduct(null);
         setTempQuantity(1);
         navigate('/sales');
+      })
+      .catch((error: any) => {
+        myAlert.fire({
+          title: 'Error',
+          text: `Error al crear la venta: ${error.response?.data?.message || error.message}`,
+          icon: 'error',
+          timer: 5000,
+          timerProgressBar: true,
+        });
       });
   };
 
@@ -189,7 +198,7 @@ export const CreateSale: React.FC = () => {
                 <p className="mt-2 font-semibold">📌 {selectedCustomer.nombre}</p>
                 <Button
                   onClick={() => setSelectedCustomer(null)}
-                  icon={<BiTrash size={16} />}
+                  startIcon={<BiTrash size={16} />}
                 ></Button>
               </div>
             )}
