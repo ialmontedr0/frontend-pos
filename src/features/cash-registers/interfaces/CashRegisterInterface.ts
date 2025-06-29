@@ -11,6 +11,7 @@ export interface CashRegister {
   montoActual: number;
   createdBy: { _id: string; usuario: string };
   updatedBy?: { _id: string; usuario: string };
+  assignedTo?: { _id: string; usuario: string };
   openBy?: { _id: string; usuario: string };
   closedBy?: { _id: string; usuario: string };
   openAt?: string;

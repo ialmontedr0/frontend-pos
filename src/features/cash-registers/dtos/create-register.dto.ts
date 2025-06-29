@@ -1,4 +1,5 @@
 export interface CreateRegisterDTO {
-  estado: 'abierta' | 'cerrada';
+  estado?: 'abierta' | 'cerrada';
+  assignedTo?: string;
   montoActual?: number;
 }

@@ -115,11 +115,11 @@ export const MonthlyTarget: React.FC<MonthlyTargetProps> = ({
           </div>
 
           <span className="absolute left-1/2 top-full -translate-y-[95%] rounded-full bg-success-50 px-3 py-1 text-xs font-medium text-success-600 dark:bg-success-500/15 dark:text-success-500">
-            {diffLastMonth}%
+            {progress}%
           </span>
         </div>
         <p className="mx-auto mt-10 w-full max-w-[380px] text-center text-sm text-gray-500 sm:text-base">
-          Vendiste RD$ {sold} hoy.{' '}
+          Vendiste RD$ {sold.toFixed(2)} hoy.{' '}
           {diffLastMonth === 0
             ? 'Muy poco, debes aumentar las ventas'
             : 'Vas aumentando, sigue asi!'}
@@ -132,7 +132,7 @@ export const MonthlyTarget: React.FC<MonthlyTargetProps> = ({
             Meta
           </p>
           <p className="flex items-center justify-center gap-1 text-base font-semibold text-gray-800 dark:text-white/90 sm:text-lg">
-            {target}
+            RD$ {target}
             <svg
               width="16"
               height="16"
@@ -157,7 +157,7 @@ export const MonthlyTarget: React.FC<MonthlyTargetProps> = ({
             Ganancia
           </p>
           <p className="flex items-center justify-center gap-1 text-base font-semibold text-gray-800 dark:text-white/90 sm:text-lg">
-            {revenue}
+            RD$ {revenue.toFixed(2)}
             <svg
               width="16"
               height="16"
@@ -182,7 +182,7 @@ export const MonthlyTarget: React.FC<MonthlyTargetProps> = ({
             Hoy
           </p>
           <p className="flex items-center justify-center gap-1 text-base font-semibold text-gray-800 dark:text-white/90 sm:text-lg">
-            {sold}
+            RD$ {sold.toFixed(2)}
             <svg
               width="16"
               height="16"

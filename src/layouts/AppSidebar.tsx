@@ -16,6 +16,7 @@ import {
   BiMoney,
   BiMoneyWithdraw,
   BiSolidDashboard,
+  BiSpreadsheet,
   BiSync,
   BiUser,
   BiUserCircle,
@@ -79,6 +80,7 @@ const AppSidebar: React.FC = () => {
       { name: 'Ventas', path: '/sales', icon: <BiCart /> },
       { name: 'Pagos', path: '/payments', icon: <BiMoney /> },
       { name: 'Cajas', path: '/cash-registers', icon: <BiMoneyWithdraw /> },
+      { name: 'Transacciones', path: '/transactions', icon: <BiSpreadsheet /> },
       { name: 'Sync Logs', path: '/sync-logs', icon: <BiSync /> },
       { name: 'Estadisticas', path: '/stats', icon: <BiBarChart /> },
     ];
@@ -100,6 +102,7 @@ const AppSidebar: React.FC = () => {
       { name: 'Ventas', path: '/sales', icon: <BiCart /> },
       { name: 'Pagos', path: '/payments', icon: <BiMoney /> },
       { name: 'Cajas', path: '/cash-registers', icon: <BiMoneyWithdraw /> },
+      { name: 'Transacciones', path: '/transactions', icon: <BiSpreadsheet /> },
       { name: 'Notificaciones', path: '/notifications', icon: <BiBell /> },
       { name: 'Sync Logs', path: '/sync-logs', icon: <BiSync /> },
       { name: 'Estadisticas', path: '/stats', icon: <BiBarChart /> },

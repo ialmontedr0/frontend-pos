@@ -8,6 +8,8 @@ import withReactContent from 'sweetalert2-react-content';
 import type { RootState } from '../../../store/store';
 import { useAppSelector, useAppDispatch } from '../../../hooks/hooks';
 import { createCashRegister, clearCashRegisterError } from '../slices/cashRegisterSlice';
+import type { User } from '../../users/interfaces/UserInterface';
+import { getAllUsers } from '../../users/slices/usersSlice';
 
 import type { CreateRegisterDTO } from '../dtos/create-register.dto';
 import { Label } from '../../../components/UI/Label/Label';
@@ -15,13 +17,22 @@ import { Select } from '../../../components/UI/Select/Select';
 import Input from '../../../components/UI/Input/Input';
 import Button from '../../../components/UI/Button/Button';
 import Spinner from '../../../components/UI/Spinner/Spinner';
+import { BiTrash } from 'react-icons/bi';
 
 export const CreateRegister: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
-
+  const [registerStatus, setRegisterStatus] = useState<'abierta' | 'cerrada'>('abierta');
   const [registerCurrentAmount, setRegisterCurrentAmount] = useState<number>(0);
+
+  const { users } = useAppSelector((state: RootState) => state.users);
+  const [userQuery, setUserQuery] = useState<string>('');
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+
+  const filteredUsers = users.filter((u) =>
+    u.usuario.toLowerCase().includes(userQuery.toLowerCase())
+  );
 
   const {
     cashRegister: createdCashRegister,
@@ -30,19 +41,20 @@ export const CreateRegister: React.FC = () => {
   } = useAppSelector((state: RootState) => state.cashRegisters);
 
   const {
-    register,
     handleSubmit,
     formState: { errors },
   } = useForm<CreateRegisterDTO>({
     defaultValues: {
       estado: 'abierta',
       montoActual: registerCurrentAmount ?? 0,
+      assignedTo: '',
     },
   });
 
   useEffect(() => {
+    dispatch(getAllUsers());
     setRegisterCurrentAmount(0);
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if (createdCashRegister) {
@@ -56,8 +68,7 @@ export const CreateRegister: React.FC = () => {
     };
   }, [dispatch]);
 
-  const onSubmit = (createRegisterDTO: CreateRegisterDTO) => {
-    console.log(createRegisterDTO);
+  const onSubmit = () => {
     myAlert
       .fire({
         title: 'Crear Caja',
@@ -70,7 +81,13 @@ export const CreateRegister: React.FC = () => {
       })
       .then((result) => {
         if (result.isConfirmed) {
-          dispatch(createCashRegister(createRegisterDTO))
+          dispatch(
+            createCashRegister({
+              assignedTo: selectedUser?._id,
+              estado: registerStatus ?? 'abierta',
+              montoActual: registerCurrentAmount ?? 0,
+            })
+          )
             .unwrap()
             .then(() => {
               myAlert.fire({
@@ -128,8 +145,8 @@ export const CreateRegister: React.FC = () => {
             <Label htmlFor="estado">Estado</Label>
 
             <Select
-              id="estado"
-              {...register('estado')}
+              value={registerStatus}
+              onChange={(e) => setRegisterStatus(e.target.value as any)}
               className="block w-40 md:w-48 rounded-md border border-gray-300 dark:border-gray-600 
                         bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200
                         focus:ring-indigo-500 focus:border-indigo-500"
@@ -145,13 +162,48 @@ export const CreateRegister: React.FC = () => {
               type="number"
               id="montoActual"
               min={0}
-              {...register('montoActual', {
-                valueAsNumber: true,
-                setValueAs: (v) => (v === '' ? 0 : Number(v)),
-              })}
+              onChange={(e) => {
+                let val = parseFloat(e.target.value) || 0;
+                setRegisterCurrentAmount(val);
+              }}
             />
             {errors.montoActual && (
               <p className="text-sm text-red-500">{errors.montoActual.message}</p>
+            )}
+          </div>
+
+          <div>
+            <Label htmlFor="assignedTo">Asignar a Usuario</Label>
+            <Input
+              type="text"
+              value={userQuery}
+              onChange={(e) => setUserQuery(e.target.value)}
+              placeholder="Buscar usuario..."
+            />
+            {userQuery && (
+              <ul className="overflow-auto max-h-40 border rounded mt-1 bg-white">
+                {filteredUsers.map((u) => (
+                  <li
+                    className="px-3 py-2 hover:bg-blue-100 cursor-pointer"
+                    key={u._id}
+                    onClick={() => {
+                      setSelectedUser(u);
+                      setUserQuery('');
+                    }}
+                  >
+                    {u.usuario}
+                  </li>
+                ))}
+              </ul>
+            )}
+            {selectedUser && (
+              <div>
+                <p className="mt-2 font-semibold">📌 {selectedUser.usuario}</p>
+                <Button
+                  onClick={() => setSelectedUser(null)}
+                  startIcon={<BiTrash size={16} />}
+                ></Button>
+              </div>
             )}
           </div>
 

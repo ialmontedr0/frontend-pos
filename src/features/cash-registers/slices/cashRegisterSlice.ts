@@ -88,6 +88,32 @@ export const getAllCashRegistersForCurrentUser = createAsyncThunk<
   }
 });
 
+export const getOpenCashRegisterForCurrentUser = createAsyncThunk<
+  CashRegister,
+  void,
+  { rejectValue: string }
+>('cashRegisters/getOpenForCurrentUser', async (_, { rejectWithValue }) => {
+  try {
+    const registerResponse = await cashRegisterService.getOpenForCurrentUser();
+    return registerResponse.data;
+  } catch (error: any) {
+    return rejectWithValue(error.respone?.data?.message || error.message);
+  }
+});
+
+export const getAssignedCashRegisterToUser = createAsyncThunk<
+  CashRegister[],
+  void,
+  { rejectValue: string }
+>('cashRegisters/getAssignedToUser', async (_, { rejectWithValue }) => {
+  try {
+    const assignedRegisters = await cashRegisterService.getAssignedCashRegisterToUser();
+    return assignedRegisters.data;
+  } catch (error: any) {
+    return rejectWithValue(error.response?.data?.message || error.message);
+  }
+});
+
 export const createCashRegister = createAsyncThunk<
   CashRegister,
   CreateRegisterDTO,
@@ -95,6 +121,19 @@ export const createCashRegister = createAsyncThunk<
 >('cashRegisters/create', async (createRegisterDTO, { rejectWithValue }) => {
   try {
     const registerResponse = await cashRegisterService.create(createRegisterDTO);
+    return registerResponse.data;
+  } catch (error: any) {
+    return rejectWithValue(error.response?.data?.message || error.message);
+  }
+});
+
+export const assignCashRegisterToUser = createAsyncThunk<
+  CashRegister,
+  { userId: string; codigo: string },
+  { rejectValue: string }
+>('cashRegisters/assignToUser', async ({ userId, codigo }, { rejectWithValue }) => {
+  try {
+    const registerResponse = await cashRegisterService.assignToUser(userId, codigo);
     return registerResponse.data;
   } catch (error: any) {
     return rejectWithValue(error.response?.data?.message || error.message);
@@ -229,12 +268,9 @@ const cashRegistersSlice = createSlice({
       (state.loading = true), (state.error = null);
     });
 
-    builder.addCase(
-      getCashRegisterById.fulfilled,
-      (state, action: PayloadAction<CashRegister>) => {
-        (state.loading = false), (state.cashRegister = action.payload);
-      }
-    );
+    builder.addCase(getCashRegisterById.fulfilled, (state, action: PayloadAction<CashRegister>) => {
+      (state.loading = false), (state.cashRegister = action.payload);
+    });
 
     builder.addCase(getCashRegisterById.rejected, (state, action) => {
       (state.loading = false),
@@ -292,6 +328,23 @@ const cashRegistersSlice = createSlice({
         (state.error = (action.payload as string) || 'Error al obtener las cajas');
     });
 
+    builder.addCase(getAssignedCashRegisterToUser.pending, (state) => {
+      (state.loading = true), (state.error = null);
+    });
+
+    builder.addCase(
+      getAssignedCashRegisterToUser.fulfilled,
+      (state, action: PayloadAction<CashRegister[]>) => {
+        (state.loading = false), (state.cashRegisters = action.payload);
+      }
+    );
+
+    builder.addCase(getAssignedCashRegisterToUser.rejected, (state, action) => {
+      (state.loading = false),
+        (state.error =
+          (action.payload as string) || 'Error al obtener las cajas asiganadas al usuario actul');
+    });
+
     // 6. === Crear una caja ===
     builder.addCase(createCashRegister.pending, (state) => {
       (state.loading = true), (state.error = null);
@@ -304,6 +357,22 @@ const cashRegistersSlice = createSlice({
     builder.addCase(createCashRegister.rejected, (state, action) => {
       (state.loading = false),
         (state.error = (action.payload as string) || 'Error al crear la caja');
+    });
+
+    builder.addCase(assignCashRegisterToUser.pending, (state) => {
+      (state.loading = true), (state.error = null);
+    });
+
+    builder.addCase(
+      assignCashRegisterToUser.fulfilled,
+      (state, action: PayloadAction<CashRegister>) => {
+        (state.loading = false), (state.cashRegister = action.payload);
+      }
+    );
+
+    builder.addCase(assignCashRegisterToUser.rejected, (state, action) => {
+      (state.loading = false),
+        (state.error = (action.payload as string) || 'Error al asignar el usuario a la caja');
     });
 
     // 7. === Actualizar una caja ===

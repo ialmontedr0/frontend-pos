@@ -13,8 +13,13 @@ export const cashRegisterService = {
   getByCode: (codigo: string) => api.get<CashRegister>(`/cash-registers/code/${codigo}`),
   getByUser: (userId: string) => api.get<CashRegister[]>(`/cash-registers/user/${userId}`),
   getAllForCurrentUser: () => api.get<CashRegister[]>(`/cash-registers/current-user`),
+  getOpenForCurrentUser: () => api.get<CashRegister>(`/cash-registers/current-user/open`),
+  getAssignedCashRegisterToUser: () =>
+    api.get<CashRegister[]>(`/cash-registers/assigned/current-user`),
   create: (createRegisterDTO: CreateRegisterDTO) =>
     api.post<CashRegister>('/cash-registers', createRegisterDTO),
+  assignToUser: (userId: string, codigo: string) =>
+    api.patch<CashRegister>(`/cash-registers/assign/${userId}/${codigo}`),
   update: (cashRegisterId: string, updateRegisterDTO: UpdateRegisterDTO) =>
     api.patch<CashRegister>(`/cash-registers/${cashRegisterId}`, updateRegisterDTO),
   open: (cashRegisterId: string, openRegisterDTO: OpenRegisterDTO) =>

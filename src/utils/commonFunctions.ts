@@ -15,6 +15,17 @@ export const parseUserRole = (rol: string) => {
   }
 };
 
+export const parseCustomerType = (tipo: string): string => {
+  switch (tipo) {
+    case 'express':
+      return 'Express';
+    case 'comun':
+      return 'Comun';
+    default:
+      return 'Desconocido';
+  }
+};
+
 export const parseUserStatus = (estado: string) => {
   switch (estado) {
     case 'activo':
@@ -36,6 +47,17 @@ export const parsePaymentMethod = (metodoPago: string): string => {
       return 'Tarjeta';
     case 'puntos':
       return 'Puntos';
+    default:
+      return 'Desconocido';
+  }
+};
+
+export const parseTransactionType = (tipo: string): string => {
+  switch (tipo) {
+    case 'entrada':
+      return 'Entrada';
+    case 'salida':
+      return 'Salida';
     default:
       return 'Desconocido';
   }

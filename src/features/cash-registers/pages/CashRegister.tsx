@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
 import Swal from 'sweetalert2';
@@ -12,7 +12,10 @@ import {
   clearSelectedCashRegister,
   closeCashRegister,
   openCashRegister,
+  assignCashRegisterToUser,
+  clearCashRegisterError,
 } from '../slices/cashRegisterSlice';
+import { getAllUsers } from '../../users/slices/usersSlice';
 
 import { Label } from '../../../components/UI/Label/Label';
 import type { Transaction } from '../interfaces/TransactionInterface';
@@ -20,12 +23,26 @@ import type { Action, Column } from '../../../components/Table/types';
 import moment from 'moment';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import { Table } from '../../../components/Table/Table';
-import { BiArrowBack, BiEdit, BiFolderOpen, BiTrash, BiWindowClose } from 'react-icons/bi';
+import {
+  BiArrowBack,
+  BiEdit,
+  BiFolderOpen,
+  BiTrash,
+  BiUserPin,
+  BiWindowClose,
+} from 'react-icons/bi';
+import Button from '../../../components/UI/Button/Button';
+import { myAlertError, myAlertSuccess } from '../../../utils/commonFunctions';
+import type { User } from '../../users/interfaces/UserInterface';
 
 export const CashRegister: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
+
+  const [userQuery, setUserQuery] = useState<string>('');
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const { users } = useAppSelector((state: RootState) => state.users);
 
   let openAmount: number = 0;
   let closeAmount: number = 0;
@@ -56,7 +73,7 @@ export const CashRegister: React.FC = () => {
   ];
 
   const transactionActions: Action<Transaction>[] = [
-    { label: 'Ver', onClick: (t) => console.log(t) },
+    { label: 'Ver', onClick: (t) => navigate(`/transactions/${t._id}`) },
   ];
 
   useEffect(() => {
@@ -65,6 +82,7 @@ export const CashRegister: React.FC = () => {
       return;
     }
     dispatch(getCashRegisterByCode(codigo));
+    dispatch(getAllUsers());
     return () => {
       dispatch(clearSelectedCashRegister());
     };
@@ -185,19 +203,90 @@ export const CashRegister: React.FC = () => {
                 });
               })
               .catch((error: any) => {
-                myAlert.fire({
-                  title: `Error`,
-                  text: `Error: ${error.response?.data?.message || error.message}`,
-                  icon: 'error',
-                  timer: 5000,
-                  timerProgressBar: true,
-                });
+                myAlertError('Error', `Error: ${error.response?.data?.message || error.message}`);
               });
           }
         });
     },
     [dispatch, myAlert]
   );
+
+  const handleAssignToUser = () => {
+    let internalSelected: User | null = null;
+
+    // Helper para actualizar la lista de resultados
+    function renderResults(q: string, resultsEl: HTMLUListElement) {
+      const matched = users.filter((u) => u.usuario.toLowerCase().includes(q.toLowerCase()));
+      resultsEl.innerHTML = '';
+
+      matched.forEach((u) => {
+        const li = document.createElement('li');
+        li.textContent = u.usuario;
+        li.style.cssText = 'padding:5px;cursor:pointer';
+        li.onclick = () => {
+          internalSelected = u;
+          Array.from(resultsEl.children).forEach((c) =>
+            (c as HTMLElement).classList.remove('swal-selected')
+          );
+          li.classList.add('swal-selected');
+        };
+        resultsEl.appendChild(li);
+      });
+    }
+
+    myAlert
+      .fire({
+        title: 'Asignar a Usuario',
+        text: `Ingresa el usuario al que deseas asignar la caja`,
+        html: `
+        <input 
+          id='swal-input'
+          class='swal2-input'
+          placeholder='Buscar usuario'
+        />
+          <ul id='swal-results' style='text-aligh: left; max-height: 150px; overflow-y-auto; margin:0; padding:0; list-style:none;'></ul>
+        `,
+        preConfirm: () => {
+          if (!internalSelected) {
+            Swal.showValidationMessage(`Debes seleccionar un usuario`);
+          }
+          return internalSelected;
+        },
+        willOpen: () => {
+          const popup = Swal.getPopup()!;
+          const input = popup.querySelector<HTMLInputElement>('#swal-input')!;
+          const resultsEl = popup.querySelector<HTMLUListElement>('#swal-results')!;
+
+          input.addEventListener('input', () => {
+            renderResults(input.value, resultsEl);
+          });
+
+          renderResults('', resultsEl);
+        },
+        customClass: {
+          validationMessage: 'm-1 text-red-600',
+        },
+      })
+      .then((result) => {
+        if (result.isConfirmed && result.value && codigo) {
+          const user = result.value as User;
+          dispatch(
+            assignCashRegisterToUser({
+              userId: user._id,
+              codigo: codigo,
+            })
+          )
+            .unwrap()
+            .then(() => {
+              myAlertSuccess('Usuario asignado', `Se ha asignado el usuario con exito.`);
+            })
+            .catch((error: any) => {
+              myAlertError(`Error`, `Error: ${error.response?.data?.message || error.message}`);
+              dispatch(clearCashRegisterError());
+            });
+        }
+      });
+  };
 
   if (!loading && error) {
     return (
@@ -258,15 +347,22 @@ export const CashRegister: React.FC = () => {
           <p>RD$ {cashRegister.montoCierre?.toFixed(2)}</p>
         </div>
 
-          <div>
-            <Label htmlFor="diferencia">Diferencia</Label>
-            <p>RD$ {cashRegister.diferencia?.toFixed(2)}</p>
-          </div>
+        <div>
+          <Label htmlFor="diferencia">Diferencia</Label>
+          <p>RD$ {cashRegister.diferencia?.toFixed(2)}</p>
+        </div>
 
         {cashRegister.createdBy && (
           <div>
             <Label htmlFor="createdBy">Creada por</Label>
             <p>{cashRegister.createdBy.usuario}</p>
+          </div>
+        )}
+
+        {cashRegister.assignedTo && (
+          <div>
+            <Label htmlFor="assignedTo">Cajero asignado</Label>
+            <p>{cashRegister.assignedTo.usuario}</p>
           </div>
         )}
 
@@ -317,20 +413,25 @@ export const CashRegister: React.FC = () => {
         <button onClick={back} className="rounded-full px-3 py-1 bg-blue-900 text-white text-sm">
           <BiArrowBack size={28} />
         </button>
+        {cashRegister.assignedTo === undefined && (
+          <button onClick={() => handleAssignToUser()} className="relative flex flex-row">
+            <span>Asignar</span> <BiUserPin size={28} />
+          </button>
+        )}
         <button onClick={() => editRegister(cashRegister.codigo)}>
           <BiEdit size={28} />
         </button>
         {cashRegister.estado === 'abierta' ? (
           <button onClick={() => closeRegister(cashRegister._id)}>
-            <BiFolderOpen size={28}/>
+            <BiFolderOpen size={28} />
           </button>
         ) : (
           <button onClick={() => openRegister(cashRegister._id)}>
-            <BiWindowClose size={28}/>
+            <BiWindowClose size={28} />
           </button>
         )}
         <button onClick={() => onDelRegister(cashRegister._id)}>
-          <BiTrash size={28}/>
+          <BiTrash size={28} />
         </button>
       </div>
     </div>

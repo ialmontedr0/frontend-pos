@@ -1,8 +1,11 @@
-import { withFetchByRole } from "../../../hocs/withFetchByRole";
-import { getAllCashRegisters, getAllCashRegistersForCurrentUser } from "../slices/cashRegisterSlice";
-import { CashRegistersTable } from "../components/CashRegistersTable";
+import { withFetchByRole } from '../../../hocs/withFetchByRole';
+import {
+  getAllCashRegisters,
+  getAssignedCashRegisterToUser,
+} from '../slices/cashRegisterSlice';
+import { CashRegistersTable } from '../components/CashRegistersTable';
 
 export default withFetchByRole(CashRegistersTable, {
   adminFetchThunk: getAllCashRegisters,
-  selfFetchThunk: getAllCashRegistersForCurrentUser
-})
+  selfFetchThunk: getAssignedCashRegisterToUser,
+});

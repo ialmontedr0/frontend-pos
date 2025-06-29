@@ -6,7 +6,7 @@ import type { Sale } from '../interfaces/SaleInterface';
 import type { Column, Action } from '../../../components/Table/types';
 import { Table } from '../../../components/Table/Table';
 
-import  Button  from '../../../components/UI/Button/Button';
+import Button from '../../../components/UI/Button/Button';
 import { BiPlusCircle } from 'react-icons/bi';
 import moment from 'moment';
 import Spinner from '../../../components/UI/Spinner/Spinner';
@@ -72,13 +72,9 @@ export const SalesTable: React.FC<SalesTableProps> = ({ data, loading, error }) 
   if (!loading && error) {
     return (
       <div>
-        <p className="text-red-500">Error al cargar las ventas: {error}</p>
+        <p className="text-red-500 text-sm">Error al cargar las ventas: {error}</p>
       </div>
     );
-  }
-
-  if (!data || data.length === 0) {
-    return <p className="text-gray-500">No hay ventas para mostrar</p>;
   }
 
   return (
@@ -100,13 +96,17 @@ export const SalesTable: React.FC<SalesTableProps> = ({ data, loading, error }) 
 
       {loading && <Spinner />}
 
-      <Table
-        columns={saleColumns}
-        data={data}
-        defaultPageSize={10}
-        pageSizeOptions={[5, 10]}
-        actions={saleActions}
-      />
+      {data ? (
+        <Table
+          columns={saleColumns}
+          data={data}
+          defaultPageSize={10}
+          pageSizeOptions={[5, 10]}
+          actions={saleActions}
+        />
+      ) : (
+        <div>No hay ventas en el sistema!</div>
+      )}
     </div>
   );
 };

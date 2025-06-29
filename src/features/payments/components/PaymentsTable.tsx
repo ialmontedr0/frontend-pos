@@ -10,11 +10,12 @@ import { deletePayment } from '../slices/paymentsSlices';
 import type { Payment } from '../interfaces/PaymentInterface';
 import type { Column, Action } from '../../../components/Table/types';
 
-import  Button  from '../../../components/UI/Button/Button';
+import Button from '../../../components/UI/Button/Button';
 import { BiPlusCircle } from 'react-icons/bi';
 import moment from 'moment';
 import { Table } from '../../../components/Table/Table';
 import Spinner from '../../../components/UI/Spinner/Spinner';
+import { parsePaymentMethod } from '../../../utils/commonFunctions';
 
 interface PaymentsTableProps {
   data: Payment[] | null;
@@ -46,7 +47,7 @@ export const PaymentsTable: React.FC<PaymentsTableProps> = ({ data, loading, err
     {
       header: 'Metodo Pago',
       accessor: 'metodoPago',
-      render: (value: string) => `${renderPaymentMethod(value)}`,
+      render: (value: string) => `${parsePaymentMethod(value)}`,
     },
     {
       header: 'Monto',
@@ -64,21 +65,6 @@ export const PaymentsTable: React.FC<PaymentsTableProps> = ({ data, loading, err
     { label: 'Ver', onClick: (p) => navigate(`/payments/${p._id}`) },
     { label: 'Eliminar', onClick: (p) => onDelPayment(p._id) },
   ];
-
-  const renderPaymentMethod = (method: string) => {
-    switch (method) {
-      case 'efectivo':
-        return 'Efectivo';
-      case 'credito':
-        return 'Credito';
-      case 'tarjetaCreditoDebito':
-        return 'Tarjeta';
-      case 'puntos':
-        return 'Puntos';
-      default:
-        'Unknown';
-    }
-  };
 
   const onDelPayment = useCallback(
     (paymentId: string) => {
@@ -136,10 +122,6 @@ export const PaymentsTable: React.FC<PaymentsTableProps> = ({ data, loading, err
     );
   }
 
-  if (!data || data.length === 0) {
-    return <p className="text-gray-500">No hay pagos para mostrar</p>;
-  }
-
   return (
     <div className="p-6">
       <div className="flex flex-col gap-4">
@@ -158,13 +140,17 @@ export const PaymentsTable: React.FC<PaymentsTableProps> = ({ data, loading, err
 
       {loading && <Spinner />}
 
-      <Table
-        columns={paymentColumns}
-        actions={paymentActions}
-        data={data}
-        defaultPageSize={10}
-        pageSizeOptions={[5, 10]}
-      />
+      {data ? (
+        <Table
+          columns={paymentColumns}
+          data={data}
+          defaultPageSize={10}
+          pageSizeOptions={[5, 10]}
+          actions={paymentActions}
+        />
+      ) : (
+        <div>No hay ventas en el sistema!</div>
+      )}
     </div>
   );
 };

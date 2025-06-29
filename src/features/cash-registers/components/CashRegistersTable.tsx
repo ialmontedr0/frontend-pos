@@ -203,15 +203,6 @@ export const CashRegistersTable: React.FC<CashRegisterTableProps> = ({ data, loa
     [dispatch, myAlert, closeAmount]
   );
 
-  if (!data) {
-    return (
-      <div>
-        No hay cajas registradoras
-        <button onClick={() => navigate('/cash-registers/create')}>Crear caja</button>
-      </div>
-    );
-  }
-
   return (
     <div className="border-2 border-black h-full p-4 max-w-full">
       <div className="flex flex-wrap gap-2 my-2">
@@ -221,19 +212,18 @@ export const CashRegistersTable: React.FC<CashRegisterTableProps> = ({ data, loa
         >
           Nueva Caja
         </button>
-        <Button
+        <button
           onClick={toggleFilters}
-          className="bg-transparent hover:bg-transparent rounded-full text-sm font-regular text-black"
-          startIcon={<BiFilter size={24} />}
+          className="px-3 py-1 bg-green-900 text-white dark:text-gray-200 rounded-full text-sm font-regular"
         >
           Filtrar
-        </Button>
+        </button>
         <SearchBar />
       </div>
       {showFilters && (
         <div className="border border-black w-md h-auto p-4 flex flex-row gap-4">
           <div>
-            <h2 className="font-semibold">Filtros</h2>
+            <h2 className="text-black dark:text-gray-200 font-semibold">Filtros</h2>
           </div>
           <div className="flex flex-wrap gap-2">
             <button>Cajas abiertas</button>
@@ -242,13 +232,19 @@ export const CashRegistersTable: React.FC<CashRegisterTableProps> = ({ data, loa
         </div>
       )}
 
-      <Table
-        data={data}
-        columns={cashRegistersColumns}
-        actions={cashRegistersActions}
-        pageSizeOptions={[5, 10, 20]}
-        defaultPageSize={10}
-      />
+      {data ? (
+        <Table
+          data={data}
+          columns={cashRegistersColumns}
+          actions={cashRegistersActions}
+          pageSizeOptions={[5, 10, 20]}
+          defaultPageSize={10}
+        />
+      ) : (
+        <div>
+          <p>No hay cajas registradoras</p>
+        </div>
+      )}
     </div>
   );
 };

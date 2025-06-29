@@ -27,7 +27,7 @@ export const CreatePayment: React.FC = () => {
   const [saleQuery, setSaleQuery] = useState<string>('');
   const [paymentAmount, setPaymentAmount] = useState<number>(0);
   const [paymentMethod, setPaymentMethod] = useState<
-    'efectivo' | 'credito' | 'tarjetaCreditoDebito' | 'puntos'
+    'efectivo' | 'tarjetaCreditoDebito' | 'puntos'
   >('efectivo');
 
   useEffect(() => {
@@ -203,7 +203,6 @@ export const CreatePayment: React.FC = () => {
                 className="w-full border rounded px-3 py-2"
               >
                 <option value="efectivo">Efectivo</option>
-                <option value="credito">Credito</option>
                 <option value="tarjetaCreditoDebito">Tarjeta</option>
                 <option value="puntos">Puntos</option>
               </Select>

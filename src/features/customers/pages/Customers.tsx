@@ -11,6 +11,7 @@ import { Table } from '../../../components/Table/Table';
 import Button from '../../../components/UI/Button/Button';
 import { BiPlusCircle } from 'react-icons/bi';
 import Spinner from '../../../components/UI/Spinner/Spinner';
+import { parseCustomerType } from '../../../utils/commonFunctions';
 
 export function Customers() {
   const dispatch = useAppDispatch();
@@ -28,7 +29,7 @@ export function Customers() {
     { header: 'Telefono', accessor: 'telefono', render: (value: string) => `${value || '-'}` },
     { header: 'Correo', accessor: 'correo', render: (value: string) => `${value || 'Sin correo'}` },
     { header: 'Direccion', accessor: 'direccion', render: (value: string) => `${value || '--'}` },
-    { header: 'Tipo', accessor: 'tipo' },
+    { header: 'Tipo', accessor: 'tipo', render: (value: string) => `${parseCustomerType(value)}` },
   ];
 
   const customerActions: Action<Customer>[] = [

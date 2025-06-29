@@ -25,6 +25,7 @@ import salesReducer from '../features/sales/slices/salesSlice';
 import paymentsReducer from '../features/payments/slices/paymentsSlices';
 import cashRegistersReducer from '../features/cash-registers/slices/cashRegisterSlice';
 import inventoryReducer from '../features/products/inventory/slices/inventorySlice';
+import transactionReducer from '../features/cash-registers/transactions/slices/transactionsSlice';
 
 const persistConfig = {
   key: 'root',
@@ -56,6 +57,7 @@ export const api = createApi({
     'CashRegister',
     'Invoice',
     'Notification',
+    'Transaction',
     'Stats',
   ],
   endpoints: () => ({
@@ -74,6 +76,7 @@ const rootReducer = combineReducers({
   payments: paymentsReducer,
   cashRegisters: cashRegistersReducer,
   inventory: inventoryReducer,
+  transactions: transactionReducer,
   notifications: notificationsReducer,
   [api.reducerPath]: api.reducer,
 });
