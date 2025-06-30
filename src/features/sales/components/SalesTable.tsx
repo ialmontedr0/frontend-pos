@@ -78,9 +78,9 @@ export const SalesTable: React.FC<SalesTableProps> = ({ data, loading, error }) 
   }
 
   return (
-    <div className="p-6">
+    <div className="p-4 dark:bg-[#1d2939]">
       <div className="flex flex-col gap-4">
-        <h2 className="text-3xl font-semibold">Ventas</h2>
+        <h2 className="text-3xl dark:text-gray-200 font-regular">Ventas</h2>
         <div className="w-auto flex flex-wrap gap-2">
           <Button
             startIcon={<BiPlusCircle size={24} />}

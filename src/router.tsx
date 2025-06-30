@@ -54,6 +54,7 @@ import { LogInPage } from './features/auth/pages/LogInPage';
 import UserProfilePage from './features/users/user/components/UserProfile/UserProfile';
 import { Transaction } from './features/cash-registers/transactions/pages/Transaction';
 import Transactions from './features/cash-registers/transactions/pages/Transactions';
+import { SyncLogs } from './features/sync-logs/pages/SyncLogs';
 
 const routes: RouteObject[] = [
   {
@@ -137,8 +138,11 @@ const routes: RouteObject[] = [
           { path: '/cash-registers/:codigo', element: <CashRegister /> },
           { path: '/cash-registers/edit/:codigo', element: <EditRegister /> },
           { path: '/cash-registers/create', element: <CreateRegister /> },
+
           { path: '/transactions', element: <Transactions /> },
           { path: '/transactions/:transactionId', element: <Transaction /> },
+
+          { path: '/sync-logs', element: <SyncLogs /> },
 
           { path: '/notifications', element: <Notifications /> },
 

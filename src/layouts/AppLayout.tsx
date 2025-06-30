@@ -15,11 +15,13 @@ const LayoutContent: React.FC = () => {
         <AppSidebar />
         <main
           className={`
-          flex-1 transition-all duration-300
+            bg-white dark:bg-[#1d2939]
+          flex-1 overflow-auto
+          transition-all duration-300
           ${isExpanded ? 'lg:ml-72' : 'lg:ml-20'}
           ${isMobileOpen ? 'ml-0' : ''}`}
         >
-          <div className="h-[calc(100vh-74px)] overflow-auto p-4 md:p-6">
+          <div>
             <Outlet />
           </div>
         </main>

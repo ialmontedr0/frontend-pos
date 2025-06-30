@@ -9,12 +9,13 @@ import { createUser, clearUserError } from '../slices/usersSlice';
 import type { CreateUserDTO } from '../dtos/create-user.dto';
 
 // Componentes reutilizables
-import  Button  from '../../../components/UI/Button/Button';
-import  Input  from '../../../components/UI/Input/Input';
+import Button from '../../../components/UI/Button/Button';
+import Input from '../../../components/UI/Input/Input';
 import { Textarea } from '../../../components/UI/TextArea/TextArea';
 import { Label } from '../../../components/UI/Label/Label';
 import { Select } from '../../../components/UI/Select/Select';
 import { BiSave, BiX } from 'react-icons/bi';
+import { myAlertError, myAlertSuccess } from '../../../utils/commonFunctions';
 
 export const CreateUser: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -70,14 +71,11 @@ export const CreateUser: React.FC = () => {
         if (result.isConfirmed) {
           dispatch(createUser(createUserDto))
             .unwrap()
-            .catch((error: string) => {
-              myAlert.fire({
-                title: 'Error',
-                text: `${error}`,
-                icon: 'error',
-                timer: 5000,
-                timerProgressBar: true,
-              });
+            .then(() => {
+              myAlertSuccess(`Usuario creado`, `Se ha creado el usuario con exito`);
+            })
+            .catch((error: any) => {
+              myAlertError(`Error`, `Error: ${error.response?.data?.message || error.message}`)
             });
         }
       });
@@ -107,8 +105,8 @@ export const CreateUser: React.FC = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="w-full max-w-4xl mx-auto p-6 bg-white dark:bg-gray-900 rounded-lg shadow-md space-y-6"
       >
-        <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-4">
-          Crear nuevo usuario
+        <h2 className="text-2xl font-regular text-gray-800 dark:text-gray-200 mb-4">
+          Crear Usuario
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

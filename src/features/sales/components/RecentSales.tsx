@@ -4,13 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
 import type { RootState } from '../../../store/store';
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHeader,
-  TableRow,
-} from '../../../components/Table/TableNew/Table';
+import type { Column, Action } from '../../../components/Table/types';
+import { Table } from '../../../components/Table/Table';
 import Badge from '../../../components/UI/Badge/Badge';
 
 import type { Sale } from '../interfaces/SaleInterface';
@@ -21,6 +16,25 @@ export const RecentSales: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { sales } = useAppSelector((state: RootState) => state.sales);
+
+  const saleColumns: Column<Sale>[] = [
+    { header: 'Venta', accessor: 'codigo' },
+    {
+      header: 'Cliente',
+      accessor: 'cliente',
+      render: (value: { _id: string; nombre: string }) => (value ? value.nombre : '-'),
+    },
+    {
+      header: 'Estado',
+      accessor: 'estado',
+      render: (value: any) => `${value === 'completada' ? 'Completada' : 'Pendiente'}`,
+    },
+  ];
+
+  const saleActions: Action<Sale>[] = [
+    { label: 'Ver', onClick: (sale) => alert(`Ver venta ${sale.codigo}`) },
+  ];
+
   const tableData: Sale[] = sales;
 
   useEffect(() => {
@@ -83,77 +97,15 @@ export const RecentSales: React.FC = () => {
           </button>
         </div>
         <div className="max-w-full overflow-x-auto">
-          <Table>
-            <TableHeader className="border-gray-100 dark:border-gray-800 border-y">
-              <TableRow>
-                <TableCell
-                  className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                  isHeader
-                >
-                  Venta
-                </TableCell>
-                <TableCell
-                  className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                  isHeader
-                >
-                  Usuario
-                </TableCell>
-                <TableCell
-                  className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                  isHeader
-                >
-                  Cliente
-                </TableCell>
-                <TableCell
-                  className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                  isHeader
-                >
-                  Estado
-                </TableCell>
-                <TableCell
-                  className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                  isHeader
-                >
-                  Metodo Pago
-                </TableCell>
-                <TableCell
-                  className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                  isHeader
-                >
-                  Total
-                </TableCell>
-              </TableRow>
-            </TableHeader>
-
-            <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
-              {tableData.map((sale) => (
-                <TableRow key={sale._id}>
-                  <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                    {sale.codigo}
-                  </TableCell>
-                  <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                    {sale.usuario.usuario}
-                  </TableCell>
-                  <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                    {sale.cliente.nombre}
-                  </TableCell>
-                  <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                    {sale.estado === 'completada' ? (
-                      <Badge color="success">Completada</Badge>
-                    ) : (
-                      <Badge color="error">Pendiente</Badge>
-                    )}
-                  </TableCell>
-                  <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                    {parsePaymentMethod(sale.metodoPago)}
-                  </TableCell>
-                  <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                    RD$ {sale.totalVenta.toFixed(2)}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          {tableData && (
+            <Table
+              columns={saleColumns}
+              actions={saleActions}
+              data={tableData}
+              pageSizeOptions={[5, 10, 15]}
+              defaultPageSize={10}
+            />
+          )}
         </div>
       </div>
     </div>

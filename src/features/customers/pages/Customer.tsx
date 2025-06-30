@@ -11,8 +11,12 @@ import { usersService } from '../../users/services/usersService';
 import type { Column, Action } from '../../../components/Table/types';
 import { Table } from '../../../components/Table/Table';
 import type { Sale } from '../../sales/interfaces/SaleInterface';
-import  Button  from '../../../components/UI/Button/Button';
+import Button from '../../../components/UI/Button/Button';
 import { BiArrowBack, BiEdit, BiTrash } from 'react-icons/bi';
+import type { Customer as CustomerInterface } from '../interfaces/CustomerInterface';
+import { Label } from '../../../components/UI/Label/Label';
+import { myAlertSuccess } from '../../../utils/commonFunctions';
+import Spinner from '../../../components/UI/Spinner/Spinner';
 
 export const Customer: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -22,10 +26,8 @@ export const Customer: React.FC = () => {
 
   const { customer, loading, error } = useAppSelector((state: RootState) => state.customers);
 
-  /*   const [customerPurchases, setCustomerPurchases] = useState<any[]>([]);*/ const [
-    creator,
-    setCreator,
-  ] = useState<User | null>(null);
+  const [customerPurchases, setCustomerPurchases] = useState<any[]>([]);
+  const [creator, setCreator] = useState<User | null>(null);
   const [updater, setUpdater] = useState<User | null>(null);
   const [fetchError, setFectchError] = useState<string | null>(null);
 
@@ -52,7 +54,12 @@ export const Customer: React.FC = () => {
       navigate('/customers');
       return;
     }
-    dispatch(getCustomerById(customerId));
+    dispatch(getCustomerById(customerId))
+      .unwrap()
+      .then((customer: CustomerInterface) => {
+        setCustomerPurchases(customer.historialCompras);
+      });
+
     return () => {
       dispatch(clearSelectedCustomer());
       setCreator(null);
@@ -103,23 +110,11 @@ export const Customer: React.FC = () => {
             dispatch(deleteCustomer(customerId))
               .unwrap()
               .then(() => {
-                myAlert.fire({
-                  title: 'Eliminacion de cliente',
-                  text: `Se ha eliminado el cliente con exito`,
-                  icon: 'success',
-                  timer: 5000,
-                  timerProgressBar: true,
-                });
+                myAlertSuccess(`Cliente eliminado`, `Se ha eliminado el cliente con exito`);
                 navigate('/customers');
               })
               .catch((error: any) => {
-                myAlert.fire({
-                  title: 'Error',
-                  text: `Error: ${error.response?.data?.message || error.message}`,
-                  icon: 'error',
-                  timer: 5000,
-                  timerProgressBar: true,
-                });
+                myAlertSuccess(`Error`, `Error: ${error.response?.data?.message || error.message}`);
               });
           }
         });
@@ -128,87 +123,95 @@ export const Customer: React.FC = () => {
   );
 
   if (loading) {
-    return <div>Cargando...</div>;
+    return <Spinner />;
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return (
+      <div className="p-6 max-w-lg mx-auto bg-white dark:bg-gray-800 rounded-lg shadow">
+        <p className="text-red-600 dark:text-red-400">Error: {error}</p>
+        <Button startIcon={<BiArrowBack size={20} />} onClick={() => navigate('/customers')}>
+          Volver
+        </Button>
+      </div>
+    );
   }
 
   return (
-    <div className="border border-black m-5 ml-5 mr-5 p-4 max-2-2xl mx-auto bg-white dark:bg-gray-900 rounded-lg shadow-lg">
+    <div className="m-5 ml-5 mr-5 p-4 max-2-2xl mx-auto bg-white dark:bg-gray-900 rounded-lg shadow-lg">
       <div className="flex-1 space-y-4">
-        <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-100">
+        <h2 className="text-2xl font-regular text-gray-800 dark:text-gray-100">
           {customer?.nombre} {customer?.apellido || ''}
         </h2>
 
         <div className="grid grid-cols sm:grid-cols-2 gap-x-6 gap-y-2">
           <div>
-            <p className="text-gray-500 dark:text-gray-400 text-sm">Telefono</p>
-            <p className="text-gray-800 dark:text-gray-200">{customer?.telefono}</p>
+            <Label className="text-gray-500 dark:text-gray-400 text-sm">Telefono</Label>
+            <p className="text-gray-800 dark:text-gray-200">{customer?.telefono || '-'}</p>
           </div>
 
           <div>
-            <p className="text-gray-500 dark:text-gray-400 text-sm">Correo</p>
+            <Label className="text-gray-500 dark:text-gray-400 text-sm">Correo</Label>
             <p className="text-gray-800 dark:text-gray-200">
               {customer?.correo || 'Sin correo registrado'}
             </p>
           </div>
 
           <div>
-            <p className="text-gray-500 dark:text-gray-400 text-sm">Direccion</p>
-            <p className="text-gray-800 dark:text-gray-200">{customer?.direccion || ''}</p>
+            <Label className="text-gray-500 dark:text-gray-400 text-sm">Direccion</Label>
+            <p className="text-gray-800 dark:text-gray-200">{customer?.direccion || '-'}</p>
           </div>
 
           {customer?.createdBy && (
             <div>
-              <p className="text-gray-500 dark:text-gray-400 text-sm">Creado por</p>
+              <Label className="text-gray-500 dark:text-gray-400 text-sm">Creado por</Label>
               <p className="text-gray-700 dark:text-gray-200">
                 {creator ? `${creator.usuario}` : 'Cargando...'}
               </p>
             </div>
           )}
 
-            <div>
-              <p className="text-gray-500 dark:text-gray-400 text-sm">Actualizado por</p>
-              <p className="text-gray-700 dark:text-gray-200">
-                {updater ? `${updater.usuario}` : 'Cargando...'}
-              </p>
-            </div>
-        
+          <div>
+            <Label className="text-gray-500 dark:text-gray-400 text-sm">Actualizado por</Label>
+            <p className="text-gray-700 dark:text-gray-200">
+              {updater ? `${updater.usuario}` : 'Cargando...'}
+            </p>
+          </div>
 
           {fetchError && (
             <div className="mt-4 p-2 bg-red-100 text-red-700 rounded">{fetchError}</div>
           )}
 
           <div>
-            <p className="text-gray-500 dark:text-gray-400 text-sm">Fecha creacion</p>
+            <Label className="text-gray-500 dark:text-gray-400 text-sm">Fecha creacion</Label>
             <p className="text-gray-800 dark:text-gray-200">
               {moment(customer?.createdAt).format('MMMM Do YYYY, h:mm:ss a')}
             </p>
           </div>
 
           <div>
-            <p className="text-gray-500 dark:text-gray-400 text-sm">Fecha Actualizacion</p>
+            <Label className="text-gray-500 dark:text-gray-400 text-sm">Fecha Actualizacion</Label>
             <p className="text-gray-800 dark:text-gray-200">
               {moment(customer?.updatedAt).format('MMMM Do YYYY, h:mm:ss a')}
             </p>
           </div>
 
-          {customer?.historialCompras?.length ? (
-            <div className="mt-6">
-              <h3 className="text-lg font-semibold mb-2">Historial de compras</h3>
+          <div></div>
+
+          <div>
+            <Label htmlFor="historialCompras">Compras</Label>
+            {customer?.historialCompras.length ? (
               <Table
+                data={customerPurchases}
                 columns={purchaseColumns}
-                data={customer.historialCompras}
-                defaultPageSize={5}
-                pageSizeOptions={[5, 10]}
                 actions={purcahseActions}
+                pageSizeOptions={[5, 10, 20]}
+                defaultPageSize={5}
               />
-            </div>
-          ) : (
-            <p className="mt-6 text-gray-500">Este cliente aun no tiene compras.</p>
-          )}
+            ) : (
+              <p className="text-white dark:text-gray-200">Este cliente aun no tiene compras</p>
+            )}
+          </div>
         </div>
 
         <div className="mt-6 flex flex-col sm:flex-row items-center justify-end space-y-2 sm:space-y-0 sm:space-x-2">

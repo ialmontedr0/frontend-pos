@@ -9,10 +9,12 @@ import type { RootState } from '../../../store/store';
 import { clearCustomerError, createCustomer } from '../slices/customerSlice';
 import type { CreateCustomerDTO } from '../dtos/create-customer.dto';
 
-import  Button  from '../../../components/UI/Button/Button';
-import  Input  from '../../../components/UI/Input/Input';
+import Button from '../../../components/UI/Button/Button';
+import Input from '../../../components/UI/Input/Input';
 import { Textarea } from '../../../components/UI/TextArea/TextArea';
 import { Label } from '../../../components/UI/Label/Label';
+import { myAlertError, myAlertSuccess } from '../../../utils/commonFunctions';
+import { BiSave, BiX } from 'react-icons/bi';
 
 export const CreateCustomer: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -67,16 +69,11 @@ export const CreateCustomer: React.FC = () => {
           dispatch(createCustomer(createCustomerDTO))
             .unwrap()
             .then(() => {
+              myAlertSuccess(`Cliente creado`, `Se ha creado el cliente exitosamente!`);
               navigate('/users');
             })
             .catch((error: any) => {
-              myAlert.fire({
-                title: 'Error',
-                text: `Error: ${error}`,
-                icon: 'error',
-                timer: 5000,
-                timerProgressBar: true,
-              });
+              myAlertError(`Error`, `Error: ${error.response?.data?.message || error.message}`);
             });
         }
       });
@@ -88,7 +85,7 @@ export const CreateCustomer: React.FC = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="w-full max-w-4xl mx-auto p-6 bg-white dark:bg-gray-900 rounded-lg shadow-md space-y-6"
       >
-        <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-4">
+        <h2 className="text-2xl font-regular text-black dark:text-gray-200 mb-4">
           Crear Cliente
         </h2>
 
@@ -155,11 +152,12 @@ export const CreateCustomer: React.FC = () => {
           <p className="text-center text-red-600 bg-red-100 rounded-md p-2">Error: {error}</p>
         )}
 
-        <div className="flex justify-end pt-4 border-t dark:border-gray-700">
-          <Button type="submit" className="bg-green-600 hover:bg-green-700 text-white">
+        <div className="flex justify-end pt-4 gap-2 dark:border-gray-700">
+          <Button startIcon={<BiSave size={20} />} type="submit" variant="primary">
             {loading ? 'Creando...' : 'Crear Cliente'}
           </Button>
           <Button
+            startIcon={<BiX size={20} />}
             type="button"
             variant="outline"
             onClick={() => navigate(-1)}

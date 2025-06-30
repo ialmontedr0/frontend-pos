@@ -14,6 +14,7 @@ import type { User } from '../interfaces/UserInterface';
 import Button from '../../../components/UI/Button/Button';
 import { BiArrowBack, BiEdit } from 'react-icons/bi';
 import Badge from '../../../components/UI/Badge/Badge';
+import Spinner from '../../../components/UI/Spinner/Spinner';
 
 export function User() {
   const { userId } = useParams<{ userId: string }>();
@@ -68,11 +69,7 @@ export function User() {
   }, [user]);
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <p className="text-gray-500 dark:text-gray-400">Cargando usuario...</p>
-      </div>
-    );
+    return <Spinner />;
   }
 
   if (error) {
@@ -106,7 +103,10 @@ export function User() {
   return (
     <div className="p-6 max-w-2xl mx-auto bg-white dark:bg-gray-900 rounded-lg shadow-lg">
       <div className="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8">
-        <div className="flex-shrink-0">
+        <h2 className="text-2xl font-regular text-gray-800 dark:text-gray-100">
+          {user.nombre} {user.apellido}
+        </h2>
+        <div className="flex-shrink-0 my-2">
           <img
             src={
               user.foto ||
@@ -119,9 +119,6 @@ export function User() {
       </div>
 
       <div className="flex-1 space-y-4">
-        <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-100">
-          {user.nombre} {user.apellido}
-        </h2>
         <div className="grid grid-cols sm:grid-cols-2 gap-x-6 gap-y-2">
           <div>
             <p className="text-gray-500 dark:text-gray-400 text-sm">Usuario</p>
@@ -193,10 +190,9 @@ export function User() {
             )}
           </div>
         </div>
-        <div className="mt-6 flex flex-col sm:flex-row items-center justify-end space-y-2 sm:space-y-0 sm:space-x-4">
+        <div className="flex flex-wrap gap-2">
           <Button
             size="sm"
-            className="px-2 py-1"
             startIcon={<BiArrowBack size={20} />}
             onClick={() => navigate('/users')}
           >
@@ -205,6 +201,7 @@ export function User() {
 
           <Button
             size="sm"
+            variant="outline"
             startIcon={<BiEdit size={20} />}
             onClick={() => navigate(`/users/edit/${user._id}`)}
           >

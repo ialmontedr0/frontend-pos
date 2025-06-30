@@ -17,6 +17,7 @@ import Button from '../../../components/UI/Button/Button';
 import Input from '../../../components/UI/Input/Input';
 import { Label } from '../../../components/UI/Label/Label';
 import type { RootState } from '../../../store/store';
+import { BiSave, BiTrash, BiX } from 'react-icons/bi';
 
 export const EditCustomer: React.FC = () => {
   const { customerId } = useParams<{ customerId: string }>();
@@ -164,11 +165,12 @@ export const EditCustomer: React.FC = () => {
   }
 
   return (
-    <div>
+    <div className="space-y-6 p-4">
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="w-full max-w-4xl mx-auto p-6 bg-white dark:bg-gray-900 rounded-lg shadow-md space-y-6"
       >
+        <h2 className="text-2xl font-regular text-black dark:text-gray-200">Editar Cliente</h2>
         <div className="flex flex-col md:flex-row gap-6 items-start">
           <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -215,18 +217,19 @@ export const EditCustomer: React.FC = () => {
         {error && <div>Error: {error}</div>}
 
         {/** Botones */}
-        <div className="flex flex-wrap justify-end gap-3 pt-4 border-t dark:border-gray-700">
-          <Button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white">
+        <div className="flex flex-wrap justify-end gap-2 pt-4 border-t dark:border-gray-700">
+          <Button startIcon={<BiSave size={20} />} type="submit" variant="primary">
             Guardar
           </Button>
           <Button
+            startIcon={<BiTrash size={20} />}
             type="button"
             onClick={() => onDelCustomer(customer._id)}
             className="bg-red-600 hover:bg-red-700"
           >
             Eliminar cliente
           </Button>
-          <Button type="button" variant="outline" onClick={cancel}>
+          <Button startIcon={<BiX size={20} />} type="button" variant="outline" onClick={cancel}>
             Cancelar
           </Button>
         </div>

@@ -36,7 +36,7 @@ type NavItem = {
 };
 
 const AppSidebar: React.FC = () => {
-  const { isExpanded, isMobileOpen } = useSidebar();
+  const { isExpanded, isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
   const location = useLocation();
   const role = useAppSelector((state: RootState) => state.auth.user?.rol);
 
@@ -187,6 +187,13 @@ const AppSidebar: React.FC = () => {
             ) : item.path ? (
               <Link
                 to={item.path!}
+                onClick={() => {
+                  if (isMobileOpen) {
+                    toggleMobileSidebar();
+                  } else {
+                    toggleSidebar();
+                  }
+                }}
                 className={`flex items-center w-full p-2 rounded ${
                   isActive(item.path!) ? 'bg-gray-200 dark:bg-gray-800' : ''
                 } hover:bg-gray-100 dark:hover:bg-gray-700`}

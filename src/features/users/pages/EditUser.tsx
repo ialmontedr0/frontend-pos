@@ -21,7 +21,7 @@ import { Label } from '../../../components/UI/Label/Label';
 import { Select } from '../../../components/UI/Select/Select';
 import { ToggleSwitch } from '../../../components/UI/Switch/Switch';
 import { BiKey, BiReset, BiSave, BiTrash, BiX } from 'react-icons/bi';
-import { myAlertSuccess } from '../../../utils/commonFunctions';
+import { myAlertError, myAlertSuccess } from '../../../utils/commonFunctions';
 
 export const EditUser: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
@@ -130,22 +130,13 @@ export const EditUser: React.FC = () => {
           if (result.isConfirmed) {
             dispatch(resetPassword({ usuario }))
               .then(() => {
-                myAlert.fire({
-                  title: 'Restablcer contrasena',
-                  text: `Se ha restablecido la contrasena del usuario.`,
-                  icon: 'success',
-                  timer: 5000,
-                  timerProgressBar: true,
-                });
+                myAlertSuccess(
+                  `Contrasena restablecida`,
+                  `Se ha restablecido la contrasena del usuario correctamente`
+                );
               })
               .catch((error: any) => {
-                myAlert.fire({
-                  title: 'Error',
-                  text: `Error al restablecer la contrasena: ${error.response?.data?.message || error.message}`,
-                  icon: 'error',
-                  timer: 5000,
-                  timerProgressBar: true,
-                });
+                myAlertError(`Error`, `Error: ${error.response?.data?.message || error.message}`);
               });
           }
         });
@@ -164,7 +155,17 @@ export const EditUser: React.FC = () => {
         })
         .then((result) => {
           if (result.isConfirmed) {
-            dispatch(resetUserPreferences(user._id));
+            dispatch(resetUserPreferences(user._id))
+              .unwrap()
+              .then(() => {
+                myAlertSuccess(
+                  `Preferencias restablecidas`,
+                  `Se han restablecido las preferencias de usuario correctamente`
+                );
+              })
+              .catch((error: any) => {
+                myAlertError(`Error`, `Error: ${error.response?.data?.message || error.message}`);
+              });
           }
         });
     }
@@ -214,12 +215,14 @@ export const EditUser: React.FC = () => {
   }
 
   return (
-    <div>
+    <div className="space-y-6 p-4">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="w-full max-w-4xl mx-auto p-6 bg-white dark:bg-gray-900 rounded-lg shadow-md space-y-6"
+        className="w-full sm:m-4 max-w-4xl mx-auto p-4 bg-white dark:bg-gray-900 rounded-lg shadow-md space-y-6"
       >
-        <div className="flex flex-col md:flex-row gap-6 items-start">
+        <h2 className="text-2xl font-regular text-black dark:text-gray-200">Editar Usuario</h2>
+
+        <div className="flex flex-col md:flex-row sm:flex-row gap-6 items-start">
           <div className="flex-shrink-0">
             <img
               src={
@@ -228,73 +231,77 @@ export const EditUser: React.FC = () => {
                 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Blank_portrait%2C_male_%28rectangular%29.png/1200px-Blank_portrait%2C_male_%28rectangular%29.png'
               }
               alt={`Foto del usuario ${user.usuario}`}
-              className="w-40 h-40 object-cover rounded-md border"
+              className="w-40 h-40 object-cover rounded-full border"
             />
-            <div className="mt-2">
-              <Label htmlFor="foto">Foto (URL)</Label>
-              <Input id="foto" {...register('foto')} />
-            </div>
           </div>
-
           <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="nombre">Nombre</Label>
-              <Input id="nombre" {...register('nombre', { required: true })} />
-              {errors.nombre && <p className="text-sm text-red-500">Campo requerido</p>}
-            </div>
+            <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="nombre">Nombre</Label>
+                <Input id="nombre" {...register('nombre', { required: true })} />
+                {errors.nombre && <p className="text-sm text-red-500">Campo requerido</p>}
+              </div>
 
-            <div>
-              <Label htmlFor="apellido">Apellido</Label>
-              <Input id="apellido" {...register('apellido', { required: true })} />
-              {errors.apellido && <p className="text-sm text-red-500">Campo requerido</p>}
-            </div>
+              <div>
+                <Label htmlFor="apellido">Apellido</Label>
+                <Input id="apellido" {...register('apellido', { required: true })} />
+                {errors.apellido && <p className="text-sm text-red-500">Campo requerido</p>}
+              </div>
 
-            <div>
-              <Label htmlFor="usuario">Usuario</Label>
-              <Input id="usuario" {...register('usuario', { required: true })} />
-              {errors.usuario && <p className="text-sm text-red-500">Campo requerido</p>}
-            </div>
+              <div>
+                <Label htmlFor="usuario">Usuario</Label>
+                <Input id="usuario" {...register('usuario', { required: true })} />
+                {errors.usuario && <p className="text-sm text-red-500">Campo requerido</p>}
+              </div>
 
-            <div>
-              <Label htmlFor="correo">Correo</Label>
-              <Input id="correo" type="email" {...register('correo', { required: true })} />
-              {errors.correo && <p className="text-sm text-red-500">Campo requerido</p>}
-            </div>
+              <div>
+                <Label htmlFor="correo">Correo</Label>
+                <Input id="correo" type="email" {...register('correo', { required: true })} />
+                {errors.correo && <p className="text-sm text-red-500">Campo requerido</p>}
+              </div>
 
-            <div>
-              <Label htmlFor="telefono">Telefono</Label>
-              <Input
-                id="telefono"
-                placeholder="+1 000-000-0000"
-                {...register('telefono', { required: true, pattern: /^\+1\s\d{3}-\d{3}-\d{4}$/ })}
-              />
-              {errors.telefono && <p className="text-sm text-red-500">Formato invalido</p>}
-            </div>
+              <div>
+                <Label htmlFor="telefono">Telefono</Label>
+                <Input
+                  id="telefono"
+                  placeholder="+1 000-000-0000"
+                  {...register('telefono', { required: true, pattern: /^\+1\s\d{3}-\d{3}-\d{4}$/ })}
+                />
+                {errors.telefono && <p className="text-sm text-red-500">Formato invalido</p>}
+              </div>
 
-            <div>
-              <Label htmlFor="rol">
+              <div>
+                <Label htmlFor="rol">Rol</Label>
                 <Select id="rol" defaultValue={user.rol} {...register('rol', { required: true })}>
                   <option value="admin">Administrador</option>
                   <option value="cajero">Cajero</option>
                   <option value="inventarista">Inventarista</option>
                 </Select>
                 {errors.rol && <p className="text-sm text-red-500">Campo requerido</p>}
-              </Label>
-            </div>
+              </div>
 
-            <div className="flex items-center space-x-4 col-span-full">
-              <ToggleSwitch
-                enabled={estadoActual === 'activo'}
-                onClick={() => setEnabled((prev) => !prev)}
-              />
-              <Label htmlFor="estado">
-                Estado: {estadoActual === 'activo' ? 'Activo' : 'Inactivo'}
-              </Label>
-            </div>
+              <div className="flex items-center space-x-4 col-span-full">
+                <ToggleSwitch
+                  enabled={estadoActual === 'activo'}
+                  onClick={() => {
+                    setEnabled((prev) => !prev);
+                    console.log(enabled);
+                  }}
+                />
+                <Label htmlFor="estado">
+                  Estado: {estadoActual === 'activo' ? 'Activo' : 'Inactivo'}
+                </Label>
+              </div>
 
-            <div className="col-span-full">
-              <Label htmlFor="direccion">Direccion</Label>
-              <Input id="direccion" {...register('direccion')} />
+              <div className="col-span-full">
+                <Label htmlFor="direccion">Direccion</Label>
+                <Input id="direccion" {...register('direccion')} />
+              </div>
+
+              <div>
+                <Label>Foto (URL)</Label>
+                <Input id="foto" {...register('foto')} />
+              </div>
             </div>
           </div>
         </div>

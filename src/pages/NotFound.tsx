@@ -19,11 +19,11 @@ export const NotFound: React.FC = () => {
         to="/"
         className="
           inline-block px-6 py-3
-          bg-indigo-600 text-white rounded shadow
+          bg-indigo-600 text-white rounded-full shadow
           hover:bg-indigo-700 transition
         "
       >
-        Ir al Inicio
+        Inicio
       </Link>
     </div>
   );

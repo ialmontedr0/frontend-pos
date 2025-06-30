@@ -78,23 +78,12 @@ export function Table<T extends { [key: string]: any }>({
                         <button
                           key={i}
                           onClick={() => act.onClick(row)}
-                          className="px-2 py-1 rounded-full text-xs font-medium bg-indigo-500 hover:bg-indigo-600 text-white focus:ouline-none focus:ring-2 focus:ring-offset-1 focus:ring-indigo-400"
+                          className="px-2 py-1 rounded-full text-xs font-medium bg-brand-500 hover:bg-indigo-600 text-white focus:ouline-none focus:ring-2 focus:ring-offset-1 focus:ring-indigo-400"
                         >
                           {rendered}
                         </button>
                       );
-                    } /* (
-                    <button
-                      key={i}
-                      onClick={() => act.onClick(row)}
-                      className="
-                        px-2 py-1 rounded-full text-xs font-medium 
-                        bg-indigo-500 hover:bg-indigo-600 text-white 
-                        focus:ouline-none focus:ring-2 focus:ring-offset-1 focus:ring-indigo-400"
-                    >
-                      {act.render ? act.render(row) : act.label}
-                    </button>
-                  ) */
+                    }
                   )}
                 </td>
               )}

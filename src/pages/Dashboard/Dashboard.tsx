@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import PageMeta from '../../components/common/PageMeta';
 import { RecentSales } from '../../features/sales/components/RecentSales';
 import { Metrics, type MetricItem } from '../../features/stats/components/Metrics';
@@ -6,8 +6,8 @@ import { MonthlySales } from '../../features/stats/components/MonthlySales';
 import { MonthlyTarget } from '../../features/stats/components/MonthlyTarget';
 import { StatsChart } from '../../features/stats/components/Stats';
 import { BoxIconLine, GroupIcon } from '../../assets/icons';
-import ChartTab, { type Frequency } from '../../components/ChartTab/ChartTab';
-import io, { type Socket } from 'socket.io-client';
+import { type Frequency } from '../../components/ChartTab/ChartTab';
+import io from 'socket.io-client';
 
 interface SalesAndRevenue {
   periods: string[];
@@ -104,7 +104,7 @@ export const Dashboard: React.FC = () => {
   return (
     <>
       <PageMeta title="Inicio - PoS v2" description="Pagina de inicio PoS v2" />
-      <div className="grid grid-cols-12 gap-4 md:gap-6">
+      <div className="grid grid-cols-12 p-4 gap-4 md:gap-6">
         <div className="col-span-12 space-y-6 xl:col-span-7">
           <Metrics items={metrics} />
 

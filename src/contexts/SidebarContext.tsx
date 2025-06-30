@@ -48,6 +48,7 @@ export const SidebarProvider: React.FC<{ children: React.ReactNode }> = ({ child
     if (!isMobile) setIsExpanded((prev) => !prev);
   };
 
+
   const toggleMobileSidebar = () => {
     if (isMobile) setIsMobileOpen((prev) => !prev);
   };
