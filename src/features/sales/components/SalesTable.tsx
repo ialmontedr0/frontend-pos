@@ -65,10 +65,6 @@ export const SalesTable: React.FC<SalesTableProps> = ({ data, loading, error }) 
     },
   ];
 
-  const back = () => {
-    navigate('/dashboard');
-  };
-
   if (!loading && error) {
     return (
       <div>
@@ -78,19 +74,18 @@ export const SalesTable: React.FC<SalesTableProps> = ({ data, loading, error }) 
   }
 
   return (
-    <div className="p-4 dark:bg-[#1d2939]">
-      <div className="flex flex-col gap-4">
+    <div className="p-4 space-y-6">
+      <div className="space-y-4">
         <h2 className="text-3xl dark:text-gray-200 font-regular">Ventas</h2>
         <div className="w-auto flex flex-wrap gap-2">
           <Button
             startIcon={<BiPlusCircle size={24} />}
             type="button"
-            className="border border-gray-900 px-4 rounded-full py-1 rounded-md text-white bg-blue-900 dark:bg-blue-400 cursor-pointer hover:bg-blue-800 transition-colors"
+            variant="primary"
             onClick={() => navigate('/sales/create')}
           >
             Nueva venta
           </Button>
-          <button onClick={back}>Atras</button>
         </div>
       </div>
 
@@ -101,7 +96,7 @@ export const SalesTable: React.FC<SalesTableProps> = ({ data, loading, error }) 
           columns={saleColumns}
           data={data}
           defaultPageSize={10}
-          pageSizeOptions={[5, 10]}
+          pageSizeOptions={[5, 10, 20]}
           actions={saleActions}
         />
       ) : (

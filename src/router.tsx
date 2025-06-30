@@ -55,6 +55,8 @@ import UserProfilePage from './features/users/user/components/UserProfile/UserPr
 import { Transaction } from './features/cash-registers/transactions/pages/Transaction';
 import Transactions from './features/cash-registers/transactions/pages/Transactions';
 import { SyncLogs } from './features/sync-logs/pages/SyncLogs';
+import { SalePage } from './features/sales/components/NewSale/NewSale';
+import { SalesTable } from './features/sales/components/SalesTable';
 
 const routes: RouteObject[] = [
   {
@@ -127,7 +129,7 @@ const routes: RouteObject[] = [
           { path: '/products/inventory', element: <Inventory /> },
 
           { path: '/sales', element: <Sales /> },
-          { path: '/sales/create', element: <CreateSale /> },
+          { path: '/sales/create', element: <SalePage /> },
           { path: 'sales/:codigo', element: <Sale /> },
 
           { path: '/payments', element: <Payments /> },
