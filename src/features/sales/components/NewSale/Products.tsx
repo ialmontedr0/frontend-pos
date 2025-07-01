@@ -5,80 +5,74 @@ import { useAppSelector, useAppDispatch } from '../../../../hooks/hooks';
 import { getAllProducts } from '../../../products/slices/productsSlice';
 import { getAllCategories } from '../../../products/categories/slices/categoriesSlice';
 
-import type { Category } from '../../../products/categories/interfaces/CategoryInterface';
 import type { Product } from '../../../products/interfaces/ProductInterface';
 
+const CATEGORY_COLORS = [
+  'bg-red-100',
+  'bg-blue-100',
+  'bg-green-100',
+  'bg-yellow-100',
+  'bg-purple-100',
+];
+
 interface ProductProps {
-  onSelectProduct: (p: Product) => void;
+  search: string;
+  onSelect: (p: Product) => void;
 }
 
-export const Products: React.FC<ProductProps> = ({ onSelectProduct }) => {
+export const Products: React.FC<ProductProps> = ({ search, onSelect }) => {
   const dispatch = useAppDispatch();
-  const [productQuery, setProductQuery] = useState<string>('');
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [activeCat, setActiveCat] = useState('Todos');
-
+  const { categories } = useAppSelector((state: RootState) => state.categories);
   const { products } = useAppSelector((state: RootState) => state.products);
 
-  /* const products: Product[] = [
-    {
-      codigo: '1',
-      _id: '1',
-      nombre: 'Arroz',
-      precioCompra: 5,
-      precioVenta: 10,
-      stock: 10,
-      foto: 'http://img.png',
-      categoria: 'Comida',
-      proveedor: 'Proveedor',
-      itbis: true,
-      disponible: true,
-    },
-  ]; */
-  const { categories } = useAppSelector((state: RootState) => state.categories);
-
-  const filteredProducts =
-    activeCat === 'Todas'
-      ? products
-      : products.filter(
-          (p) =>
-            p.categoria === activeCat ||
-            p.codigo.toLowerCase().includes(productQuery.toLowerCase()) ||
-            p.nombre.toLowerCase().includes(productQuery.toLowerCase())
-        );
+  const [activeCat, setActiveCat] = useState<string>('Todos');
 
   useEffect(() => {
-    dispatch(getAllProducts());
     dispatch(getAllCategories());
-  }, [dispatch]);
+    dispatch(getAllProducts());
+  }, []);
+
+  const filtered = products.filter((p) => {
+    if (activeCat !== 'Todos' && p.categoria !== activeCat) return false;
+    return p.nombre.toLowerCase().includes(search.toLowerCase());
+  });
 
   return (
-    <div className="mt-4 bg-white dark:bg-[#1d2939] rounded-lg border">
-      <div className="flex space-x-4 px-4 py-2 border-b overflow-x-auto">
-        {categories.map((cat) => (
+    <div className="mt-4 bg-white rounded shadow">
+      <div className="flex space-x-4 px-4 py-2 overflow-x-auto border-b">
+        <button
+          onClick={() => setActiveCat('Todos')}
+          className={activeCat === 'Todos' ? 'border-b-2 text-blue-600' : 'text-gray-600'}
+        >
+          Todos
+        </button>
+        {categories.map((c) => (
           <button
-            key={cat._id}
-            onClick={() => setActiveCat(cat.nombre)}
-            className={`pb-1 ${activeCat === cat.nombre ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-600 hover:text-gray-800'}`}
+            key={c._id}
+            onClick={() => setActiveCat(c.nombre)}
+            className={activeCat === c.nombre ? 'border-b-2 text-blue-600' : 'text-gray-600'}
           >
-            {cat.nombre}
+            {c.nombre}
           </button>
         ))}
       </div>
 
-      <div className="p-4 grid grid-cols-3 gap-4 max-h-[400px] overflow-y-auto">
-        {filteredProducts.map((p) => (
+      <div className="grid grid-cols-3 gap-4 p-4 max-h-[500px] overflow-auto">
+        {filtered.map((p, i) => (
           <div
             key={p._id}
-            onClick={() => onSelectProduct(p)}
-            className="cursor-pointer hover:shadow-md rounded-lg border p-2 flex flex-col items-center space-x-3"
+            className={`${CATEGORY_COLORS[i % CATEGORY_COLORS.length]} 
+            cursor-pointer rounded-lg p-3 flex flex-col items-center`}
+            onClick={() => onSelect(p)}
           >
-            <img src={p.foto} alt={p.nombre} className="w-12 h-12 object-cover rounded" />
-            <div className='flex flex-col'>
-              <span className="text-sm font-medium">{p.nombre}</span>
-              <span className="text-sm">Stock: {p.stock}</span>
-              <span className="text-xs">RD$ {p.precioVenta.toFixed(2)}</span>
-            </div>
+            <img
+              src={p.foto || ''}
+              alt={p.nombre}
+              className="w-16 h-16 object-cover rounded mb-2"
+            />
+            <div className="text-sm font-medium">{p.nombre}</div>
+            <div className="text-xs text-gray-600">RD$ {p.precioVenta.toFixed(2)}</div>
+            <div className="text-xs text-gray-500">Stock: {p.stock}</div>
           </div>
         ))}
       </div>
