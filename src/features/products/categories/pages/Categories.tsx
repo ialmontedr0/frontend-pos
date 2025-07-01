@@ -8,9 +8,11 @@ import type { Category } from '../interfaces/CategoryInterface';
 import type { Column, Action } from '../../../../components/Table/types';
 import { Table } from '../../../../components/Table/Table';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/hooks';
-import  Button  from '../../../../components/UI/Button/Button';
+import Button from '../../../../components/UI/Button/Button';
 import { BiPlusCircle } from 'react-icons/bi';
 import Spinner from '../../../../components/UI/Spinner/Spinner';
+import { myAlertError, myAlertSuccess } from '../../../../utils/commonFunctions';
+import PageMeta from '../../../../components/common/PageMeta';
 
 export const Categories: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -22,6 +24,8 @@ export const Categories: React.FC = () => {
   useEffect(() => {
     dispatch(getAllCategories());
   }, [dispatch]);
+
+  const categoriesData: Category[] = categories;
 
   const categoriesColumns: Column<Category>[] = [{ header: 'Nombre', accessor: 'nombre' }];
 
@@ -66,23 +70,11 @@ export const Categories: React.FC = () => {
             dispatch(deleteCategory(categoryId))
               .unwrap()
               .then(() => {
-                myAlert.fire({
-                  title: 'Categoria eliminada',
-                  text: `Se ha eliminado el cliente con exito!`,
-                  icon: 'success',
-                  timer: 5000,
-                  timerProgressBar: true,
-                });
+                myAlertSuccess(`Categoria eliminada`, `Se ha eliminado la categoria exitosamente`);
                 dispatch(getAllCategories());
               })
               .catch((error: any) => {
-                myAlert.fire({
-                  title: 'Error',
-                  text: `Error: ${error.response?.data?.message || error.message}`,
-                  icon: 'error',
-                  timer: 5000,
-                  timerProgressBar: true,
-                });
+                myAlertError(`Error`, `Error: ${error.response?.data?.message || error.message}`);
               });
           }
         });
@@ -91,29 +83,32 @@ export const Categories: React.FC = () => {
   );
 
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-semibold text-black dark:text-white mb-4">Categorias</h2>
+    <>
+      <PageMeta title="Categorias - PoS v2" description="Categorias" />
+      <div className="overflow-x-auto space-y-6 p-4">
+        <div className="space-y-4">
+          <h2 className="text-3xl font-regular text-black dark:text-gray-200">Categorias</h2>
 
-      <Button
-        startIcon={<BiPlusCircle size={24} />}
-        type="button"
-        className="border my-4 border-gray-900 px-4 py-1 rounded-md text-white bg-blue-900 dark:bg-blue-400 cursor-pointer hover:bg-blue-800 transition-colors"
-        onClick={createCategory}
-      >
-        Nueva Categoria
-      </Button>
+          <Button startIcon={<BiPlusCircle size={24} />} type="button" onClick={createCategory}>
+            Nueva Categoria
+          </Button>
+        </div>
 
-      {loading && <Spinner />}
-      {!loading && categories.length === 0 && <div>No hay categorias.</div>}
-      {error && <div className="text-sm text-red-600">Error: {error}</div>}
+        {loading && <Spinner />}
+        {error && <div className="text-sm text-red-600">Error: {error}</div>}
 
-      <Table
-        columns={categoriesColumns}
-        data={categories}
-        defaultPageSize={10}
-        pageSizeOptions={[5, 10, 20]}
-        actions={categoryActions}
-      />
-    </div>
+        {categoriesData.length ? (
+          <Table
+            columns={categoriesColumns}
+            data={categoriesData}
+            defaultPageSize={10}
+            pageSizeOptions={[5, 10, 20]}
+            actions={categoryActions}
+          />
+        ) : (
+          <div>No hay categorias</div>
+        )}
+      </div>
+    </>
   );
 };

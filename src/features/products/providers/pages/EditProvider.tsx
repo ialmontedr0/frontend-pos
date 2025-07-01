@@ -15,7 +15,10 @@ import type { UpdateProviderDTO } from '../dtos/update-provider.dto';
 import { Label } from '../../../../components/UI/Label/Label';
 import Input from '../../../../components/UI/Input/Input';
 import Button from '../../../../components/UI/Button/Button';
-import { BiSave, BiTrash, BiX } from 'react-icons/bi';
+import { BiArrowBack, BiSave, BiTrash } from 'react-icons/bi';
+import { myAlertError, myAlertSuccess } from '../../../../utils/commonFunctions';
+import Spinner from '../../../../components/UI/Spinner/Spinner';
+import PageMeta from '../../../../components/common/PageMeta';
 
 export const EditProvider: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -100,7 +103,7 @@ export const EditProvider: React.FC = () => {
       });
   };
 
-  const onDelProvider = useCallback(
+  const handleDeleteProvider = useCallback(
     (providerId: string) => {
       myAlert
         .fire({
@@ -109,6 +112,7 @@ export const EditProvider: React.FC = () => {
           icon: 'question',
           showConfirmButton: true,
           confirmButtonText: 'Si, eliminar',
+          confirmButtonColor: '#ff6467',
           showCancelButton: true,
           cancelButtonText: 'Cancelar',
         })
@@ -117,23 +121,11 @@ export const EditProvider: React.FC = () => {
             dispatch(deleteProvider(providerId))
               .unwrap()
               .then(() => {
-                myAlert.fire({
-                  title: 'Proveedor eliminado',
-                  text: `Se ha eliminado el proveedor con exito`,
-                  icon: 'success',
-                  timer: 500,
-                  timerProgressBar: true,
-                });
+                myAlertSuccess(`Proveedor creado!`, `Se ha creado el proveedor con exito!`);
                 navigate('/products/providers');
               })
               .catch((error: any) => {
-                myAlert.fire({
-                  title: `Error`,
-                  text: `Error: ${error}`,
-                  icon: 'error',
-                  timer: 5000,
-                  timerProgressBar: true,
-                });
+                myAlertError(`Error`, `Error: ${error.response?.data?.message || error.message}`);
               });
           }
         });
@@ -152,17 +144,13 @@ export const EditProvider: React.FC = () => {
       })
       .then((result) => {
         if (result.isConfirmed) {
-          navigate('/products/providers');
+          navigate(-1);
         }
       });
   };
 
   if (loading) {
-    return (
-      <div>
-        <p>Cargando proveedor...</p>
-      </div>
-    );
+    return <Spinner />;
   }
 
   if (!provider) {
@@ -175,96 +163,91 @@ export const EditProvider: React.FC = () => {
   }
 
   return (
-    <div className="p-6">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="w-full max-w-4xl mx-auto p-6 bg-white dark:bg-gray-900 rounded-lg shadow-md space-y-6"
-      >
-        <div className="flex w-auto">
-          <h2 className="text-2xl font-semibold">Editar Proveedor</h2>
-        </div>
-
-        <div className="flex flex-col md:flex-col gap-6 items-start">
+    <>
+      <PageMeta title="Editar proveedor - PoS v2" description="Editar proveedor" />
+      <div className="h-screen h-auto max-h-auto p-4">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="space-y-4 p-6 max-h-full rounded-lg shadow"
+        >
           <div>
-            <Label htmlFor="nombre">Nombre</Label>
-            <Input
-              id="nombre"
-              placeholder="Nombre del proveedor"
-              {...register('nombre', { required: 'El campo nombre es obligarorio' })}
-            />
-            {errors.nombre && <p className="text-sm text-red-500">{errors.nombre.message}</p>}
+            <h2 className="text-3xl/9 md:text-2xl xs:text-xl font-regular">Editar proveedor</h2>
           </div>
 
-          <div>
-            <Label htmlFor="telefono">Telefono</Label>
-            <Input
-              id="telefono"
-              placeholder="Telefono ej. +1 000-000-0000"
-              {...register('telefono', {
-                required: 'El campo telefono es obligatorio',
-                pattern: /^\+1\s\d{3}-\d{3}-\d{4}$/,
-              })}
-            />
-            {errors.telefono && <p className="text-sm text-red-500">{errors.telefono.message}</p>}
+          <div className="h-auto lg:grid lg:grid-cols-2 gap-2">
+            <div className="">
+              <Label htmlFor="nombre">Nombre</Label>
+              <Input
+                id="nombre"
+                {...register('nombre', { required: 'El campo nombre es obligatorio' })}
+              />
+              {errors.nombre && <p className="text-sm text-red-500">{errors.nombre.message}</p>}
+            </div>
+
+            <div className="">
+              <Label htmlFor="RNC">RNC</Label>
+              <Input id="RNC" {...register('RNC', { required: 'El campo RNC es obligatorio' })} />
+              {errors.RNC && <p className="text-sm text-red-500">{errors.RNC.message}</p>}
+            </div>
+
+            <div className="">
+              <Label htmlFor="telefono">Telefono</Label>
+              <Input
+                id="telefono"
+                {...register('telefono', {
+                  required: 'El campo telefono es obligatorio',
+                  pattern: {
+                    value: /^\+1\s\d{3}-\d{3}-\d{4}$/,
+                    message: `El patron debe ser +1 000-000-0000`,
+                  },
+                })}
+              />
+              {errors.telefono && <p className="text-sm text-red-500">{errors.telefono.message}</p>}
+            </div>
+
+            <div className="">
+              <Label htmlFor="procedencia">Procedencia</Label>
+              <Input
+                id="procedencia"
+                {...register('procedencia', { required: 'El campo procedencia es obligatorio.' })}
+              />
+              {errors.procedencia && (
+                <p className="text-sm text-red-500">{errors.procedencia.message}</p>
+              )}
+            </div>
           </div>
 
-          <div>
-            <Label htmlFor="RNC">RNC</Label>
-            <Input
-              id="RNC"
-              placeholder="RNC del proveedor"
-              {...register('RNC', { required: 'El campo RNC es obligatorio' })}
-            />
-            {errors.RNC && <p className="text-sm text-red-500">{errors.RNC.message}</p>}
-          </div>
+          {error && <p className="text-red-500 text-sm">Error: {error}</p>}
 
-          <div>
-            <Label htmlFor="procedencia">Procedencia</Label>
-            <Input
-              id="procedencia"
-              placeholder=""
-              {...register('procedencia', { required: 'El campo procedencia es obligatorio' })}
-            />
-            {errors.procedencia && (
-              <p className="text-sm text-red-500">{errors.procedencia.message}</p>
-            )}
-          </div>
-
-          {error && <div className="text-red-600">Error: {error}</div>}
-
-          {/** Bloque de botones para Edits REUTILIZAR */}
-          <div className="flex flex-wrap justify-end gap-2 pt-4 border-t dark:border-gray-700">
+          <div className="flex flex-wrap gap-2 justify-end">
             <Button
               type="submit"
-              startIcon={<BiSave size={28} />}
-              className="bg-transparent hover:bg-gray-200 text-black"
-              aria-label="Guardar"
+              size="sm"
+              startIcon={<BiSave size={20} />}
+              onClick={() => navigate(`/products/providers/edit/${provider._id}`)}
+              variant="primary"
             >
-              Guardar
+              Editar
             </Button>
-
             <Button
-              type="button"
-              startIcon={<BiTrash size={28} />}
-              onClick={() => onDelProvider(provider._id)}
-              className="bg-transparent hover:bg-gray-200 text-red-600"
-              aria-label="Eliminar"
+              size="sm"
+              startIcon={<BiTrash size={20} />}
+              onClick={() => handleDeleteProvider(provider._id)}
+              className="bg-red-500 text-white dark:bg-red-400 hover:bg-red-700"
             >
               Eliminar
             </Button>
-
             <Button
-              type="button"
-              startIcon={<BiX size={28} />}
-              variant="outline"
+              size="sm"
+              startIcon={<BiArrowBack size={20} />}
               onClick={cancel}
-              className="bg-transparent text-black"
+              variant="outline"
             >
-              Cancelar
+              Volver
             </Button>
           </div>
-        </div>
-      </form>
-    </div>
+        </form>
+      </div>
+    </>
   );
 };

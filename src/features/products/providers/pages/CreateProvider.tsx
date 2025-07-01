@@ -11,9 +11,12 @@ import { clearProviderError, createProvider } from '../slices/providersSlice';
 
 import type { CreateProviderDTO } from '../dtos/create-provider.dto';
 
-import  Button from '../../../../components/UI/Button/Button';
+import Button from '../../../../components/UI/Button/Button';
 import { Label } from '../../../../components/UI/Label/Label';
-import Input  from '../../../../components/UI/Input/Input';
+import Input from '../../../../components/UI/Input/Input';
+import Spinner from '../../../../components/UI/Spinner/Spinner';
+import { myAlertError, myAlertSuccess } from '../../../../utils/commonFunctions';
+import { BiSave } from 'react-icons/bi';
 
 export const CreateProvider: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -67,24 +70,30 @@ export const CreateProvider: React.FC = () => {
           dispatch(createProvider(createProviderDTO))
             .unwrap()
             .then(() => {
-              myAlert.fire({
-                title: 'Creacion proveedor!',
-                text: `Se ha creado el proveedor exitosamente`,
-                icon: 'success',
-                timer: 5000,
-                timerProgressBar: true,
-              });
+              myAlertSuccess(`Proveedor creado`, `Se ha creado el proveedor con exito!`);
               navigate('/products/providers');
             })
             .catch((error: any) => {
-              myAlert.fire({
-                title: 'Error',
-                text: `Error: ${error}`,
-                icon: 'error',
-                timer: 5000,
-                timerProgressBar: true,
-              });
+              myAlertError(`Error`, `Error: ${error.response?.data?.message || error.message}`);
             });
+        }
+      });
+  };
+
+  const cancel = () => {
+    myAlert
+      .fire({
+        title: `Cancelar creacion`,
+        text: `Estas seguro que deseas cancelar la creacion del proveedor?`,
+        icon: 'question',
+        showConfirmButton: true,
+        showCancelButton: true,
+        confirmButtonText: 'Cancelar',
+        cancelButtonText: 'Continuar',
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          navigate('/products/providers');
         }
       });
   };
@@ -95,7 +104,7 @@ export const CreateProvider: React.FC = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="w-full max-w-4xl mx-auto p-6 bg-white dark:bg-gray-900 rounded-lg shadow-md space-y-6"
       >
-        <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-4">
+        <h2 className="text-2xl font-regular text-gray-800 dark:text-gray-100 mb-4">
           Crear Proveedor
         </h2>
 
@@ -153,11 +162,13 @@ export const CreateProvider: React.FC = () => {
           <p className="text-center text-red-600 bg-red-100 rounded-md p-2">Error: {error}</p>
         )}
 
-        <div className="flex justify-end pt-4 border-t dark:border-gray-700">
-          <Button type="submit" className="bg-green-600 hover:bg-green-700 text-white">
+        {loading && <Spinner />}
+
+        <div className="flex gap-2 justify-end pt-4 border-t dark:border-gray-700">
+          <Button startIcon={<BiSave size={20} />} type="submit" variant="primary">
             {loading ? 'Creando...' : 'Crear'}
           </Button>
-          <Button type="button" variant="outline" onClick={() => navigate('/products/providers')}>
+          <Button type="button" variant="outline" onClick={cancel}>
             Cancelar
           </Button>
         </div>

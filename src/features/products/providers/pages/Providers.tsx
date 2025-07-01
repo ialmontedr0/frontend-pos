@@ -12,6 +12,9 @@ import type { Provider } from '../interfaces/ProviderInterface';
 import type { Column, Action } from '../../../../components/Table/types';
 import { Table } from '../../../../components/Table/Table';
 import Spinner from '../../../../components/UI/Spinner/Spinner';
+import PageMeta from '../../../../components/common/PageMeta';
+import Button from '../../../../components/UI/Button/Button';
+import { BiPlusCircle } from 'react-icons/bi';
 
 export const Providers: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -23,6 +26,8 @@ export const Providers: React.FC = () => {
   useEffect(() => {
     dispatch(getAllProviders());
   }, [dispatch]);
+
+  const providersData: Provider[] = providers;
 
   const providersColumns: Column<Provider>[] = [
     { header: 'Nombre', accessor: 'nombre' },
@@ -97,24 +102,31 @@ export const Providers: React.FC = () => {
   );
 
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-semibold text-black dark:text-white mb-4">Proveedores</h2>
+    <>
+      <PageMeta title="Proveedores - PoS v2" description="Proveedores" />
+      <div className="overflow-x-auto space-y-6 p-4">
+        <div className="space-y-4">
+          <h2 className="text-3xl font-regular text-black dark:text-gray-200">Proveedores</h2>
+          <Button startIcon={<BiPlusCircle size={24} />} type="button" onClick={createProvider}>
+            Nuevo Proveedor
+          </Button>
+        </div>
 
-      <button type="button" onClick={createProvider}>
-        Nuevo Proveedor +
-      </button>
+        {loading && <Spinner />}
+        {error && <div className="text-sm text-red-600">Error: {error}</div>}
 
-      {loading && <Spinner />}
-      {!loading && providers.length === 0 && <div>No hay proveedores</div>}
-      {error && <div className="text-sm text-red-600">Error: {error}</div>}
-
-      <Table
-        columns={providersColumns}
-        data={providers}
-        defaultPageSize={10}
-        pageSizeOptions={[5, 10, 20]}
-        actions={providerActions}
-      />
-    </div>
+        {providersData.length ? (
+          <Table
+            columns={providersColumns}
+            data={providersData}
+            defaultPageSize={10}
+            pageSizeOptions={[5, 10, 20]}
+            actions={providerActions}
+          />
+        ) : (
+          <div>No hay proveedores en el sistema.</div>
+        )}
+      </div>
+    </>
   );
 };

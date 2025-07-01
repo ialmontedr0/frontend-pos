@@ -37,7 +37,7 @@ export const LogInPage: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col flex-1 pt-10">
+    <div className="flex flex-col flex-1 pt-10 px-4">
       <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
         <div>
           <div className="mb-5 sm:mb-8">
@@ -68,6 +68,7 @@ export const LogInPage: React.FC = () => {
                       setForm({ ...form, usuario: e.target.value });
                     }}
                     placeholder="user01"
+                    className="dark:bg-white placeholder:text-gray-500"
                     required
                   />
                 </div>
@@ -83,6 +84,7 @@ export const LogInPage: React.FC = () => {
                       value={form.contrasena}
                       onChange={(e) => setForm({ ...form, contrasena: e.target.value })}
                       placeholder="Ingresa tu contrasena"
+                      className="dark:bg-white placeholder:text-gray-500"
                       required
                     />
                     <span
@@ -106,7 +108,7 @@ export const LogInPage: React.FC = () => {
                   </div>
 
                   <Link
-                    to="/recover-password"
+                    to="/auth/recover-password"
                     className="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400"
                   >
                     Olvidaste tu contrasena?
@@ -117,7 +119,7 @@ export const LogInPage: React.FC = () => {
                   <div className="mb-4 text-red-600 text-sm">Error al iniciar sesion: {error}</div>
                 )}
               </div>
-              <Button type='submit' className="w-full mt-4" size="sm">
+              <Button type="submit" className="w-full mt-4" size="sm">
                 {loading ? 'Iniciando' : 'Iniciar Sesion'}
               </Button>
             </form>

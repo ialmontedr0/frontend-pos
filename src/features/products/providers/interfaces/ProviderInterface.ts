@@ -4,8 +4,8 @@ export interface Provider {
   RNC: string;
   telefono: string;
   procedencia: string;
-  createdBy?: string;
-  updatedBy?: string;
+  createdBy?: { _id: string; usuario: string };
+  updatedBy?: { _id: string; usuario: string };
   createdAt: string;
   updatedAt: string;
 }

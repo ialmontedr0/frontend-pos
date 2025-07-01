@@ -5,6 +5,8 @@ import withReactContent from 'sweetalert2-react-content';
 import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
 import { validateCode, clearRecoveryState } from '../slices/authSlice';
 import type { ValidateCodeDTO } from '../dtos/validate-code.dto';
+import Button from '../../../components/UI/Button/Button';
+import Spinner from '../../../components/UI/Spinner/Spinner';
 
 export const ValidateCode = () => {
   const dispatch = useAppDispatch();
@@ -58,9 +60,9 @@ export const ValidateCode = () => {
   };
 
   return (
-    <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+    <div className="flex min-h-full flex-1 flex-col lg:justify-center md:justify-start sm:justify-start px-6 py-12 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <h2 className="mt-4 text-2xl/9 font-bold tracking-tight text-black">Validar Codigo</h2>
+        <h2 className="mt-4 text-3xl font-regular tracking-tight text-black">Validar Codigo</h2>
       </div>
       <div className="mt-4 sm:mx-auto sm:w-full sm:max-w-sm">
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -85,31 +87,25 @@ export const ValidateCode = () => {
                 placeholder="ABC123"
                 required
                 className="block w-full px-3 py-1.5 border border-gray-300 rounded-full
-                  bg-gray-200 text-sm font-semibold text-gray-600 placeholder-gray-400
+                  bg-gray-200 text-sm font-regular text-gray-600 placeholder-gray-400
                   "
               />
               <p className="mt-1 text-sm text-black">Intentos restantes: {10 - attemps}</p>
             </div>
 
             {error && <div className="text-red-600 text-sm font-semibold py-2">{error}</div>}
+
+            {loading && <Spinner />}
           </div>
 
           <div className="flex flex-wrap gap-2 justify-start">
-            <button
-              type="submit"
-              className="cursor-pointer flex w-fit justify-center rounded-full bg-indigo-600 px-5 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              disabled={loading || attemps >= 10}
-            >
+            <Button type="submit" variant="primary" disabled={loading || attemps >= 10}>
               {loading ? 'Validando...' : 'Validar codigo'}
-            </button>
+            </Button>
 
-            <button
-              type="button"
-              onClick={cancel}
-              className="cursor-pointer flex-w-full justify-center rounded-full bg-black px-5 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-black-200 focus-visible:outline-20 focus:visible:otuline-offset focus:visible:otuline-black-400"
-            >
+            <Button className='dark:bg-gray-400' type="button" onClick={cancel} variant="outline">
               Cancelar
-            </button>
+            </Button>
           </div>
         </form>
       </div>

@@ -5,6 +5,7 @@ import withReactContent from 'sweetalert2-react-content';
 import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
 import { recoverPassword, clearRecoveryState } from '../slices/authSlice';
 import Spinner from '../../../components/UI/Spinner/Spinner';
+import Button from '../../../components/UI/Button/Button';
 
 export const RecoverPassword = () => {
   const dispatch = useAppDispatch();
@@ -43,9 +44,9 @@ export const RecoverPassword = () => {
   };
 
   return (
-    <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+    <div className="flex min-h-full flex-1 flex-col justify-start px-6 py-12 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <h2 className="mt-4 text-3xl font-semibold tracking-tight text-black">
+        <h2 className="mt-4 text-3xl font-regular tracking-tight text-black">
           Recuperacion de contraseña
         </h2>
       </div>
@@ -66,30 +67,24 @@ export const RecoverPassword = () => {
                 required
                 autoComplete="usuario"
                 className="block w-full px-3 py-1.5 border border-gray-300 rounded-full
-                  bg-gray-200 text-sm font-semibold text-gray-600 placeholder-gray-400
+                  bg-gray-200 text-sm font-regular text-gray-600 placeholder-gray-400
                   "
               />
             </div>
           </div>
 
+          {loading && <Spinner />}
+
           {error && <div className="mb-4 text-red-600 bg-red-100 p-2 rounded">{error}</div>}
 
           <div className="w-full flex flex-wrap gap-2">
-            <button
-              type="submit"
-              className="cursor-pointer flex w-fit justify-center rounded-full bg-indigo-600 px-5 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              disabled={loading}
-            >
-              {loading ? <Spinner /> : 'Validar'}
-            </button>
+            <Button type="submit" variant="primary" disabled={loading} className="">
+              {loading ? `Validando` : 'Validar'}
+            </Button>
 
-            <button
-              type="button"
-              onClick={cancel}
-              className="cursor-pointer flex-w-full justify-center rounded-full bg-black px-5 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-black-200 focus-visible:outline-20 focus:visible:otuline-offset focus:visible:otuline-black-400"
-            >
+            <Button type="button" onClick={cancel} variant="outline">
               Cancelar
-            </button>
+            </Button>
           </div>
         </form>
       </div>
