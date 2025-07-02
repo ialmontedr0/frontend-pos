@@ -183,6 +183,7 @@ export function User() {
           </div>
 
           <div>
+            <p className="text-gray-500 dar:text-gray-400 text-sm">Estado</p>
             {user.estado ? (
               <Badge color="success">Activo</Badge>
             ) : (
