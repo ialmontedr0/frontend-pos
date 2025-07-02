@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useState } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
 import Swal from 'sweetalert2';
@@ -31,17 +31,15 @@ import {
   BiUserPin,
   BiWindowClose,
 } from 'react-icons/bi';
-import Button from '../../../components/UI/Button/Button';
 import { myAlertError, myAlertSuccess } from '../../../utils/commonFunctions';
 import type { User } from '../../users/interfaces/UserInterface';
+import Badge from '../../../components/UI/Badge/Badge';
 
 export const CashRegister: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
 
-  const [userQuery, setUserQuery] = useState<string>('');
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const { users } = useAppSelector((state: RootState) => state.users);
 
   let openAmount: number = 0;
@@ -123,22 +121,10 @@ export const CashRegister: React.FC = () => {
             )
               .unwrap()
               .then(() => {
-                myAlert.fire({
-                  title: 'Caja abierta',
-                  text: `Se ha abierto la caja con exito`,
-                  icon: 'success',
-                  timer: 5000,
-                  timerProgressBar: true,
-                });
+                myAlertSuccess(`Caja abierta`, `Se ha abierto la caja exitosamente!`);
               })
               .catch((error: any) => {
-                myAlert.fire({
-                  title: 'Error',
-                  text: `Error: ${error.response?.data?.message || error.message}`,
-                  icon: 'error',
-                  timer: 5000,
-                  timerProgressBar: true,
-                });
+                myAlertError(`Error`, `Error: ${error.response?.data?.message || error.message}`);
               });
           }
         });
@@ -310,9 +296,9 @@ export const CashRegister: React.FC = () => {
   }
 
   return (
-    <div className="h-full p-4 max-w-full">
-      <div>
-        <h2 className="text-2xl font-semibold">Detalles de la caja</h2>
+    <div className="h-full space-y-6 p-4 max-w-full">
+      <div className="space-y-4">
+        <h2 className="lg:text-3xl font-regular md:text-2xl sm:text-xl">Detalles de la caja</h2>
       </div>
       <div className="grid grid-cols-2">
         <div>
@@ -322,14 +308,11 @@ export const CashRegister: React.FC = () => {
 
         <div>
           <Label htmlFor="estado">Estado</Label>
-          <p
-            className={`
-            rounded-full w-fit text-xs text-gray-700 px-2 py-0.5 ${
-              cashRegister.estado === 'abierta' ? 'bg-green-400' : 'bg-red-400 text-white'
-            }`}
-          >
-            {cashRegister.estado.charAt(0).toUpperCase() + cashRegister.estado.slice(1)}
-          </p>
+          {cashRegister.estado === 'abierta' ? (
+            <Badge color="success">Abierta</Badge>
+          ) : (
+            <Badge color="warning">Cerrada</Badge>
+          )}
         </div>
 
         <div>
@@ -400,7 +383,9 @@ export const CashRegister: React.FC = () => {
         </div>
       </div>
       <div>
-        <Label htmlFor="transacciones">Transacciones</Label>
+        <Label className="text-xl" htmlFor="transacciones">
+          Transacciones
+        </Label>
         <Table
           columns={transactionColumns}
           actions={transactionActions}

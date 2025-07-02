@@ -2,7 +2,7 @@ interface ButtonProps {
   type?: 'submit' | 'button';
   children?: React.ReactNode;
   size?: 'sm' | 'md';
-  variant?: 'primary' | 'outline';
+  variant?: 'primary' | 'outline' | 'destructive';
   startIcon?: React.ReactNode;
   endIcon?: React.ReactNode;
   onClick?: () => void;
@@ -26,9 +26,12 @@ const Button: React.FC<ButtonProps> = ({
     md: 'px-5 py-3.5 text-sm',
   };
   const variantClasses = {
-    primary: 'bg-brand-500  text-white shadow-theme-xs hover:bg-brand-600 disabled:bg-brand-300',
+    primary:
+      'cursor-pointer bg-brand-500 hover:bg-blue-700 text-white shadow-theme-xs hover:bg-brand-600 disabled:bg-brand-300',
     outline:
-      'bg-white text-white-700 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-white/[0.03] dark:hover:text-gray-300',
+      'cursor-pointer bg-white text-white-700 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-white/[0.03] dark:hover:text-gray-300',
+    destructive:
+      'cursor-pointer bg-red-600 text-white hover:bg-red-700 shadow-theme-xs dark:bg-red-400 dark:hover:bg-red-600 disabled:bg-red-200',
   };
 
   return (

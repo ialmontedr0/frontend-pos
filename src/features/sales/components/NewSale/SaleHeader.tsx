@@ -35,7 +35,7 @@ export const SaleHeader: React.FC<SaleHeaderProps> = ({
   }, [customerQuery]);
 
   return (
-    <div className="flex items-center justify-between bg-white p-4 border-b">
+    <div className="flex items-center justify-between text-black dark:text-gray-200 p-4 border-b">
       <div className="flex items-center space-x-3">
         <div className="relative">
           <input

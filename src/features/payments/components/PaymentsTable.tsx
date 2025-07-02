@@ -15,7 +15,7 @@ import { BiPlusCircle } from 'react-icons/bi';
 import moment from 'moment';
 import { Table } from '../../../components/Table/Table';
 import Spinner from '../../../components/UI/Spinner/Spinner';
-import { parsePaymentMethod } from '../../../utils/commonFunctions';
+import { myAlertError, myAlertSuccess, parsePaymentMethod } from '../../../utils/commonFunctions';
 
 interface PaymentsTableProps {
   data: Payment[] | null;
@@ -83,36 +83,16 @@ export const PaymentsTable: React.FC<PaymentsTableProps> = ({ data, loading, err
             dispatch(deletePayment(paymentId))
               .unwrap()
               .then(() => {
-                myAlert.fire({
-                  title: 'Pago eliminado',
-                  text: `Se ha eliminado el pago con exito`,
-                  icon: 'success',
-                  timer: 5000,
-                  timerProgressBar: true,
-                });
+                myAlertSuccess(`Pago eliminado`, `Se ha eliminado el pago exitosamente!`);
               })
               .catch((error: any) => {
-                myAlert.fire({
-                  title: 'Error',
-                  text: `Error: ${error.response?.data?.message || error.message}`,
-                  icon: 'error',
-                  timer: 5000,
-                  timerProgressBar: true,
-                });
+                myAlertError(`Error`, `Error: ${error.response?.data?.message || error.message}`);
               });
           }
         });
     },
     [dispatch, myAlert]
   );
-
-  if (loading) {
-    return (
-      <div className="p-6">
-        <p className="text-gray-600">Cargando pagos...</p>
-      </div>
-    );
-  }
 
   if (!loading && error) {
     return (
@@ -123,15 +103,14 @@ export const PaymentsTable: React.FC<PaymentsTableProps> = ({ data, loading, err
   }
 
   return (
-    <div className="p-6">
-      <div className="flex flex-col gap-4">
-        <h2 className="text-2xl font-semibold">Pagos</h2>
+    <div className="p-4 space-y-4">
+      <div className="space-y-6">
+        <h2 className="text-3xl font-regular text-black dark:text-gray-200">Pagos</h2>
         <div className="w-auto flex flex-wrap gap-4 my-2">
           <Button
             onClick={() => navigate('/payments/create')}
             startIcon={<BiPlusCircle size={24} />}
             type="button"
-            className="border border-gray-900 px-4 py-1 rounded-full text-white bg-blue-900 dark:bg-blue-400 cursor-pointer hover:bg-blue-800 transition-colors"
           >
             Nuevo Pago
           </Button>

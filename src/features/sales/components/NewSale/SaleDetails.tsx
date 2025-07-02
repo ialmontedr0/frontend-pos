@@ -34,8 +34,8 @@ export const SaleDetails: React.FC<SaleDetailsProps> = ({
   const pending = total - paymentAmount;
 
   return (
-    <div className="flex flex-col h-full space-y-4">
-      <div className="overflow-auto default-scrollbar flex-1 bg-white rounded border p-4">
+    <div className="flex flex-col h-full space-y-4 text-black">
+      <div className="overflow-auto default-scrollbar flex-1 rounded border p-4">
         {items.map((it, i) => {
           const lineSub = it.producto.precioVenta * it.cantidad;
           const lineItb = it.producto.itbis ? lineSub * 0.18 : 0;

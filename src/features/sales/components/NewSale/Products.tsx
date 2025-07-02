@@ -38,7 +38,7 @@ export const Products: React.FC<ProductProps> = ({ search, onSelect }) => {
   });
 
   return (
-    <div className="mt-4 bg-white rounded shadow">
+    <div className="mt-4 text-black dark:text-gray-200 rounded shadow">
       <div className="flex space-x-4 px-4 py-2 overflow-x-auto border-b">
         <button
           onClick={() => setActiveCat('Todos')}

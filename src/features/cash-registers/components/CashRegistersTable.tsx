@@ -17,10 +17,12 @@ import type { Column, Action } from '../../../components/Table/types';
 import type { CashRegister } from '../interfaces/CashRegisterInterface';
 
 import Button from '../../../components/UI/Button/Button';
-import { BiFilter } from 'react-icons/bi';
 import { SearchBar } from '../../../components/SearchBar/SearchBar';
 
 import Spinner from '../../../components/UI/Spinner/Spinner';
+import { myAlertError, myAlertSuccess } from '../../../utils/commonFunctions';
+import { BiFilter, BiPlusCircle } from 'react-icons/bi';
+import PageMeta from '../../../components/common/PageMeta';
 
 interface CashRegisterTableProps {
   data: CashRegister[] | null;
@@ -62,24 +64,12 @@ export const CashRegistersTable: React.FC<CashRegisterTableProps> = ({ data, loa
             dispatch(deleteCashRegister(cashRegisterId))
               .unwrap()
               .then(() => {
-                myAlert.fire({
-                  title: 'Caja eliminada!',
-                  text: `Se ha eliminado la caja con exito`,
-                  icon: 'success',
-                  timer: 5000,
-                  timerProgressBar: true,
-                });
+                myAlertSuccess(`Caja eliminada`, `Se ha eliminado la caja exitosamente!`);
                 dispatch(clearCashRegisterError());
                 navigate('/cash-registers', { replace: true });
               })
               .catch((error: any) => {
-                myAlert.fire({
-                  title: `Error`,
-                  text: `Error: ${error.response?.data?.message || error.message}`,
-                  icon: 'error',
-                  timer: 5000,
-                  timerProgressBar: true,
-                });
+                myAlertError(`Error`, `Error: ${error.response?.data?.message || error.message}`);
               });
           }
         });
@@ -149,22 +139,10 @@ export const CashRegistersTable: React.FC<CashRegisterTableProps> = ({ data, loa
             )
               .unwrap()
               .then(() => {
-                myAlert.fire({
-                  title: 'Caja abierta',
-                  text: `Se ha abierto la caja con exito`,
-                  icon: 'success',
-                  timer: 5000,
-                  timerProgressBar: true,
-                });
+                myAlertSuccess(`Caja abierta`, `Se ha abierto la caja con exito`);
               })
               .catch((error: any) => {
-                myAlert.fire({
-                  title: 'Error',
-                  text: `Error: ${error.response?.data?.message || error.message}`,
-                  icon: 'error',
-                  timer: 5000,
-                  timerProgressBar: true,
-                });
+                myAlertError(`Error`, `Error: ${error.response?.data?.message || error.message}`);
               });
           }
         });
@@ -203,48 +181,65 @@ export const CashRegistersTable: React.FC<CashRegisterTableProps> = ({ data, loa
     [dispatch, myAlert, closeAmount]
   );
 
-  return (
-    <div className="border-2 border-black h-full p-4 max-w-full">
-      <div className="flex flex-wrap gap-2 my-2">
-        <button
-          onClick={() => navigate('/cash-registers/create')}
-          className="px-3 py-1 rounded-full cursor-pointer bg-blue-900 text-white text-sm font-regular"
-        >
-          Nueva Caja
-        </button>
-        <button
-          onClick={toggleFilters}
-          className="px-3 py-1 bg-green-900 text-white dark:text-gray-200 rounded-full text-sm font-regular"
-        >
-          Filtrar
-        </button>
-        <SearchBar />
-      </div>
-      {showFilters && (
-        <div className="border border-black w-md h-auto p-4 flex flex-row gap-4">
-          <div>
-            <h2 className="text-black dark:text-gray-200 font-semibold">Filtros</h2>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <button>Cajas abiertas</button>
-            <button>Cajas cerradas</button>
-          </div>
-        </div>
-      )}
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
-      {data ? (
-        <Table
-          data={data}
-          columns={cashRegistersColumns}
-          actions={cashRegistersActions}
-          pageSizeOptions={[5, 10, 20]}
-          defaultPageSize={10}
-        />
-      ) : (
-        <div>
-          <p>No hay cajas registradoras</p>
+  return (
+    <>
+      <PageMeta title="Cajas Registradoras PoS v2" description="Cajas Registradoras" />
+      <div className="p-4 space-y-6 h-screen max-h-full p-4 max-w-full">
+        <div className="flex-col space-y-4">
+          <h2 className="text-3xl font-regular">Cajas</h2>
+          <div className="flex flex-wrap gap-2 my-2">
+            <Button
+              size="sm"
+              startIcon={<BiPlusCircle size={24} />}
+              onClick={() => navigate('/cash-registers/create')}
+              variant="primary"
+            >
+              Nueva Caja
+            </Button>
+            <Button
+              size="sm"
+              startIcon={<BiFilter size={24} />}
+              onClick={toggleFilters}
+              variant="outline"
+              className="px-3 py-1 bg-green-900 text-black dark:text-gray-200 rounded-full text-sm font-regular"
+            >
+              Filtrar
+            </Button>
+            <SearchBar />
+          </div>
         </div>
-      )}
-    </div>
+        {showFilters && (
+          <div className="border border-black w-md h-auto p-4 flex flex-row gap-4">
+            <div>
+              <h2 className="text-black dark:text-gray-200 font-semibold">Filtros</h2>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <button>Cajas abiertas</button>
+              <button>Cajas cerradas</button>
+            </div>
+          </div>
+        )}
+
+        {loading && <Spinner />}
+
+        {data ? (
+          <Table
+            data={data}
+            columns={cashRegistersColumns}
+            actions={cashRegistersActions}
+            pageSizeOptions={[5, 10, 20]}
+            defaultPageSize={10}
+          />
+        ) : (
+          <div>
+            <p>No hay cajas registradoras</p>
+          </div>
+        )}
+      </div>
+    </>
   );
 };

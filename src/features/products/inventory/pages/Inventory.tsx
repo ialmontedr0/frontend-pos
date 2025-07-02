@@ -21,7 +21,10 @@ export const Inventory: React.FC = () => {
   if (error) return <div className="p-4 text-red-500">Error: {error}</div>;
 
   return (
-    <div className="p-4">
+    <div className="p-6 space-y-4">
+      <div className="">
+        <h2 className="text-3xl font-regular text-black dark:text-gray-200">Inventario</h2>
+      </div>
       {loading && <Spinner />}
 
       <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">

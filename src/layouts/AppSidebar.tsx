@@ -255,7 +255,7 @@ const AppSidebar: React.FC = () => {
   return (
     <aside
       className={`
-        transform transition-transform duration-300 fixed top-0 left-0 h-full mt-16 bg-white dark:bg-gray-900 border-r pl-2 z-50 ${
+        transform transition-transform duration-300 fixed top-0 left-0 h-full mt-16 bg-white dark:bg-gray-900 border-r dark:border-none pl-2 z-50 ${
           isMobileOpen ? 'translate-x-0 w-72' : '-translate-x-full w-0 '
         } lg:translate-x-0 ${isExpanded ? 'lg:w-72' : 'lg:w-20'}
         `}

@@ -41,9 +41,9 @@ export const TransactionsTable: React.FC<TransactionsTableProps> = ({ data, load
 
   return (
     <>
-      <div className="p-6">
-        <div className="flex flex-col gap-4">
-          <h2 className="text-3xl font-semibold">Transacciones</h2>
+      <div className="p-6 h-screen max-h-full space-y-4">
+        <div className="flex flex-col gap-2 space-y-6">
+          <h2 className="text-3xl font-regular">Transacciones</h2>
         </div>
 
         {loading && <Spinner />}
