@@ -41,7 +41,7 @@ export const Dashboard: React.FC = () => {
   });
 
   const setupSocket = useCallback(() => {
-    const socket = io('http://localhost:3000');
+    const socket = io(import.meta.env.VITE_BASE_URL || 'http://localhost:3000');
     socket.on('customerStats', (customers: any) => {
       setMetrics((prev) => {
         const others = prev.filter((m) => m.title !== 'Clientes');
