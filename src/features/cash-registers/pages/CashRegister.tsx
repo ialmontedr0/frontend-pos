@@ -74,6 +74,7 @@ export const CashRegister: React.FC = () => {
     { label: 'Ver', onClick: (t) => navigate(`/transactions/${t._id}`) },
   ];
 
+  // efecto
   useEffect(() => {
     if (!codigo) {
       navigate('/cash-registers');
