@@ -16,9 +16,10 @@ import {
   deleteAllNotifications,
 } from '../slices/notificationsSlice';
 import type { Notification } from '../interfaces/NotificationInterface';
-import { tipoMap } from '../components/NotificationsModal';
 import type { RootState } from '../../../store/store';
 import Spinner from '../../../components/UI/Spinner/Spinner';
+import { tipoMap } from '../types/types';
+import Badge from '../../../components/UI/Badge/Badge';
 
 export const Notifications: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -219,14 +220,12 @@ export const Notifications: React.FC = () => {
                   })}
                 </span>
                 <span className="inline-block h-1 w-1 rounded-full bg-gray-400 dark:bg-gray-600" />
-                <span
-                  className={`px-2 py-0.5 text-xs font-medium rounded-full ${
-                    notification.estado === 'leida'
-                      ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100'
-                      : 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100'
-                  }`}
-                >
-                  {notification.estado === 'leida' ? 'Leida' : 'No leida'}
+                <span className="flex justify-end">
+                  {notification.estado === 'leida' ? (
+                    <Badge color="success">Leida</Badge>
+                  ) : (
+                    <Badge color="warning">Sin leer</Badge>
+                  )}
                 </span>
               </div>
             </div>

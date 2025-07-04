@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
 import { getNotificationsForCurrentUser, selectUnreadCount } from '../slices/notificationsSlice';
 import type { RootState } from '../../../store/store';
+import Badge from '../../../components/UI/Badge/Badge';
 
 export const tipoMap: Record<string, string> = {
   creacion_usuario: 'Creacion Usuario',
@@ -114,13 +115,12 @@ export default function NotificationsDropdown() {
           {unreadCount}
         </span>
       )}
-      <Dropdown
-        isOpen={isOpen}
-        onClose={closeDropdown}
-        className={`absolute mt-2 left-2 sm:left-auto sm:right-0 origin-top-left sm:origin-top-right w-[90%] sm:w-[350px] flex flex-col rounded-xl border bg-white shadow-lg dark:border-gray-800 dark:bg-gray-dark h-[480px] p-3`}
-      >
+      <Dropdown isOpen={isOpen} onClose={closeDropdown} className={
+        `absolute px-4 mt-4 flex flex-col rounded-xl border shadow-lg h-[480px] p-3 lg:w-sm md:w-sm`
+        }>
+        {/* absolute mt-2 left-2 origin-top-left  w-[90%] flex flex-col rounded-xl border bg-white shadow-lg dark:border-gray-800 dark:bg-gray-dark h-[480px] p-3 */}
         <div className="flex items-center justify-between pb-3 mb-3 border-b border-gray-100 dark:border-gray-700">
-          <h5 className="text-lg font-semibold text-gray-800 dark:text-gray-200">Notificaciones</h5>
+          <h5 className="text-lg font-medium text-gray-800 dark:text-gray-200">Notificaciones</h5>
           <button
             onClick={toggleDropdown}
             className="text-gray-500 transition dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
@@ -141,7 +141,6 @@ export default function NotificationsDropdown() {
             </svg>
           </button>
         </div>
-
         <ul className="flex flex-col h-auto overflow-y-auto custom-scrollbar">
           {notifications.slice(0, 10).map((notification) => (
             <li key={notification._id}>
@@ -150,19 +149,19 @@ export default function NotificationsDropdown() {
                 className="flex gap-3 rounded-lg border-b border-gray-100 p-3 px-4.5 py-3 hover:bg-gray-100 dark:border-gray-800 dark:hover:bg-white/5"
               >
                 <span className="block">
-                  <span className="mb-1.5 block text-theme-sm text-gray-500 dark:text-gray-400 space-x-1">
-                    <span className="font-medium text-gray-800 dark:text-black">
+                  <span className="flex flex-col justify-around mb-1.5 block text-theme-sm text-gray-500 dark:text-gray-400 space-x-1">
+                    <div className='flex'>
+                      <span className="font-medium text-gray-800 dark:text-black">
                       {tipoMap[notification.tipo] || notification.tipo}
                     </span>
-                    <span
-                      className={`px-1 py-0.5 text-xs rounded-full ${
-                        notification.estado === 'leida'
-                          ? 'bg-green-600 text-white dark:bg-green-400 dark:text-white'
-                          : 'bg-red-600 text-white dark:bg-red-400 dark:text-white'
-                      }`}
-                    >
-                      {notification.estado === 'leida' ? 'Leida' : 'Sin leer'}
+                    <span className='flex justify-end'>
+                      {notification.estado === 'leida' ? (
+                        <Badge color="success">Leida</Badge>
+                      ) : (
+                        <Badge color="warning">Sin leer</Badge>
+                      )}
                     </span>
+                    </div>
                     <span>{notification.mensaje}</span>
                   </span>
 
@@ -175,7 +174,6 @@ export default function NotificationsDropdown() {
             </li>
           ))}
         </ul>
-
         <Link
           to="/notifications"
           className="block px-4 py-2 mt-3 text-sm font-medium text-center text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700"

@@ -7,6 +7,8 @@ import { validateCode, clearRecoveryState } from '../slices/authSlice';
 import type { ValidateCodeDTO } from '../dtos/validate-code.dto';
 import Button from '../../../components/UI/Button/Button';
 import Spinner from '../../../components/UI/Spinner/Spinner';
+import Input from '../../../components/UI/Input/Input';
+import { AiOutlineNumber } from 'react-icons/ai';
 
 export const ValidateCode = () => {
   const dispatch = useAppDispatch();
@@ -59,24 +61,32 @@ export const ValidateCode = () => {
       });
   };
 
-  return (
-    <div className="flex min-h-full flex-1 flex-col lg:justify-center md:justify-start sm:justify-start px-6 py-12 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+  {
+    /* <div className="flex min-h-full flex-1 h-screen border-2 border-black flex-col m-4 lg:justify-center md:justify-start sm:justify-start px-6 py-12 lg:px-8">
+      <div className="border border-green-900 sm:mx-auto sm:w-full sm:max-w-sm">
         <h2 className="mt-4 text-3xl font-regular tracking-tight text-black">Validar Codigo</h2>
       </div>
       <div className="mt-4 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <p className="text-blac">
-            Ingresa el codigo enviado al correo electronico del usuario{' '}
-            <strong>{recoveryUser}</strong>.
-          </p>
+
+      </div>
+    </div> */
+  }
+
+  return (
+    <div className="border-3 border-black m-4 h-screen flex flex-1 justify-center space-y-4">
+      <div className="w-lg h-fit mt-12 pb-12 px-4 border-2 border-green-900 rounded-lg my-2 p-2">
+        <div className="border-2 border-blue-900 h-auto py-2 my-2">
+          <h2 className="text-3xl font-regular">Validar Codigo</h2>
+        </div>
+        <form onSubmit={handleSubmit} className="">
           <div>
             <label htmlFor="codigo" className="text-black">
               Codigo (6 caracteres A-Z, 0-9)
             </label>
-            <div className="mt-2">
-              <input
+            <div className="relative my-2">
+              <Input
                 type="text"
+                name="usuario"
                 value={codigo}
                 onChange={(e) => {
                   const val = e.target.value.toUpperCase();
@@ -84,26 +94,31 @@ export const ValidateCode = () => {
                     setCodigo(val);
                   }
                 }}
-                placeholder="ABC123"
+                placeholder="Ingresa el codigo"
+                className="dark:bg-white placeholder:text-gray-500"
                 required
-                className="block w-full px-3 py-1.5 border border-gray-300 rounded-full
-                  bg-gray-200 text-sm font-regular text-gray-600 placeholder-gray-400
-                  "
               />
-              <p className="mt-1 text-sm text-black">Intentos restantes: {10 - attemps}</p>
+              <span className="absolute z-30 -translate-y-1/2 right-4 top-1/2">
+                <AiOutlineNumber className="fill-gray-500 dark:fill-gray-400 size-5" />
+              </span>
             </div>
+            <p className="mt-1 text-sm text-black">Intentos restantes: {10 - attemps}</p>
 
-            {error && <div className="text-red-600 text-sm font-semibold py-2">{error}</div>}
+            {error && (
+              <div className="my-4 text-red-600 bg-red-100 p-2 rounded-lg text-sm">
+                Error: {error}
+              </div>
+            )}
 
             {loading && <Spinner />}
           </div>
 
-          <div className="flex flex-wrap gap-2 justify-start">
-            <Button type="submit" variant="primary" disabled={loading || attemps >= 10}>
+          <div className="flex flex-wrap gap-2 my-2 justify-start">
+            <Button size="sm" type="submit" variant="primary" disabled={loading || attemps >= 10}>
               {loading ? 'Validando...' : 'Validar codigo'}
             </Button>
 
-            <Button className='dark:bg-gray-400' type="button" onClick={cancel} variant="outline">
+            <Button size="sm" variant="outline" type="button" onClick={cancel}>
               Cancelar
             </Button>
           </div>

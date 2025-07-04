@@ -6,8 +6,8 @@ import withReactContent from 'sweetalert2-react-content';
 
 import type { RootState } from '../../../store/store';
 import { useAppSelector, useAppDispatch } from '../../../hooks/hooks';
-import { clearSelectedPayment, createPayment } from '../slices/paymentsSlices';
-import { clearSelectedSale, getSaleByCode } from '../../sales/slices/salesSlice';
+import { createPayment } from '../slices/paymentsSlices';
+import { clearSaleError, clearSelectedSale, getSaleByCode } from '../../sales/slices/salesSlice';
 
 import type { Sale } from '../../sales/interfaces/SaleInterface';
 import Button from '../../../components/UI/Button/Button';
@@ -46,6 +46,8 @@ export const CreatePayment: React.FC = () => {
 
   const onLoadSale = useCallback(
     (codigo: string) => {
+      if (!codigo) return;
+
       dispatch(getSaleByCode(codigo))
         .unwrap()
         .then((sale: Sale) => {
@@ -97,6 +99,7 @@ export const CreatePayment: React.FC = () => {
   const clear = () => {
     dispatch(clearSelectedSale());
     clearPaymentAmount();
+    dispatch(clearSaleError());
     setSaleQuery('');
   };
 

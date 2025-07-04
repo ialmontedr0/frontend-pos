@@ -115,12 +115,12 @@ export const SalePage: React.FC = () => {
         total={totalVenta}
       />
 
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-col md:flex-row lg:flex-row md:flex-1 lg:flex-1 md:overflow-hidden lg:overflow-hidden">
         <div className="flex-1 overflow-auto p-4">
           <Products search={productSearch} onSelect={handleSelect} />
         </div>
 
-        <div className="w-96 p-4 bg-gray-50 border-1 overflow-auto">
+        <div className="p-2 md:w-96 lg:w-96 md:p-4 lg:p-4 bg-gray-50 border-1 md:overflow-auto lg:overflow-auto">
           <SaleDetails
             items={cart}
             paymentAmount={paymentAmount}

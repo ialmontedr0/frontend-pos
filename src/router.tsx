@@ -1,17 +1,15 @@
 import { createBrowserRouter, type RouteObject, Navigate } from 'react-router-dom';
 
 import { AppLayout } from './layouts/AppLayout';
-import { Login } from './features/auth/pages/Login';
-import { RecoverPassword } from './features/auth/pages/RecoverPassword';
-import { ValidateCode } from './features/auth/pages/ValidateCode';
-import { ChangePassword } from './features/auth/pages/ChangePassword';
+import { RecoverPassword } from './features/auth/pages/RecoverPasswordPage';
+import { ValidateCode } from './features/auth/pages/ValidateCodePage';
+import { ChangePassword } from './features/auth/pages/ChangePasswordPage';
 
 import { Dashboard } from './pages/Dashboard/Dashboard';
 import { Users } from './features/users/pages/Users';
 import { User } from './features/users/pages/User';
 import { CreateUser } from './features/users/pages/CreateUser';
 import { EditUser } from './features/users/pages/EditUser';
-import { UserProfile } from './features/users/user/pages/UserProfile';
 import { UserSettings } from './features/users/user/components/Settings/Settings';
 import { Customers } from './features/customers/pages/Customers';
 import { Customer } from './features/customers/pages/Customer';
@@ -39,9 +37,8 @@ import { PrivateRoute } from './components/Routes/ProtectedRoute/ProtectedRoute'
 import { RecoverGuard } from './features/auth/guards/RecoverGuard';
 import { ValidateGuard } from './features/auth/guards/ValidateGuard';
 import { ChangeGuard } from './features/auth/guards/ChangeGuard';
-import { Inventory } from './features/products/inventory/pages/Inventory';
+import { InventoryPage } from './features/products/inventory/pages/InventoryPage';
 import Sales from './features/sales/pages/Sales';
-import { CreateSale } from './features/sales/pages/CreateSale';
 import Payments from './features/payments/pages/Payments';
 import { Sale } from './features/sales/pages/Sale';
 import { Payment } from './features/payments/pages/Payment';
@@ -56,7 +53,6 @@ import { Transaction } from './features/cash-registers/transactions/pages/Transa
 import Transactions from './features/cash-registers/transactions/pages/Transactions';
 import { SyncLogs } from './features/sync-logs/pages/SyncLogs';
 import { SalePage } from './features/sales/components/NewSale/NewSale';
-import { SalesTable } from './features/sales/components/SalesTable';
 import { SettingsPage } from './features/users/user/pages/SettingsPage';
 
 const routes: RouteObject[] = [
@@ -128,7 +124,7 @@ const routes: RouteObject[] = [
           { path: '/products/providers/:providerId', element: <Provider /> },
           { path: '/products/providers/edit/:providerId', element: <EditProvider /> },
 
-          { path: '/products/inventory', element: <Inventory /> },
+          { path: '/products/inventory', element: <InventoryPage /> },
 
           { path: '/sales', element: <Sales /> },
           { path: '/sales/create', element: <SalePage /> },

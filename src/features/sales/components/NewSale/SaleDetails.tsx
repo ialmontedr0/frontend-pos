@@ -1,4 +1,5 @@
-import { BiMoney, BiCreditCard, BiSolidSchool, BiWallet, BiTrash } from 'react-icons/bi';
+import { BiMoney, BiCreditCard, BiSolidSchool, BiWallet } from 'react-icons/bi';
+import { TrashBinIcon } from '../../../../assets/icons';
 import type { SaleItem } from './types';
 import { parsePaymentMethod } from '../../../../utils/commonFunctions';
 
@@ -47,8 +48,7 @@ export const SaleDetails: React.FC<SaleDetailsProps> = ({
                 <div className="text-xs text-gray-500">ITBIS: RD$ {lineItb.toFixed(2)}</div>
               </div>
               <div className="font-semibold">RD$ {lineTot}</div>
-              <BiTrash
-                size={24}
+              <TrashBinIcon
                 className="cursor-pointer text-red-500"
                 onClick={() => onRemoveProduct(it.producto._id)}
               />

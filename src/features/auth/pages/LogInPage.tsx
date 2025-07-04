@@ -11,7 +11,7 @@ import Checkbox from '../../../components/UI/Checkbox/Checkbox';
 import { Label } from '../../../components/UI/Label/Label';
 import Input from '../../../components/UI/Input/Input';
 import Button from '../../../components/UI/Button/Button';
-import { EyeCloseIcon, EyeIcon } from '../../../assets/icons';
+import { EyeCloseIcon, EyeIcon, UserIcon } from '../../../assets/icons';
 
 export const LogInPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -37,11 +37,11 @@ export const LogInPage: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col flex-1 pt-10 px-4">
-      <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
+    <div className="border-2 border-black flex flex-col flex-1 h-screen">
+      <div className="border border-green-600 my-auto px-4 h-full sm:h-fit flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
         <div>
           <div className="mb-5 sm:mb-8">
-            <h1 className="font-outfit mb-2 font-semibold text-gray-800 text-title-sm dark:text-black sm:text-title-md">
+            <h1 className="font-outfit mb-2 text-2xl font-semibold text-gray-800 dark:text-black sm:text-title-md">
               Iniciar sesion
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -60,17 +60,22 @@ export const LogInPage: React.FC = () => {
                   <Label>
                     Usuario <span className="text-error-500">*</span>{' '}
                   </Label>
-                  <Input
-                    type="text"
-                    name="usuario"
-                    value={form.usuario}
-                    onChange={(e) => {
-                      setForm({ ...form, usuario: e.target.value });
-                    }}
-                    placeholder="user01"
-                    className="dark:bg-white placeholder:text-gray-500"
-                    required
-                  />
+                  <div className="relative">
+                    <Input
+                      type="text"
+                      name="usuario"
+                      value={form.usuario}
+                      onChange={(e) => {
+                        setForm({ ...form, usuario: e.target.value });
+                      }}
+                      placeholder="Ingresa tu nombre de usuario"
+                      className="dark:bg-white placeholder:text-gray-500"
+                      required
+                    />
+                    <span className="absolute z-30 -translate-y-1/2 right-4 top-1/2">
+                      <UserIcon className="fill-gray-300 dark:fill-gray-400 size-5" />
+                    </span>
+                  </div>
                 </div>
                 <div>
                   <Label>
@@ -119,9 +124,11 @@ export const LogInPage: React.FC = () => {
                   <div className="mb-4 text-red-600 text-sm">Error al iniciar sesion: {error}</div>
                 )}
               </div>
-              <Button type="submit" className="w-full mt-4" size="sm">
-                {loading ? 'Iniciando' : 'Iniciar Sesion'}
-              </Button>
+              <div className="my-4 flex justify-center">
+                <Button type="submit" size="sm">
+                  {loading ? 'Iniciando' : 'Iniciar Sesion'}
+                </Button>
+              </div>
             </form>
           </div>
         </div>

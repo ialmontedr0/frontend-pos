@@ -6,6 +6,8 @@ import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
 import { recoverPassword, clearRecoveryState } from '../slices/authSlice';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import Button from '../../../components/UI/Button/Button';
+import Input from '../../../components/UI/Input/Input';
+import { UserIcon } from '../../../assets/icons';
 
 export const RecoverPassword = () => {
   const dispatch = useAppDispatch();
@@ -52,37 +54,37 @@ export const RecoverPassword = () => {
       </div>
       <div className="mt-4 sm:mx-auto sm:w-full sm:max-w-sm">
         <form onSubmit={handleRecoverPass} className="space-y-6">
-          <div>
+          <div className="flex flex-col gap-2">
             <label htmlFor="usuario" className="text-black">
               Nombre de usuario
             </label>
-            <div className="mt-2">
-              <input
-                id="usuario"
-                name="usuario"
+            <p className='text-sm text-gray-600'>Ingresa tu nombre de usuario para validar.</p>
+            <div className="relative">
+              <Input
                 type="text"
-                placeholder="Ingresa nombre de usuario Ej. user"
+                name="usuario"
                 value={usuario}
                 onChange={(e) => setUsuario(e.target.value)}
+                placeholder="Ingresa tu nombre de usuario"
+                className="dark:bg-white placeholder:text-gray-500"
                 required
-                autoComplete="usuario"
-                className="block w-full px-3 py-1.5 border border-gray-300 rounded-full
-                  bg-gray-200 text-sm font-regular text-gray-600 placeholder-gray-400
-                  "
               />
+              <span className="absolute z-30 -translate-y-1/2 right-4 top-1/2">
+                <UserIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
+              </span>
             </div>
           </div>
 
           {loading && <Spinner />}
 
-          {error && <div className="mb-4 text-red-600 bg-red-100 p-2 rounded">{error}</div>}
+          {error && <div className="mb-4 text-red-600 bg-red-100 p-2 rounded-lg text-sm">Error: {error}</div>}
 
           <div className="w-full flex flex-wrap gap-2">
-            <Button type="submit" variant="primary" disabled={loading} className="">
+            <Button size="sm" type="submit" variant="primary" disabled={loading}>
               {loading ? `Validando` : 'Validar'}
             </Button>
 
-            <Button type="button" onClick={cancel} variant="outline">
+            <Button size="sm" type="button" onClick={cancel} variant="outline">
               Cancelar
             </Button>
           </div>

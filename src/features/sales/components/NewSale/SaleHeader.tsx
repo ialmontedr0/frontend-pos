@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import { BiSearch, BiPlus, BiTrash } from 'react-icons/bi';
+import { BiSearch } from 'react-icons/bi';
 import type { Customer } from '../../../customers/interfaces/CustomerInterface';
+import { TrashBinIcon, PlusIcon } from '../../../../assets/icons';
 
 interface SaleHeaderProps {
   customers: Customer[];
@@ -35,8 +36,8 @@ export const SaleHeader: React.FC<SaleHeaderProps> = ({
   }, [customerQuery]);
 
   return (
-    <div className="flex items-center justify-between text-black dark:text-gray-200 p-4 border-b">
-      <div className="flex items-center space-x-3">
+    <div className="lg:flex lg:items-center justify-between text-black dark:text-gray-200 p-4 border-b">
+      <div className="flex flex-col sm:flex-row lg:flex-row items-left md:items-center lg:items-center md:space-x-3 lg:space-x-3 space-y-2 md:space-y-0 lg:space-y-0">
         <div className="relative">
           <input
             ref={customerInputRef}
@@ -70,7 +71,7 @@ export const SaleHeader: React.FC<SaleHeaderProps> = ({
               className="absolute right-2 top-2 text-gray-500"
               onClick={() => onSelectCustomer(null)}
             >
-              <BiTrash />
+              <TrashBinIcon />
             </button>
           )}
         </div>
@@ -97,11 +98,11 @@ export const SaleHeader: React.FC<SaleHeaderProps> = ({
           className="flex items-center justify-center w-10 h-10 bg-white text-black hover:bg-gray-100 transition-colors rounded-full shadow"
           onClick={() => onAdd(productSearch, quantity)}
         >
-          <BiPlus size={20} />
+          <PlusIcon />
         </button>
       </div>
 
-      <div className="text-right">
+      <div className="text-right hidden md:block lg:block">
         <span className="block text-gray-500">Total</span>
         <span className="text-2xl font-bold">RD$ {total.toFixed(2)}</span>
       </div>
