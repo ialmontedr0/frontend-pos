@@ -31,7 +31,7 @@ export const parseUserStatus = (estado: string) => {
     case 'activo':
       return 'Activo';
     case 'inactivo':
-      return 'inactivo';
+      return 'Inactivo';
     default:
       'Desconocido';
   }
@@ -52,12 +52,36 @@ export const parsePaymentMethod = (metodoPago: string): string => {
   }
 };
 
+export const parseSaleStatus = (estado: string): string => {
+  switch (estado) {
+    case 'pendiente':
+      return 'Pendiente';
+    case 'completada':
+      return 'Completada';
+    default:
+      return 'Desconocido';
+  }
+};
+
 export const parseTransactionType = (tipo: string): string => {
   switch (tipo) {
     case 'entrada':
       return 'Entrada';
     case 'salida':
       return 'Salida';
+    default:
+      return 'Desconocido';
+  }
+};
+
+export const parseTextSizeName = (tamanoTexto: string): string => {
+  switch (tamanoTexto) {
+    case 'sm':
+      return 'Pequeno';
+    case 'md':
+      return 'Mediano';
+    case 'lg':
+      return 'Grande';
     default:
       return 'Desconocido';
   }

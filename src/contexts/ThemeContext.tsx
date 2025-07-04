@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { useAppSelector } from '../hooks/hooks';
-import { useAppDispatch } from '../hooks/hooks';
-import { toggleUserTheme, updateUserSettings } from '../features/users/slices/usersSlice';
+import type { RootState } from '../store/store';
+import { useAppSelector, useAppDispatch } from '../hooks/hooks';
+import { setUserTheme } from '../features/users/slices/usersSlice';
 
 export type Theme = 'claro' | 'oscuro' | 'sistema';
 
@@ -16,54 +16,37 @@ const STORAGE_KEY = 'app_theme';
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const dispatch = useAppDispatch();
-  const currentUser = useAppSelector((state) => state.auth.user);
-
-  const detectInitialTheme = (): Theme => {
-    if (currentUser?.configuracion?.tema === 'claro') return 'claro';
-    if (currentUser?.configuracion?.tema === 'oscuro') return 'oscuro';
-
-    return (localStorage.getItem(STORAGE_KEY) as Theme) || 'sistema';
-  };
-
-  const [theme, setThemeState] = useState<Theme>(detectInitialTheme());
+  const authUser = useAppSelector((state: RootState) => state.auth.user);
+  const [theme, setThemeState] = useState<Theme>('sistema');
 
   const applyClass = (t: Theme) => {
     const root = document.documentElement;
-    // quitamos el dark primero
     root.classList.remove('dark');
-    if (t === 'oscuro') {
-      root.classList.add('dark');
-    } else if (t === 'sistema') {
-      // Sistema: anade o quita segun media query
-      const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      root.classList.toggle('dark', isDark);
-    }
+    if (t === 'oscuro') root.classList.add('dark');
+    if (t === 'sistema')
+      root.classList.toggle('dark', window.matchMedia('(prefers-color-scheme: dark)').matches);
   };
 
   useEffect(() => {
-    const init = detectInitialTheme();
-    setThemeState(init);
-    applyClass(init);
-  }, [currentUser]);
+    const userTheme = authUser?.configuracion?.tema as Theme | undefined;
+    const storedTheme = (localStorage.getItem(STORAGE_KEY) as Theme) || 'sistema';
+    const initial = userTheme || storedTheme
+    setThemeState(initial);
+    applyClass(initial);
+    localStorage.setItem(STORAGE_KEY, initial);
+  }, [authUser]);
 
   const setTheme = (t: Theme) => {
     setThemeState(t);
     applyClass(t);
-
-    if (!currentUser) {
-      localStorage.setItem(STORAGE_KEY, t);
-    }
+    localStorage.setItem(STORAGE_KEY, t);
+    if (authUser) dispatch(setUserTheme(t));
   };
 
   const toggleTheme = () => {
     const order: Theme[] = ['claro', 'oscuro', 'sistema'];
     const next = order[(order.indexOf(theme) + 1) % order.length];
     setTheme(next);
-    const payload: { tema: 'claro' | 'oscuro' | 'sistema' } = {
-      tema: next,
-    };
-    dispatch(toggleUserTheme(next));
-    console.log(payload);
   };
 
   return (
@@ -73,8 +56,8 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   );
 };
 
-export const useTheme = (): ThemeContextValue => {
+export const useTheme = () => {
   const ctx = useContext(ThemeContext);
-  if (!ctx) throw new Error(`useTheme debe estar dentro del ThemeProvider`);
+  if (!ctx) throw new Error(`useTheme debe usarse dentro de ThemeProvider`);
   return ctx;
 };

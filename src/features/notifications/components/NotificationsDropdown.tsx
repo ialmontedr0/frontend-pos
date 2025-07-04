@@ -58,9 +58,7 @@ export default function NotificationsDropdown() {
   const dispatch = useAppDispatch();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [notifying, setNotifying] = useState<boolean>(true);
-  const { notifications } = useAppSelector(
-    (state: RootState) => state.notifications
-  );
+  const { notifications } = useAppSelector((state: RootState) => state.notifications);
   const unreadCount = useAppSelector(selectUnreadCount);
 
   useEffect(() => {
@@ -146,7 +144,7 @@ export default function NotificationsDropdown() {
 
         <ul className="flex flex-col h-auto overflow-y-auto custom-scrollbar">
           {notifications.slice(0, 10).map((notification) => (
-            <li>
+            <li key={notification._id}>
               <DropdownItem
                 onItemClick={closeDropdown}
                 className="flex gap-3 rounded-lg border-b border-gray-100 p-3 px-4.5 py-3 hover:bg-gray-100 dark:border-gray-800 dark:hover:bg-white/5"
@@ -181,6 +179,7 @@ export default function NotificationsDropdown() {
         <Link
           to="/notifications"
           className="block px-4 py-2 mt-3 text-sm font-medium text-center text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700"
+          onClick={closeDropdown}
         >
           Ver mas
         </Link>

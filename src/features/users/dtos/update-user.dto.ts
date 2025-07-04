@@ -1,3 +1,5 @@
+import type { Estado } from "../interfaces/UserInterface";
+
 export interface UpdateUserDTO {
   nombre?: string;
   apellido?: string;
@@ -6,7 +8,7 @@ export interface UpdateUserDTO {
   telefono?: string;
   direccion?: string;
   rol?: string;
-  estado?: string;
+  estado?: Estado;
   configuracion?: {
     tema?: string;
     idioma?: string;

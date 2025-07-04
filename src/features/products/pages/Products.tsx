@@ -14,7 +14,7 @@ import type { Column, Action } from '../../../components/Table/types';
 import { Table } from '../../../components/Table/Table';
 
 import Button from '../../../components/UI/Button/Button';
-import { BiPlusCircle } from 'react-icons/bi';
+import { BiMoney, BiPlusCircle, BiTrash } from 'react-icons/bi';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 
 export const Products: React.FC = () => {
@@ -27,12 +27,18 @@ export const Products: React.FC = () => {
   let buyCost: number = 0;
   let sellCost: number = 0;
 
+  const productsData: Product[] = products;
+
   const handleUpdateCost = useCallback(
     (productId: string) => {
       myAlert
         .fire({
           title: `Actualizar precio de compra`,
           text: 'Ingresa el nuevo precio de compra del producto!',
+          iconHtml: <BiMoney className='text-green-500'/>,
+          customClass: {
+            icon: 'no-default-icon-border',
+          },
           input: 'number',
           inputValue: buyCost,
           inputPlaceholder: `RD$ .00`,
@@ -74,7 +80,10 @@ export const Products: React.FC = () => {
         .fire({
           title: `Actualizar precio venta`,
           text: `Ingresa el nuevo monto de venta del producto por favor!`,
-          icon: 'info',
+          iconHtml: <BiMoney className="text-green-400" />,
+          customClass: {
+            icon: 'no-default-icon-border',
+          },
           input: 'number',
           inputValue: sellCost,
           showConfirmButton: true,
@@ -152,7 +161,10 @@ export const Products: React.FC = () => {
         .fire({
           title: 'Eliminar producto',
           text: `Estas seguro que deseas eliminar este producto?`,
-          icon: 'question',
+          iconHtml: <BiTrash className="text-red-400" />,
+          customClass: {
+            icon: 'no-default-icon-border',
+          },
           showConfirmButton: true,
           showCancelButton: true,
           confirmButtonText: 'Si, eliminar!',
@@ -175,8 +187,6 @@ export const Products: React.FC = () => {
     [dispatch, navigate]
   );
 
-  if (error) return <div>Error: {error}</div>;
-
   return (
     <div className="p-4 space-y-6">
       <div className="space-y-4">
@@ -193,13 +203,19 @@ export const Products: React.FC = () => {
 
       {loading && <Spinner />}
 
-      <Table
-        columns={productColumns}
-        data={products}
-        defaultPageSize={10}
-        pageSizeOptions={[5, 10, 20]}
-        actions={productActions}
-      />
+      {error && <div className="text-red-500">Error: {error}</div>}
+
+      {productsData.length ? (
+        <Table
+          columns={productColumns}
+          data={products}
+          defaultPageSize={10}
+          pageSizeOptions={[5, 10, 20]}
+          actions={productActions}
+        />
+      ) : (
+        <div>No hay productos en el sistema.</div>
+      )}
     </div>
   );
 };

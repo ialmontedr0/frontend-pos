@@ -191,6 +191,10 @@ body,
     --radius: 0.5rem;
     --header-height: 74px;
 
+    .no-default-icon-border {
+      border: 0 !important;
+    }
+
     html {
       font-family: var(--font-sans);
     }

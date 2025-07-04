@@ -25,7 +25,8 @@ import {
 import { useSidebar } from '../contexts/SidebarContext';
 import type { RootState } from '../store/store';
 import { useAppSelector } from '../hooks/hooks';
-import logoFull from '../assets/logo_full.png';
+import logoFullLight from '../assets/logos/logo_full_light.svg';
+import logoFullDark from '../assets/logos/logo_full_dark.svg';
 
 type NavItem = {
   name: string;
@@ -50,7 +51,7 @@ const AppSidebar: React.FC = () => {
     {
       name: 'Configuracion',
       icon: <BiCog />,
-      path: '/user/settings',
+      path: '/settings',
     },
     {
       name: 'Salir',
@@ -146,7 +147,6 @@ const AppSidebar: React.FC = () => {
 
   useEffect(() => {
     if (openSubmenu) {
-      console.log('Opensubmenu cambio a: ', openSubmenu);
       const key = `${openSubmenu.type}-${openSubmenu.index}`;
       const el = refs.current[key];
       if (el) {
@@ -245,13 +245,6 @@ const AppSidebar: React.FC = () => {
     </ul>
   );
 
-  console.log({
-    isExpanded,
-    isMobileOpen,
-    windowWidth: window.innerWidth,
-    lgBreakpoint: window.innerWidth >= 1024,
-  });
-
   return (
     <aside
       className={`
@@ -263,17 +256,17 @@ const AppSidebar: React.FC = () => {
       <div className="p-4 flex justify-center">
         {isExpanded ? (
           <>
-            <img className="dark:hidden" src={logoFull} alt="Logo" width={32} height={32} />
+            <img className="dark:hidden" src={logoFullLight} alt="Logo" width={32} height={32} />
             <img
               className="hidden dark:block"
-              src="../assets/logo_full.png"
+              src={logoFullDark}
               alt="Logo"
-              width={150}
-              height={40}
+              width={32}
+              height={32}
             />
           </>
         ) : (
-          <img src={logoFull} alt="Logo" width={32} height={32} />
+          <img src={logoFullDark} alt="Logo" width={32} height={32} />
         )}
       </div>
 

@@ -18,6 +18,7 @@ import Input from '../../../components/UI/Input/Input';
 import { Label } from '../../../components/UI/Label/Label';
 import type { RootState } from '../../../store/store';
 import { BiSave, BiTrash, BiX } from 'react-icons/bi';
+import { myAlertError, myAlertSuccess } from '../../../utils/commonFunctions';
 
 export const EditCustomer: React.FC = () => {
   const { customerId } = useParams<{ customerId: string }>();
@@ -75,7 +76,10 @@ export const EditCustomer: React.FC = () => {
       .fire({
         title: 'Actualizar cliente',
         text: `Estas seguro que deseas guardar los cambios?`,
-        icon: 'question',
+        iconHtml: <BiSave className="text-green-500" />,
+        customClass: {
+          icon: 'no-default-icon-border',
+        },
         showConfirmButton: true,
         showCancelButton: true,
       })
@@ -95,7 +99,10 @@ export const EditCustomer: React.FC = () => {
         .fire({
           title: `Eliminar cliente`,
           text: `Estas seguro que deseas eliminar el cliente?`,
-          icon: 'question',
+          iconHtml: <BiTrash className="text-red-500" />,
+          customClass: {
+            icon: 'no-default-icon-border',
+          },
           showConfirmButton: true,
           confirmButtonText: 'Si, eliminar',
           showCancelButton: true,
@@ -107,22 +114,10 @@ export const EditCustomer: React.FC = () => {
               dispatch(deleteCustomer(customerId))
                 .unwrap()
                 .then(() => {
-                  myAlert.fire({
-                    title: `Cliente Eliminado`,
-                    text: 'Cliente eliminado con exito',
-                    icon: 'success',
-                    timer: 5000,
-                    timerProgressBar: true,
-                  });
+                  myAlertSuccess(`Cambios guardados`, `Se ha actualizado el cliente`);
                 })
                 .catch((error) => {
-                  myAlert.fire({
-                    title: 'Error',
-                    text: `Error: ${error.response?.data?.message || error.message}`,
-                    icon: 'error',
-                    timer: 5000,
-                    timerProgressBar: true,
-                  });
+                  myAlertError(`Error`, `Error: ${error.response?.data?.message || error.message}`);
                 });
             }
           }
@@ -170,7 +165,7 @@ export const EditCustomer: React.FC = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="w-full max-w-4xl mx-auto p-6 bg-white dark:bg-gray-900 rounded-lg shadow-md space-y-6"
       >
-        <h2 className="text-2xl font-regular text-black dark:text-gray-200">Editar Cliente</h2>
+        <h2 className="text-3xl font-regular text-black dark:text-gray-200">Editar Cliente</h2>
         <div className="flex flex-col md:flex-row gap-6 items-start">
           <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -218,14 +213,14 @@ export const EditCustomer: React.FC = () => {
 
         {/** Botones */}
         <div className="flex flex-wrap justify-end gap-2 pt-4 border-t dark:border-gray-700">
-          <Button startIcon={<BiSave size={20} />} type="submit" variant="primary">
+          <Button startIcon={<BiSave size={20} />} type="submit" variant="success">
             Guardar
           </Button>
           <Button
             startIcon={<BiTrash size={20} />}
             type="button"
             onClick={() => onDelCustomer(customer._id)}
-            className="bg-red-600 hover:bg-red-700"
+            variant="destructive"
           >
             Eliminar cliente
           </Button>

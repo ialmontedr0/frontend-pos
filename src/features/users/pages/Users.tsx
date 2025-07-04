@@ -40,7 +40,6 @@ export function Users() {
 
   useEffect(() => {
     dispatch(getAllUsers());
-    console.log(document.cookie);
   }, [dispatch]);
 
   const userColumns: Column<User>[] = [
@@ -58,7 +57,7 @@ export function Users() {
   ];
 
   const userActions: Action<User>[] = [
-    { label: 'Ver', onClick: (u) => viewUser(u._id) },
+    { label: 'Ver', onClick: (u) => viewUser(u.usuario) },
     { label: 'Editar', onClick: (u) => editUser(u._id) },
     {
       label: 'Restablecer contrasena',
@@ -79,7 +78,7 @@ export function Users() {
     actions: [
       {
         icon: <BiShow size={20} />,
-        onClick: () => navigate(`/users/${u._id}`),
+        onClick: () => navigate(`/users/${u.usuario}`),
         toolTip: 'Ver usuario',
       },
       {

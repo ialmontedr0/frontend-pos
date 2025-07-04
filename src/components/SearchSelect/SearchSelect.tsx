@@ -85,7 +85,7 @@ export function SearchSelect({
         placeholder={placeholder}
         onChange={handleInputChange}
         onFocus={() => setShowDropdown(true)}
-        className="px-3 py-2 border border-gray-300 dark:border-gray-400 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-md focus:ring-indigo-500 focus:border-indigo-500 w-full"
+        className=" h-11 w-full rounded-full border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3 dark:bg-[#1d2939] dark:text-white/90 dark:placeholder:text-white/30 "
       />
       {showDropdown && filteredOptions.length > 0 && (
         <ul className="absolute mt-1 w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg z-10 max-h-60 overflow-y-auto">

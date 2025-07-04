@@ -20,8 +20,10 @@ import Input from '../../../components/UI/Input/Input';
 import { Label } from '../../../components/UI/Label/Label';
 import { SearchSelect } from '../../../components/SearchSelect/SearchSelect';
 import { Textarea } from '../../../components/UI/TextArea/TextArea';
-import { ToggleSwitch } from '../../../components/UI/Switch/Switch';
+import { ToggleSwitch } from '../../../components/UI/ToggleSwitch/ToggleSwitch';
 import { BiSave, BiTrash, BiX } from 'react-icons/bi';
+import PageMeta from '../../../components/common/PageMeta';
+import { myAlertError, myAlertSuccess } from '../../../utils/commonFunctions';
 
 export const EditProduct: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -114,23 +116,15 @@ export const EditProduct: React.FC = () => {
           dispatch(updateProduct({ productId: product!._id, updateProductDTO }))
             .unwrap()
             .then(() => {
-              myAlert.fire({
-                title: 'Cambios guardados!',
-                text: `Se guardaron los cambios con exito`,
-                icon: 'success',
-                timer: 5000,
-                timerProgressBar: true,
-              });
+              myAlertSuccess(
+                `Producto actualizado`,
+                `Se ha actualizado el producto exitomsamente.`
+              );
+
               navigate('/products');
             })
             .catch((error: any) => {
-              myAlert.fire({
-                title: 'Error',
-                text: `Error: ${error.response?.data?.message || error.message}`,
-                icon: 'error',
-                timer: 5000,
-                timerProgressBar: true,
-              });
+              myAlertError(`Error`, `Error: ${error.response?.data?.message || error.message}`);
             });
         }
       });
@@ -153,23 +147,11 @@ export const EditProduct: React.FC = () => {
             dispatch(deleteProduct(productId))
               .unwrap()
               .then(() => {
-                myAlert.fire({
-                  title: `Eliminar producto!`,
-                  text: `Se ha eliminado el producto con exito`,
-                  icon: 'success',
-                  timer: 5000,
-                  timerProgressBar: true,
-                });
+                myAlertSuccess(`Producto eliminado`, `Se ha eliminado el producto exitomsamente.`);
                 navigate('/product');
               })
               .catch((error: any) => {
-                myAlert.fire({
-                  title: 'Error',
-                  text: `Error: ${error.response?.data?.message || error.message}`,
-                  icon: 'error',
-                  timer: 5000,
-                  timerProgressBar: true,
-                });
+                myAlertError(`Error`, `Error: ${error.response?.data?.message || error.message}`);
               });
           }
         });
@@ -210,193 +192,222 @@ export const EditProduct: React.FC = () => {
   }
 
   return (
-    <div>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="w-full max-w-4xl mx-auto p-6 bg-white dark:bg-gray-900 rounded-lg shadow-md space-y-6"
-      >
-        <h2 className="text-2xl font-semibold text-black dark:text-white">Editar Producto</h2>
-        {product.foto && (
-          <div className="flex-shrink-0">
-            <img
-              src={
-                product.foto || 'https://png.pngtree.com/element_pic/00/16/10/22580aa3ca49b8c.png'
-              }
-              alt={`Imagen del ${product.nombre}`}
-              className="w-32 h-32 md:w-40 md:h-40 rounded-full border-2 border-gray-200 dark:border-gray-700 object-cover"
-            />
-          </div>
-        )}
+    <>
+      <PageMeta title="Editar Producto - PoS v2" description="Editar producto" />
 
-        <div className="flex flex-col md:flex-col gap-6 items-start">
-          <div>
-            <Label htmlFor="nombre">Nombre</Label>
-            <Input
-              id="nombre"
-              placeholder="Nombre del producto"
-              {...register('nombre', { required: 'El campo nombre es obligatorio' })}
-            />
-            {errors.nombre && <p className="text-sm text-resd-500">{errors.nombre.message}</p>}
+      <div className="border-4 border-black h-full max-h-auto">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="border-3 border-red-500 w-full max-w-4xl mx-auto my-6 p-6 bg-white dark:bg-gray-900 rounded-lg shadow-md space-y-6 text-black dark:text-gray-200"
+        >
+          {/** Header del componente */}
+          <div className="border-2 border-green-500 space-y-4">
+            <h2 className="text-3xl font-regular">Editar producto</h2>
           </div>
-          <div>
-            <Label htmlFor="categoria">Categoria</Label>
-            <Controller
-              name="categoria"
-              control={control}
-              rules={{ required: 'El campo categoria es obligatorio' }}
-              render={({ field }) => (
-                <SearchSelect
-                  options={categories}
-                  initialDisplayValue={selectedCategoryName}
-                  fieldValue={field.value}
-                  placeholder="Busca una categoria"
-                  name={field.name}
-                  onFieldChange={field.onChange}
-                  onFieldBlur={field.onBlur}
-                  onSelect={(id: string) => {
-                    field.onChange(id);
-                    const found = categories.find((c) => c._id === id);
-                    setSelectedCategoryName(found?.nombre || 'Cargando');
-                  }}
+
+          {/** Cuerpo del componente */}
+          <div className="border-2 border-purple-600 flex lg:flex-row md:flex-col">
+            {/** Imagen */}
+            <div className="flex-shrink-0 rounded-full">
+              <img src={product.foto} className="w-64 h-auto rounded-full" alt="" />
+            </div>
+
+            {/** Campos a editar */}
+            <div className="lg:grid lg:grid-cols-2 space-x-4">
+              <div className="">
+                <Label className="" htmlFor="nombre">
+                  Nombre
+                </Label>
+                <Input
+                  id="nombre"
+                  {...register('nombre', { required: 'El campo nombre es obligatorio.' })}
                 />
-              )}
-            />
-            {errors.categoria && <p className="text-sm text-red-600">{errors.categoria.message}</p>}
-          </div>
-          <div>
-            <Label htmlFor="proveedor">Proveedor</Label>
-            <Controller
-              name="proveedor"
-              control={control}
-              rules={{ required: 'El campo proveedor es obligatorio' }}
-              render={({ field }) => (
-                <SearchSelect
-                  options={providers}
-                  initialDisplayValue={selectedProviderName}
-                  fieldValue={field.value}
-                  placeholder="Busca un provedor"
-                  name={field.name}
-                  onFieldChange={field.onChange}
-                  onFieldBlur={field.onBlur}
-                  onSelect={(id: string) => {
-                    field.onChange(id);
-                    const found = providers.find((p) => p._id === id);
-                    setSelectedProviderName(found?.nombre || 'Cargando');
-                  }}
+                {errors.nombre && <p className="text-sm text-red-500">{errors.nombre.message}</p>}
+              </div>
+
+              {/** Categoria (Busqueda) */}
+              <div>
+                <Label className="" htmlFor="categoria">
+                  Categoria
+                </Label>
+                <Controller
+                  name="categoria"
+                  control={control}
+                  rules={{ required: 'El campo categoria es obligatorio ' }}
+                  render={({ field }) => (
+                    <SearchSelect
+                      options={categories}
+                      initialDisplayValue={selectedCategoryName}
+                      fieldValue={field.value}
+                      placeholder="Buscar categoria..."
+                      name={field.name}
+                      onFieldChange={field.onChange}
+                      onFieldBlur={field.onBlur}
+                      onSelect={(id: string) => {
+                        field.onChange(id);
+                        const found = categories.find((c) => c._id === id);
+                        setSelectedCategoryName(found?.nombre || '');
+                      }}
+                    />
+                  )}
                 />
-              )}
-            />
-            {errors.proveedor && <p className="text-red-600 text-sm">{errors.proveedor.message}</p>}
-          </div>
-          <div>
-            <Label htmlFor="descripcion">
-              <Textarea
-                id="descripcion"
-                placeholder="Descripcion del producto"
-                {...register('descripcion')}
-              />
-              {errors.descripcion && (
-                <p className="text-sm text-red-600">{errors.descripcion.message}</p>
-              )}
-            </Label>
-          </div>
-          <div>
-            <Label htmlFor="stock">Stock</Label>
-            <Input
-              id="stock"
-              placeholder="Stock"
-              {...register('stock', {
-                required: 'El campo stock es obligatorio',
-                valueAsNumber: true,
-                min: 0,
-              })}
-            />
-            {errors.stock && <p className="text-red-600 text-sm">{errors.stock.message}</p>}
-          </div>
-          <div>
-            <Label htmlFor="precioCompra">Precio Compra</Label>
-            <Input
-              id="precioCompra"
-              placeholder="Precio Compra RD$"
-              {...register('precioCompra', {
-                required: 'El campo precio venta es obligatorio',
-                valueAsNumber: true,
-                min: 0,
-              })}
-            />
-            {errors.precioCompra && (
-              <p className="text-sm text-red-600">{errors.precioCompra.message}</p>
-            )}
-          </div>
+                {errors.categoria && (
+                  <p className="text-sm text-red-500">{errors.categoria.message}</p>
+                )}
+              </div>
 
-          <div>
-            <Label htmlFor="precioVenta">Precio Venta</Label>
-            <Input
-              id="precioVenta"
-              placeholder="Precio Venta RD$"
-              {...register('precioVenta', {
-                required: 'El campo precio venta es obligatorio',
-                valueAsNumber: true,
-                min: 0,
-              })}
-            />
-            {errors.precioVenta && (
-              <p className="text-red-600 text-sm">{errors.precioVenta.message}</p>
-            )}
-          </div>
-
-          <div>
-            <Label htmlFor="itbis">ITBIS</Label>
-            <Controller
-              name="itbis"
-              control={control}
-              rules={{
-                validate: {
-                  isBoolean: (v) => v === true || v === false,
-                },
-              }}
-              render={({ field }) => (
-                <ToggleSwitch
-                  enabled={field.value ?? false}
-                  onClick={() => {
-                    const current = field.value ?? false;
-                    field.onChange(!current);
-                    console.log(current);
-                  }}
-                  offLabel="No Aplica"
-                  onLabel="Aplica"
-                  className="mt-1"
+              <div className="">
+                <Label className="" htmlFor="proveedor">
+                  Proveedor
+                </Label>
+                <Controller
+                  name="proveedor"
+                  control={control}
+                  rules={{ required: 'El campo proveedor es obligatorio.' }}
+                  render={({ field }) => (
+                    <SearchSelect
+                      options={providers}
+                      initialDisplayValue={selectedProviderName}
+                      fieldValue={field.value}
+                      placeholder="Buscar proveedor..."
+                      name={field.name}
+                      onFieldChange={field.onChange}
+                      onFieldBlur={field.onBlur}
+                      onSelect={(id: string) => {
+                        field.onChange(id);
+                        const found = providers.find((p) => p._id === id);
+                        setSelectedProviderName(found?.nombre || '');
+                      }}
+                    />
+                  )}
                 />
-              )}
-            />
-            {errors.itbis && <p className="text-sm text-red-600">{errors.itbis.message}</p>}
+                {errors.proveedor && (
+                  <p className="text-sm text-red-500">{errors.proveedor.message}</p>
+                )}
+              </div>
+
+              <div className="">
+                <Label className="" htmlFor="descripcion">
+                  Descripcion
+                </Label>
+                <Textarea id="descripcion" {...register('descripcion')} />
+                {errors.descripcion && (
+                  <p className="text-sm text-red-500">{errors.descripcion.message}</p>
+                )}
+              </div>
+
+              <div className="">
+                <Label className="" htmlFor="stock">
+                  Stock
+                </Label>
+                <Input
+                  id="stock"
+                  {...register('stock', {
+                    required: 'El campo stock es obligatorio.',
+                    valueAsNumber: true,
+                    min: 0,
+                  })}
+                />
+                {errors.stock && <p className="text-sm text-red-500">{errors.stock.message}</p>}
+              </div>
+
+              <div className="">
+                <Label className="" htmlFor="precioCompra">
+                  Precio Compra
+                </Label>
+                <Input
+                  id="precioCompra"
+                  {...register('precioCompra', {
+                    required: 'El campo Precio Compra es obligatorio.',
+                    valueAsNumber: true,
+                    min: 0,
+                  })}
+                />
+                {errors.precioCompra && (
+                  <p className="text-sm text-red-500">{errors.precioCompra.message}</p>
+                )}
+              </div>
+
+              <div className="">
+                <Label className="" htmlFor="precioVenta">
+                  Precio Venta
+                </Label>
+                <Input
+                  id="precioVenta"
+                  {...register('precioVenta', {
+                    required: 'El campo Precio Venta es obligatorio.',
+                    valueAsNumber: true,
+                    min: 0,
+                  })}
+                />
+                {errors.precioVenta && (
+                  <p className="text-sm text-red-500">{errors.precioVenta.message}</p>
+                )}
+              </div>
+
+              <div className="">
+                <Label className="" htmlFor="ITBIS">
+                  ITBIS
+                </Label>
+                <Controller
+                  name="itbis"
+                  control={control}
+                  rules={{
+                    validate: {
+                      isBoolean: (v) => v === true || v === false,
+                    },
+                  }}
+                  render={({ field }) => (
+                    <ToggleSwitch<boolean>
+                      value={field.value ?? false}
+                      offValue={false}
+                      onValue={true}
+                      onToggle={(v) => field.onChange(v)}
+                      offLabel="No Aplica"
+                      onLabel="Aplica"
+                      className="mt-1"
+                    />
+                  )}
+                />
+                {errors.itbis && <p className="text-sm text-red-500">{errors.itbis.message}</p>}
+              </div>
+
+              <div className="">
+                <Label className="" htmlFor="foto">
+                  Foto
+                </Label>
+                <Input id="foto" {...register('foto')} />
+                {errors.foto && <p className="text-sm text-red-500">{errors.foto.message}</p>}
+              </div>
+
+              {error && <p>Error: {error}</p>}
+            </div>
           </div>
 
-          <div>
-            <Label htmlFor="foto">Foto</Label>
-            <Input id="foto" placeholder="Foto (URL)" {...register('foto')} />
-            {errors.foto && <p className="text-sm text-red-600">{errors.foto.message}</p>}
-          </div>
-
-          {error && <div className="text-red-600">Error: {error}</div>}
-
-          <div className="flex flex-wrap justify-end gap-3 pt-4 border-t dark:border-gray-700">
-            <Button startIcon={<BiSave size={20} />} type="submit" className="">
+          {/** Botones del componente */}
+          <div className="flex gap-2 justify-end p-2">
+            <Button size="sm" variant="primary" type="submit" startIcon={<BiSave size={20} />}>
               Guardar
             </Button>
             <Button
-              startIcon={<BiTrash size={20} />}
-              type="button"
+              size="sm"
+              variant="destructive"
               onClick={() => onDelProduct(product._id)}
+              startIcon={<BiTrash size={20} />}
             >
               Eliminar
             </Button>
-            <Button startIcon={<BiX size={20} />} type="button" variant="outline" onClick={cancel}>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => cancel()}
+              startIcon={<BiX size={20} />}
+            >
               Cancelar
             </Button>
           </div>
-        </div>
-      </form>
-    </div>
+        </form>
+      </div>
+    </>
   );
 };

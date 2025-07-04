@@ -12,7 +12,10 @@ import type { RootState } from '../../../../../store/store';
 import { Label } from '../../../../../components/UI/Label/Label';
 import { Select } from '../../../../../components/UI/Select/Select';
 import Button from '../../../../../components/UI/Button/Button';
-import { BiArrowBack, BiReset, BiSave } from 'react-icons/bi';
+import { BiArrowBack, BiReset, BiSave, BiX } from 'react-icons/bi';
+import PageMeta from '../../../../../components/common/PageMeta';
+import { myAlertError, myAlertSuccess } from '../../../../../utils/commonFunctions';
+import { UserSettingsForm } from '../../../../../components/Forms/UserSettingsForm';
 
 type FormValues = {
   tema: 'claro' | 'oscuro' | 'sistema';
@@ -46,12 +49,7 @@ export const UserSettings: React.FC = () => {
     notificaciones: true,
   };
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { isDirty },
-  } = useForm<FormValues>({
+  const { register, handleSubmit, reset } = useForm<FormValues>({
     defaultValues: {
       tema: currentConfig.tema as 'claro' | 'oscuro' | 'sistema',
       idioma: currentConfig.idioma as 'ES' | 'EN',
@@ -76,8 +74,6 @@ export const UserSettings: React.FC = () => {
   }, [authUser, reset]);
 
   const onSubmit = (updatePreferencesDTO: FormValues) => {
-    console.log(authUser);
-    if (!authUser) return;
     myAlert
       .fire({
         title: 'Actualizar configuracion',
@@ -91,22 +87,13 @@ export const UserSettings: React.FC = () => {
           dispatch(updateUserSettings({ configuracion: updatePreferencesDTO }))
             .unwrap()
             .then(() => {
-              myAlert.fire({
-                title: `Actualizar configuracion`,
-                text: `Se ha actualizado la configuracion con exito`,
-                icon: 'success',
-                timer: 5000,
-                timerProgressBar: true,
-              });
+              myAlertSuccess(
+                `Ajustes actualizados`,
+                `Se han actualizado los ajustes exitosamente!`
+              );
             })
             .catch((error: any) => {
-              myAlert.fire({
-                title: `Error`,
-                text: `Error actualizando la configuracion: ${error.response?.data?.message || error.message}`,
-                icon: 'error',
-                timer: 5000,
-                timerProgressBar: true,
-              });
+              myAlertError(`Error`, `Error: ${error.response?.data?.message || error.message}`);
             });
         }
       });
@@ -126,33 +113,38 @@ export const UserSettings: React.FC = () => {
           dispatch(resetUserSettings())
             .unwrap()
             .then(() => {
-              myAlert.fire({
-                title: 'Restablecimiento de configuracion!',
-                text: `Se ha restablecido la configuracion!`,
-                icon: 'success',
-                timer: 5000,
-                timerProgressBar: true,
-              });
+              myAlertSuccess(
+                `Ajustes restablecidos`,
+                `Se han restablecido los ajustes exitosamente!`
+              );
             })
             .catch((error: any) => {
-              myAlert.fire({
-                title: 'Error!',
-                text: `${error.response?.data?.message || error.message}`,
-                icon: 'error',
-                timer: 5000,
-                timerProgressBar: true,
-              });
+              myAlertError(`Error`, `Error: ${error.response?.data?.message || error.message}`);
             });
         }
       });
   };
 
-  const goBack = () => {
-    navigate('/dashboard');
+  const cancel = () => {
+    myAlert
+      .fire({
+        title: `Cancelar`,
+        text: `Estas seguro que deseas cancelar esta accion?`,
+        icon: 'question',
+        showConfirmButton: true,
+        showCancelButton: true,
+        confirmButtonText: 'Si',
+        cancelButtonText: 'Cancelar',
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          navigate('/user/profile');
+        }
+      });
   };
 
-  return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 m-4 mt-6">
+  {
+    /* <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 m-4 mt-6">
       <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Preferencias</h3>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -160,13 +152,7 @@ export const UserSettings: React.FC = () => {
           <Label htmlFor="tema" className="text-gray-700 dark:text-gray-300">
             Tema
           </Label>
-          <Select
-            id="tema"
-            {...register('tema')}
-            className="block w-40 md:w-48 rounded-md border border-gray-300 dark:border-gray-600 
-              bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200
-              focus:ring-indigo-500 focus:border-indigo-500"
-          >
+          <Select id="tema" {...register('tema')}>
             <option value="claro">Claro</option>
             <option value="oscuro">Oscuro</option>
             <option value="sistema">Sistema</option>
@@ -177,13 +163,7 @@ export const UserSettings: React.FC = () => {
           <Label htmlFor="idioma" className="text-gray-700 dark:text-gray-300">
             Idioma
           </Label>
-          <Select
-            id="idioma"
-            {...register('idioma')}
-            className="block w-40 md:w-48 rounded-md border border-gray-300 dark:border-gray-600 
-              bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200
-              focus:ring-indigo-500 focus:border-indigo-500"
-          >
+          <Select id="idioma" {...register('idioma')}>
             <option value="ES">Espanol</option>
             <option value="EN">Ingles</option>
           </Select>
@@ -193,13 +173,7 @@ export const UserSettings: React.FC = () => {
           <Label htmlFor="moneda" className="text-gray-700 dark:text-gray-300">
             Moneda
           </Label>
-          <Select
-            id="moneda"
-            {...register('moneda')}
-            className="block w-40 md:w-48 rounded-md border border-gray-300 dark:border-gray-600 
-              bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200
-              focus:ring-indigo-500 focus:border-indigo-500"
-          >
+          <Select id="moneda" {...register('moneda')}>
             <option value="DOP">Peso Dominicano</option>
             <option value="USD">Dolar Estadounidense</option>
           </Select>
@@ -209,13 +183,7 @@ export const UserSettings: React.FC = () => {
           <Label htmlFor="tamanoTexto" className="text-gray-700 dark:text-gray-300">
             Tamano Texto
           </Label>
-          <Select
-            id="tamanoTexto"
-            {...register('tamanoTexto')}
-            className="block w-40 md:w-48 rounded-md border border-gray-300 dark:border-gray-600 
-              bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200
-              focus:ring-indigo-500 focus:border-indigo-500"
-          >
+          <Select id="tamanoTexto" {...register('tamanoTexto')}>
             <option value="sm">Pequeno</option>
             <option value="md">Mediano</option>
             <option value="lg">Grande</option>
@@ -226,13 +194,7 @@ export const UserSettings: React.FC = () => {
           <Label htmlFor="zonaHoraria" className="text-gray-700 dark:text-gray-300">
             Zona Horaria
           </Label>
-          <Select
-            id="zonaHoraria"
-            {...register('zonaHoraria')}
-            className="block w-40 md:w-48 rounded-md border border-gray-300 dark:border-gray-600 
-              bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200
-              focus:ring-indigo-500 focus:border-indigo-500"
-          >
+          <Select id="zonaHoraria" {...register('zonaHoraria')}>
             {timeZones.map((tz) => (
               <option key={tz} value={tz}>
                 {tz}
@@ -245,45 +207,115 @@ export const UserSettings: React.FC = () => {
           <Label htmlFor="notificaciones" className="text-gray-700 dark:text-gray-300">
             Notificaciones
           </Label>
-          <Select
-            id="notificaciones"
-            {...register('notificaciones')}
-            className="block w-40 md:w-48 rounded-md border border-gray-300 dark:border-gray-600 
-              bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200
-              focus:ring-indigo-500 focus:border-indigo-500"
-          >
+          <Select id="notificaciones" {...register('notificaciones')}>
             <option value="true">Activado</option>
             <option value="false">Desactivado</option>
           </Select>
         </div>
 
         <div className="mt-6 flex gap-2 justify-end">
-          <Button
-            className="dark:bg-white dark:text-black"
-            type="submit"
-            disabled={isDirty}
-            startIcon={<BiSave size={20} />}
-          >
+          <Button size="sm" variant="success" type="submit" startIcon={<BiSave size={20} />}>
             Guardar ajustes
           </Button>
           <Button
+            size="sm"
+            variant="primary"
             startIcon={<BiReset size={20} />}
             type="button"
             onClick={resetSettings}
-            className="bg-green-600 hover:bg-green-800 dark:bg-green-700 hover:bg-green-900 dark:text-white transition-colors"
           >
             Restablecer preferencias
           </Button>
           <Button
-            className="dark:bg-white dark:text-black"
-            type="button"
+            size="sm"
             variant="outline"
+            type="button"
             startIcon={<BiArrowBack size={20} onClick={goBack} />}
           >
             Volver
           </Button>
         </div>
       </form>
-    </div>
+    </div> */
+  }
+
+  return (
+    <>
+      <PageMeta title="Configuracion - PoS v2" description="Configuracion" />
+
+      {/* <div className="border-3 border-black p-6 space-y-4 h-screen max-h-full">
+        <div className="border-2 border-green-600 rounded-xl shadow-theme-xs p-4 space-y-6">
+          <div className="border border-red-500">
+            <h2 className="lg:text-2xl md:text-xl sm:text-xl xs:text-lg font-regular">
+              Configuracion
+            </h2>
+          </div>
+
+          <div className="border border-blue-500 p-2 space-y-6">
+            <div className="border-2 border-green-800 flex lg:flex-row md:flex-col justify-between gap-2">
+              <Label
+                className="inline-block align-middle border border-black w-[20%] h-auto"
+                htmlFor="tema"
+              >
+                Tema
+              </Label>
+              <Select className="mx-2 w-lg" id="tema" {...register('tema')}>
+                <option value="oscuro">Oscuro</option>
+                <option value="claro">Claro</option>
+                <option value="sistema">Sistema</option>
+              </Select>
+            </div>
+
+            <div>
+              <Label className="" htmlFor="idioma">
+                Idioma
+              </Label>
+            </div>
+
+            <div>
+              <Label className="" htmlFor="moneda">
+                Moneda
+              </Label>
+            </div>
+
+            <div>
+              <Label className="" htmlFor="tamanoTexto">
+                Tamaño Texto
+              </Label>
+            </div>
+
+            <div>
+              <Label className="" htmlFor="zonaHoraria">
+                Zona Horaria
+              </Label>
+            </div>
+
+            <div>
+              <Label className="" htmlFor="notificaciones">
+                Notificaciones
+              </Label>
+            </div>
+          </div>
+
+          <div className="border border-purple-500 flex flex-wrap gap-2 justify-end py-2">
+            <Button type="submit" size="sm" variant="success" startIcon={<BiSave size={20} />}>
+              Guardar
+            </Button>
+            <Button
+              onClick={resetSettings}
+              size="sm"
+              variant="primary"
+              startIcon={<BiReset size={20} />}
+            >
+              Restablecer
+            </Button>
+            <Button onClick={cancel} size="sm" variant="outline" startIcon={<BiX size={20} />}>
+              Cancelar
+            </Button>
+          </div>
+        </div>
+      </div> */}
+      <UserSettingsForm />
+    </>
   );
 };

@@ -1,6 +1,7 @@
 import type { UserSettings } from './UserSettingsInterface';
 
 export type UserRole = 'admin' | 'cajero' | 'inventarista';
+export type Estado = 'activo' | 'inactivo';
 
 export interface User {
   _id: string;
@@ -17,6 +18,6 @@ export interface User {
   foto?: string;
   createdAt: string;
   updatedAt?: string;
-  createdBy?: string;
-  updatedBy?: string;
+  createdBy?: { _id: string; usuario: string };
+  updatedBy?: { _id: string; usuario: string };
 }

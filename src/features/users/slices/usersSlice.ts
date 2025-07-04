@@ -196,6 +196,19 @@ export const updateUserSettings = createAsyncThunk<
   }
 });
 
+export const setUserTheme = createAsyncThunk<
+  User,
+  'claro' | 'oscuro' | 'sistema',
+  { rejectValue: string }
+>('settings/setTheme', async (tema, { rejectWithValue }) => {
+  try {
+    const setThemeResponse = await usersService.setTheme(tema);
+    return setThemeResponse.data;
+  } catch (error: any) {
+    return rejectWithValue(error.response?.data?.message || error.message);
+  }
+});
+
 export const toggleUserTheme = createAsyncThunk<
   User,
   'claro' | 'oscuro' | 'sistema',
@@ -418,6 +431,26 @@ const usersSlice = createSlice({
       (state.loading = false), (state.error = action.payload as string);
     });
 
+    // === Establecer nuevo tema ===
+    builder.addCase(setUserTheme.pending, (state) => {
+      (state.loading = true), (state.error = null);
+    });
+
+    builder.addCase(setUserTheme.fulfilled, (state, action) => {
+      state.loading = false;
+      if (state.user) {
+        state.user = {
+          ...state.user,
+          configuracion: action.payload.configuracion,
+        };
+      }
+    });
+
+    builder.addCase(setUserTheme.rejected, (state, action) => {
+      (state.loading = false),
+        (state.error = (action.payload as string) || 'Error estableciendo el nuevo tema');
+    });
+
     // === Alternar tema del usuario ===
     builder.addCase(toggleUserTheme.pending, (state) => {
       (state.loading = true), (state.error = null);
@@ -426,7 +459,7 @@ const usersSlice = createSlice({
     builder.addCase(toggleUserTheme.fulfilled, (state, action) => {
       state.loading = false;
       if (state.user) {
-        state.user = { ...state.user, configuracion: action.payload.configuracion };
+        state.user.configuracion = action.payload.configuracion;
       }
     });
 

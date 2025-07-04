@@ -1,72 +1,77 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import moment from 'moment';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
 import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
 import type { RootState } from '../../../store/store';
 
-import { getUserById, clearSelectedUser } from '../slices/usersSlice';
-import { usersService } from '../services/usersService';
-
-import { parseUserRole } from '../../../utils/commonFunctions';
+import { clearSelectedUser, getUserByUsername } from '../slices/usersSlice';
+import { parseTextSizeName, parseUserRole } from '../../../utils/commonFunctions';
 
 import type { User } from '../interfaces/UserInterface';
 import Button from '../../../components/UI/Button/Button';
-import { BiArrowBack, BiEdit } from 'react-icons/bi';
+import { BiArrowBack, BiCog, BiEdit } from 'react-icons/bi';
 import Badge from '../../../components/UI/Badge/Badge';
 import Spinner from '../../../components/UI/Spinner/Spinner';
+import { AiFillSetting } from 'react-icons/ai';
 
 export function User() {
-  const { userId } = useParams<{ userId: string }>();
+  const { usuario } = useParams<{ usuario: string }>();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const myAlert = withReactContent(Swal);
 
   const { user, loading, error } = useAppSelector((state: RootState) => state.users);
 
-  // Estados locales para creator y updater
-  const [creator, setCreator] = useState<User | null>(null);
-  const [updater, setUpdater] = useState<User | null>(null);
-  const [fetchError, setFetchError] = useState<string | null>(null);
-
   useEffect(() => {
-    if (!userId) {
+    if (!usuario) {
       navigate('/users');
       return;
     }
-    dispatch(getUserById(userId));
+    dispatch(getUserByUsername(usuario));
     return () => {
       dispatch(clearSelectedUser());
-      setCreator(null);
-      setUpdater(null);
-      setFetchError(null);
     };
-  }, [dispatch, userId, navigate]);
+  }, [dispatch, usuario, navigate]);
 
-  useEffect(() => {
-    if (!user) return;
+  const showSettings = () => {
+    if (user && user.configuracion) {
+      myAlert.fire({
+        title: `Configuracion`,
+        iconHtml: <AiFillSetting />,
+        customClass: {
+          icon: 'no-default-icon-border',
+        },
+        html: `
+         <div className='flex flex-row'>
+          <strong>Tema: </strong> <label>${user.configuracion.tema.charAt(0).toUpperCase() + user.configuracion.tema.slice(1)}</label>
+         </div>
 
-    setFetchError(null);
+         <div>
+          <strong>Idioma: </strong><label>${user.configuracion.idioma}</label>
+         </div>
 
-    const loadById = async (userId: string, setter: (u: User | null) => void) => {
-      try {
-        const userResponse = await usersService.getById(userId);
-        setter(userResponse.data);
-      } catch (error: any) {
-        setter(null);
-        setFetchError(
-          `No se pudo obtener el usuario con el ID: ${userId}: ${error.response?.data?.message || error.message}`
-        );
-      }
-    };
+        <div>
+          <strong>Moneda: </strong><label>${user.configuracion.moneda}</label>
+        </div>
 
-    if (user.createdBy) {
-      loadById(user.createdBy, setCreator);
+        <div>
+          <strong>Zona Horaria: </strong><label>${user.configuracion.zonaHoraria}</label>
+        </div>
+
+        <div>
+          <strong>Tamano Texto: </strong><label>${parseTextSizeName(user.configuracion.tamanoTexto)}</label>
+        </div>
+
+        <div>
+          <strong>Notificaciones: </strong><label>${user.configuracion.notificaciones ? 'Si' : 'No'}</label>
+        </div>
+        `,
+      });
     }
-
-    if (user.updatedBy) {
-      loadById(user.updatedBy, setUpdater);
-    }
-  }, [user]);
+  };
 
   if (loading) {
     return <Spinner />;
@@ -149,22 +154,14 @@ export function User() {
           {user.createdBy && (
             <div>
               <p className="text-gray-500 dark:text-gray-400 text-sm">Creado por</p>
-              <p className="text-gray-700 dark:text-gray-200">
-                {creator ? `${creator.usuario}` : 'Cargando...'}
-              </p>
+              <p className="text-gray-700 dark:text-gray-200">{user.createdBy.usuario}</p>
             </div>
           )}
           {user.updatedBy && (
             <div>
               <p className="text-gray-500 dark:text-gray-400 text-sm">Actualizado por</p>
-              <p className="text-gray-700 dark:text-gray-200">
-                {updater ? `${updater.usuario}` : 'Cargando...'}
-              </p>
+              <p className="text-gray-700 dark:text-gray-200">{user.updatedBy.usuario}</p>
             </div>
-          )}
-
-          {fetchError && (
-            <div className="mt-4 p-2 bg-red-100 text-red-700 rounded">{fetchError}</div>
           )}
 
           {/** Fecha creacion y ultima actualizacion */}
@@ -184,20 +181,30 @@ export function User() {
 
           <div>
             <p className="text-gray-500 dar:text-gray-400 text-sm">Estado</p>
-            {user.estado ? (
+            {user.estado === 'activo' ? (
               <Badge color="success">Activo</Badge>
             ) : (
               <Badge color="error">Inactivo</Badge>
             )}
           </div>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap justify-end gap-2">
           <Button
             size="sm"
             startIcon={<BiArrowBack size={20} />}
             onClick={() => navigate('/users')}
           >
             Volver
+          </Button>
+
+          <Button
+            size="sm"
+            variant="success"
+            type="button"
+            onClick={showSettings}
+            startIcon={<BiCog size={20} />}
+          >
+            Configuracion
           </Button>
 
           <Button

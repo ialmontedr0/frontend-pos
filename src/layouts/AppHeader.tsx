@@ -4,14 +4,14 @@ import { useSidebar } from '../contexts/SidebarContext';
 import { ThemeToggleButton } from '../components/ThemeToggleButton/ThemeToggleButton';
 import NotificationsDropdown from '../features/notifications/components/NotificationsDropdown';
 import { UserDropdown } from '../components/Header/UserDropdown';
-import fullLogo from '../assets/logo_full.png';
+import fullLogoLight from '../assets/logos/logo_full_light.svg';
+import fullLogoDark from '../assets/logos/logo_full_dark.svg';
 
 const AppHeader: React.FC = () => {
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState<boolean>(false);
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
 
   const handleToggle = () => {
-    
     if (window.innerWidth < 1024) {
       toggleMobileSidebar();
     } else {
@@ -83,8 +83,14 @@ const AppHeader: React.FC = () => {
           </button>
 
           <Link to="/" className="lg:hidden">
-            <img className="dark:hidden" width={32} height={32} src={fullLogo} alt="Logo" />
-            <img className="hidden dark:block" width={32} height={32} src={fullLogo} alt="Logo" />
+            <img className="dark:hidden" width={32} height={32} src={fullLogoLight} alt="Logo" />
+            <img
+              className="hidden dark:block"
+              width={32}
+              height={32}
+              src={fullLogoDark}
+              alt="Logo"
+            />
           </Link>
 
           <button

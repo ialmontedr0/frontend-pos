@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import moment from 'moment';
@@ -9,24 +9,19 @@ import type { RootState } from '../../../store/store';
 import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
 import { getProductById, deleteProduct, clearSelectedProduct } from '../slices/productsSlice';
 
-import type { User } from '../../users/interfaces/UserInterface';
-import { usersService } from '../../users/services/usersService';
-
-import type { Provider } from '../providers/interfaces/ProviderInterface';
-import type { Category } from '../categories/interfaces/CategoryInterface';
+import Spinner from '../../../components/UI/Spinner/Spinner';
+import { myAlertError, myAlertSuccess } from '../../../utils/commonFunctions';
+import Badge from '../../../components/UI/Badge/Badge';
+import Button from '../../../components/UI/Button/Button';
+import { BiArrowBack, BiEdit, BiTrash } from 'react-icons/bi';
+import PageMeta from '../../../components/common/PageMeta';
+import { Label } from '../../../components/UI/Label/Label';
 
 export function Product() {
   const { productId } = useParams<{ productId: string }>();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
-
-  const [provider, setProvider] = useState<Provider | null>(null);
-  const [category, setCategory] = useState<Category | null>(null);
-
-  const [creator, setCreator] = useState<User | null>(null);
-  const [updater, setUpdater] = useState<User | null>(null);
-  const [fetchError, setFetchError] = useState<string | null>(null);
 
   const { product, loading, error } = useAppSelector((state: RootState) => state.products);
 
@@ -38,44 +33,8 @@ export function Product() {
     dispatch(getProductById(productId));
     return () => {
       dispatch(clearSelectedProduct());
-      setCreator(null);
-      setUpdater(null);
-      setFetchError(null);
     };
   }, [dispatch, productId, navigate]);
-
-  useEffect(() => {
-    if (!product) return;
-
-    setFetchError(null);
-    const loadById = async (userId: string, setter: (u: User | null) => void) => {
-      try {
-        const userResponse = await usersService.getById(userId);
-        setter(userResponse.data);
-      } catch (error: any) {
-        setter(null);
-        setFetchError(
-          `No se pudo obtener el usuario con el ID: ${userId}: ${error.response?.data?.message || error.message}`
-        );
-      }
-    };
-
-    if (product.createdBy) {
-      loadById(product.createdBy, setCreator);
-    }
-
-    if (product.updatedBy) {
-      loadById(product.updatedBy, setUpdater);
-    }
-
-    if (typeof product.categoria === 'object') {
-      setCategory(product.categoria as Category);
-    }
-
-    if (typeof product.proveedor === 'object') {
-      setProvider(product.proveedor as Provider);
-    }
-  }, [product]);
 
   const handleDeleteProduct = useCallback(
     (productId: string) => {
@@ -94,23 +53,11 @@ export function Product() {
             dispatch(deleteProduct(productId))
               .unwrap()
               .then(() => {
-                myAlert.fire({
-                  title: 'Eliminar producto',
-                  text: `Se ha eliminado el producto con exito`,
-                  icon: 'success',
-                  timer: 5000,
-                  timerProgressBar: true,
-                });
+                myAlertSuccess(`Producto eliminado`, `Se ha eliminado el producto exitosamente`);
                 navigate('/products');
               })
               .catch((error: any) => {
-                myAlert.fire({
-                  title: 'Error',
-                  text: `Error: ${error}`,
-                  icon: 'error',
-                  timer: 5000,
-                  timerProgressBar: true,
-                });
+                myAlertError(`Error`, `Error: ${error.response?.data?.message || error.message}`);
               });
           }
         });
@@ -119,11 +66,7 @@ export function Product() {
   );
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <p className="text-gray-500 dark:text-gray-400">Cargando producto...</p>
-      </div>
-    );
+    return <Spinner />;
   }
 
   if (error) {
@@ -153,148 +96,126 @@ export function Product() {
       </div>
     );
   }
-
   return (
-    <div className="p-6 max-w-2xl mx-auto bg-white dark:bg-gray-900 rounded-lg shadow-lg">
-      <div className="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8">
-        <div className="flex-shrink-0">
-          <img
-            src={product.foto || 'https://png.pngtree.com/element_pic/00/16/10/22580aa3ca49b8c.png'}
-            alt={`Imagen del ${product.nombre}`}
-            className="w-32 h-32 md:w-40 md:h-40 rounded-full border-2 border-gray-200 dark:border-gray-700 object-cover"
-          />
-        </div>
-      </div>
-
-      <div className="flex-1 space-y-4">
-        <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-100">
-          {product.nombre}
-        </h2>
-
-        <div className="grid grid-cols sm:grid-cols-2 gap-x-6 gap-y-2">
-          <div>
-            <p className="text-gray-500 dark:text-gray-400 text-sm">Codigo</p>
-            <p className="text-gray-800 dark:text-gray-200">{product.codigo}</p>
+    <>
+      <PageMeta title={product.nombre} description="Detalles producto" />
+      <div className="p-4 space-y-6 border-2 border-black h-full max-h-full sm:h-full sm:max-h-auto">
+        <div className='border-2 border-green-600 m-6 p-4 md:h-auto md:max-h-full sm:h-full'>
+          <div className="space-y-4">
+            <h2 className="text-3xl font-regular">{product.nombre}</h2>
           </div>
 
-          {category && (
-            <div>
-              <p className="text-gray-500 dark:text-gray-400 text-sm">Categoria</p>
-              <p className="text-gray-800 dark:text-gray-200">
-                {category!.nombre || 'Cargando...'}
-              </p>
+          <div className="lg:flex lg:flex-row md:flex-col">
+            <div className="border border-black w-fit mr-4">
+              <img src={product.foto} className="rounded-full" alt="" />
             </div>
-          )}
 
-          {provider && (
-            <div>
-              <p className="text-gray-500 dark:text-gray-400 text-sm">Proveedor</p>
-              <p className="text-gray-800 dark:text-gray-200">
-                {provider!.nombre || 'Cargando...'}
-              </p>
+            <div className="">
+              <div className="lg:grid lg:grid-cols-2 space-x-4">
+                <div className="">
+                  <Label htmlFor="codigo">Codigo</Label>
+                  <p>{product.codigo}</p>
+                </div>
+
+                <div className="">
+                  <Label htmlFor="categoria">Categoria</Label>
+                  <p>{product.categoria.nombre}</p>
+                </div>
+
+                <div className="">
+                  <Label htmlFor="proveedor">Proveedor</Label>
+                  <p>{product.proveedor.nombre}</p>
+                </div>
+
+                <div className="">
+                  <Label htmlFor="precioCompra">Precio Compra</Label>
+                  <p>RD$ {product.precioCompra.toFixed(2)}</p>
+                </div>
+
+                <div className="">
+                  <Label htmlFor="precioVenta">Precio Venta</Label>
+                  <p>RD$ {product.precioVenta.toFixed(2)}</p>
+                </div>
+
+                <div className="">
+                  <Label htmlFor="itbis">ITBIS</Label>
+                  <p>{product.itbis === true ? 'Aplica' : 'No Aplica'}</p>
+                </div>
+
+                <div className="">
+                  <Label htmlFor="stock">Stock</Label>
+                  <p>{product.stock}</p>
+                </div>
+
+                <div className="">
+                  <Label htmlFor="estado">Estado</Label>
+                  {product.disponible === true ? (
+                    <Badge color="success">Disponible</Badge>
+                  ) : (
+                    <Badge color="error">No Disponible</Badge>
+                  )}
+                </div>
+
+                <div className="">
+                  <Label htmlFor="soldCount">Unidades vendidas</Label>
+                  <p>{product.soldCount}</p>
+                </div>
+
+                <div className="">
+                  <Label htmlFor="createdBy">Creado por</Label>
+                  <p>{product.createdBy!.usuario}</p>
+                </div>
+
+                <div className="">
+                  <Label htmlFor="">Fecha creacion</Label>
+                  <p>{moment(product.createdAt).format('LLLL')}</p>
+                </div>
+
+                {product.updatedBy && (
+                  <div className="">
+                    <Label htmlFor="updatedBy">Actualizado por</Label>
+                    <p>{product.updatedBy.usuario}</p>
+                  </div>
+                )}
+
+                {product.updatedAt && (
+                  <div className="">
+                    <Label htmlFor="updatedAt">Fecha actualizacion</Label>
+                    <p>{moment(product.updatedAt).format('LLLL')}</p>
+                  </div>
+                )}
+              </div>
             </div>
-          )}
-
-          <div>
-            <p className="text-gray-500 dark:text-gray-400 text-sm">Descripcion</p>
-            <fieldset className="text-gray-800 dark:text-gray-200">{product.descripcion}</fieldset>
           </div>
 
-          <div>
-            <p className="text-gray-500 dark:text-gray-400 text-sm">Stock</p>
-            <p className="text-gray-800 dark:text-gray-200">{product.stock}</p>
-          </div>
-
-          <div>
-            <p className="text-gray-500 dark:text-gray-400 text-sm">Estado</p>
-            <p
-              className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${
-                product.disponible === true
-                  ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                  : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-              }`}
-            >
-              {product.disponible === true ? 'Disponible' : 'No disponible'}
-            </p>
-          </div>
-
-          <div>
-            <p className="text-gray-500 dark:text-gray-400 text-sm">Precio compra</p>
-            <p className="text-gray-800 dark:text-gray-200">
-              RD$ {product.precioCompra.toFixed(2)}
-            </p>
-          </div>
-
-          <div>
-            <p className="text-gray-500 dark:text-gray-400 text-sm">Precio venta</p>
-            <p className="text-gray-800 dark:text-gray-200">RD$ {product.precioVenta.toFixed(2)}</p>
-          </div>
-
-          <div>
-            <p className="text-gray-500 dark:text-gray-400 text-sm">ITBIS</p>
-            <p className="text-gray-800 dark:text-gray-200">
-              {product.itbis === true ? 'Si' : 'No'}
-            </p>
-          </div>
-
-          {product.createdBy && (
-            <div>
-              <p className="text-gray-500 dark:text-gray-400 text-sm">Creado por</p>
-              <p className="text-gray-800 dark:text-gray-200">
-                {creator ? `${creator.usuario}` : 'Cargando...'}
-              </p>
-            </div>
-          )}
-
-          {product.updatedBy && (
-            <div>
-              <p className="text-gray-500 dark:text-gray-400 text-sm">Actualizado por</p>
-              <p className="text-gray-800 dark:text-gray-200">
-                {updater ? `${updater.usuario}` : 'Cargando...'}
-              </p>
-            </div>
-          )}
-
-          {fetchError && (
-            <div className="mt-4 p-2 bg-red-100 text-red-700 rounded">{fetchError}</div>
-          )}
-
-          <div>
-            <p className="text-gray-500 dark:text-gray-400 text-sm">Fecha creacion</p>
-            <p className="text-gray-800 dark:text-gray-200">
-              {moment(product.createdAt).format('MMMM Do YYYY, h:mm:ss a')}
-            </p>
-          </div>
-
-          <div>
-            <p className="text-gray-500 dark:text-gray-400 text-sm">Ultima actualizacion</p>
-            <p className="text-gray-800 dark:text-gray-200">
-              {moment(product.updatedAt).format('MMMM Do YYYY, h:mm:ss a')}
-            </p>
-          </div>
-
-          <div className="mt-6 flex flex-col sm:flex-row items-center justify-end space-y-2 sm:space-y-0 sm:space-x-4">
-            <button
-              className="w-full sm:w-auto px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition"
+          <div className="flex lg:justify-end gap-2 my-4 md:justify-center">
+            <Button
               onClick={() => navigate('/products')}
+              size="sm"
+              startIcon={<BiArrowBack size={20} />}
+              variant="primary"
             >
-              ← Volver
-            </button>
-            <button
-              className="w-full sm:w-auto px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition"
+              Volver
+            </Button>
+            <Button
               onClick={() => navigate(`/products/edit/${product._id}`)}
+              size="sm"
+              startIcon={<BiEdit size={20} />}
+              variant="outline"
             >
               Editar
-            </button>
-            <button
-              className="w-full sm:w-auto px-4 py-2 bg-red-800 text-white rounded hover:bg-red-700 transition"
+            </Button>
+            <Button
               onClick={() => handleDeleteProduct(product._id)}
+              size="sm"
+              startIcon={<BiTrash size={20} />}
+              variant="destructive"
             >
               Eliminar
-            </button>
+            </Button>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

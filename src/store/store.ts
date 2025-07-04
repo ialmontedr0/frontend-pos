@@ -30,7 +30,7 @@ import transactionReducer from '../features/cash-registers/transactions/slices/t
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['auth'],
+  whitelist: ['auth', 'users'],
 };
 
 export const api = createApi({

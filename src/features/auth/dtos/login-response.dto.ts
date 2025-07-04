@@ -14,7 +14,7 @@ export interface LoginResponseDTO {
     rol: UserRole;
     estado: string;
     configuracion: {
-      tema: string;
+      tema: 'claro' | 'oscuro' | 'sistema';
       idioma: string;
       moneda: string;
       tamanoTexto: string;

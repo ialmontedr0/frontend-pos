@@ -6,7 +6,6 @@ import { useAppSelector, useAppDispatch } from '../../../../hooks/hooks';
 import { fetchInventory } from '../slices/inventorySlice';
 import type { Product } from '../../interfaces/ProductInterface';
 import Spinner from '../../../../components/UI/Spinner/Spinner';
-import ProductList from '../../../../components/ProductList/ProductList';
 
 export const Inventory: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -32,22 +31,18 @@ export const Inventory: React.FC = () => {
 
         <div className="bg-white rounded shadow p-4">
           <h3 className="text-lg font-semibold mb-2">Productos bajos de Stock</h3>
-          <ProductList products={lowStock} />
         </div>
 
         <div className="bg-white rounded shadow p-4">
           <h3 className="text-lg font-semibold mb-2">Productos más vendidos</h3>
-          <ProductList products={topSold} />
         </div>
 
         <div className="bg-white rounded shadow p-4">
           <h3 className="text-lg font-semibold mb-2">Productos menos vendidos</h3>
-          <ProductList products={leastSold} />
         </div>
 
         <div className="bg-white rounded shadow p-4">
           <h3 className="text-lg font-semibold mb-2">Productos recientes</h3>
-          <ProductList products={recent} />
         </div>
       </div>
     </div>

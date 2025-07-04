@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { useParams, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
@@ -19,23 +19,25 @@ import Button from '../../../components/UI/Button/Button';
 import Input from '../../../components/UI/Input/Input';
 import { Label } from '../../../components/UI/Label/Label';
 import { Select } from '../../../components/UI/Select/Select';
-import { ToggleSwitch } from '../../../components/UI/Switch/Switch';
+import { ToggleSwitch } from '../../../components/UI/ToggleSwitch/ToggleSwitch';
 import { BiKey, BiReset, BiSave, BiTrash, BiX } from 'react-icons/bi';
 import { myAlertError, myAlertSuccess } from '../../../utils/commonFunctions';
+import type { Estado } from '../interfaces/UserInterface';
 
 export const EditUser: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
-  const [enabled, setEnabled] = useState<boolean>(false);
+
+  const [estado, setEstado] = useState<'activo' | 'inactivo'>('activo');
   const { user, loading, error } = useAppSelector((state) => state.users);
 
   const sanitizedUserForForm = (u: any): UpdateUserDTO => {
     const {
       nombre,
       apellido,
-      usuario: usr,
+      usuario: user,
       correo,
       telefono,
       direccion,
@@ -47,7 +49,7 @@ export const EditUser: React.FC = () => {
     return {
       nombre,
       apellido,
-      usuario: usr,
+      usuario: user,
       correo,
       telefono,
       direccion,
@@ -62,6 +64,7 @@ export const EditUser: React.FC = () => {
     register,
     handleSubmit,
     reset,
+    control,
     watch,
     formState: { errors },
   } = useForm<UpdateUserDTO>({
@@ -107,6 +110,7 @@ export const EditUser: React.FC = () => {
       })
       .then((result) => {
         if (result.isConfirmed) {
+          updateUserDTO.estado = estado;
           dispatch(updateUser({ userId: user!._id, updateUserDTO })).then(() => {
             myAlertSuccess(`Usuario actualizado`, `Se ha actualizado el usuario con exito`);
             navigate(`/users/${userId}`);
@@ -196,8 +200,6 @@ export const EditUser: React.FC = () => {
       });
   };
 
-  const estadoActual = watch('estado', user?.estado || 'activo');
-
   if (loading) {
     return (
       <div className="flex items-center justify-center h-full">
@@ -281,16 +283,24 @@ export const EditUser: React.FC = () => {
               </div>
 
               <div className="flex items-center space-x-4 col-span-full">
-                <ToggleSwitch
-                  enabled={estadoActual === 'activo'}
-                  onClick={() => {
-                    setEnabled((prev) => !prev);
-                    console.log(enabled);
-                  }}
+                {/** Usar ToggleSwitch aqui para alternar de activo a inactivo */}
+                <Label>Estado</Label>
+                <Controller<UpdateUserDTO, 'estado'>
+                  name="estado"
+                  control={control}
+                  defaultValue="activo"
+                  render={({ field }) => (
+                    <ToggleSwitch<Estado>
+                      value={field.value!}
+                      offValue="inactivo"
+                      onValue="activo"
+                      offLabel="Inactivo"
+                      onLabel="Activo"
+                      className="mt-1"
+                      onToggle={field.onChange}
+                    />
+                  )}
                 />
-                <Label htmlFor="estado">
-                  Estado: {estadoActual === 'activo' ? 'Activo' : 'Inactivo'}
-                </Label>
               </div>
 
               <div className="col-span-full">
@@ -310,29 +320,31 @@ export const EditUser: React.FC = () => {
 
         {/** Botones */}
         <div className="flex flex-wrap justify-end gap-3 pt-4 border-t dark:border-gray-700">
-          <Button startIcon={<BiSave size={20} />} type="submit">
+          <Button size="sm" variant="success" startIcon={<BiSave size={20} />} type="submit">
             Guardar
           </Button>
-          <Button
-            startIcon={<BiKey size={20} />}
-            type="button"
-            className="bg-green-800 hover:bg-green-700"
-            onClick={onResetPwd}
-          >
+          <Button size="sm" startIcon={<BiKey size={20} />} type="button" onClick={onResetPwd}>
             Restablecer contrasena
           </Button>
-          <Button
-            startIcon={<BiReset size={20} />}
-            type="button"
-            className="bg-green-600 hover:bg-green-500"
-            onClick={onResetPrefs}
-          >
+          <Button size="sm" startIcon={<BiReset size={20} />} type="button" onClick={onResetPrefs}>
             Restablecer preferencias
           </Button>
-          <Button startIcon={<BiTrash size={20} />} type="button" onClick={onDelUser}>
+          <Button
+            size="sm"
+            variant="destructive"
+            startIcon={<BiTrash size={20} />}
+            type="button"
+            onClick={onDelUser}
+          >
             Eliminar usuario
           </Button>
-          <Button startIcon={<BiX size={20} />} type="button" onClick={cancel}>
+          <Button
+            size="sm"
+            variant="outline"
+            startIcon={<BiX size={20} />}
+            type="button"
+            onClick={cancel}
+          >
             Cancelar
           </Button>
         </div>

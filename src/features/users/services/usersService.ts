@@ -21,6 +21,8 @@ export const usersService = {
   resetPreferences: (userId: string) => api.patch<User>(`/users/reset-preferences/${userId}`),
   updateSettings: (configuracion: Partial<User['configuracion']>) =>
     api.patch<User>(`/settings/update`, configuracion),
+  setTheme: (tema: 'claro' | 'oscuro' | 'sistema') =>
+    api.patch<any>('/settings/set-theme', { tema }),
   toggleTheme: (tema: 'claro' | 'oscuro' | 'sistema') =>
     api.patch<any>('/settings/toggle-theme', { tema }),
   resetSettings: () => api.patch<User>(`/settings/reset`),

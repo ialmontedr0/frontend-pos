@@ -11,6 +11,6 @@ export interface Customer {
   historialCompras: Sale[];
   createdAt: string;
   updatedAt?: string;
-  createdBy?: string;
-  updatedBy?: string;
+  createdBy?: { _id: string; usuario: string };
+  updatedBy?: { _id: string; usuario: string };
 }

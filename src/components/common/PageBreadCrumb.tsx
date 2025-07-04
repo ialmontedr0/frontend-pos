@@ -6,10 +6,7 @@ interface BreadcrumProps {
 
 const PageBreadcrum: React.FC<BreadcrumProps> = ({ pageTitle }) => {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
-      <h2 className="text-xl font-semibold text-gray-800 dark:text-white/90" x-text="pageName">
-        {pageTitle}
-      </h2>
+    <div className="flex flex-wrap items-center justify-end px-4 mt-4 gap-3 mb-6">
       <nav>
         <ol className="flex items-center gap-1.5">
           <li>
@@ -36,8 +33,7 @@ const PageBreadcrum: React.FC<BreadcrumProps> = ({ pageTitle }) => {
               </svg>
             </Link>
           </li>
-          <li className='text-sm text-gray-800 dark:text-white/90'>
-          {pageTitle}</li>
+          <li className="text-sm text-gray-800 dark:text-white/90">{pageTitle}</li>
         </ol>
       </nav>
     </div>
