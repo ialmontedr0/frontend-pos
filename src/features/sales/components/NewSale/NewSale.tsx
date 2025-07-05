@@ -113,7 +113,7 @@ export const SalePage: React.FC = () => {
       })
       .catch((error: any) => {
         
-        myAlertError(`Error`, `Error: ${error.response?.data?.message || error.message}`);
+        myAlertError(`Error`, `Error: ${error}`);
       });
   };
 
