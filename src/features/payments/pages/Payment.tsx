@@ -11,6 +11,8 @@ import { Label } from '../../../components/UI/Label/Label';
 import Button from '../../../components/UI/Button/Button';
 import { BiFolderOpen, BiTrash } from 'react-icons/bi';
 import { parsePaymentMethod } from '../../../utils/commonFunctions';
+import PageMeta from '../../../components/common/PageMeta';
+import PageBreadcrum from '../../../components/common/PageBreadCrumb';
 
 export const Payment: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -30,8 +32,8 @@ export const Payment: React.FC = () => {
   }, [dispatch, paymentId, navigate]);
 
   const viewSale = (codigo: string) => {
-    navigate(`/sales/${codigo}`)
-  }
+    navigate(`/sales/${codigo}`);
+  };
 
   if (loading) {
     return (
@@ -49,61 +51,69 @@ export const Payment: React.FC = () => {
     );
   }
 
+  if (!payment) {
+    return <div className="">No existe el pago</div>;
+  }
+
   return (
     <>
-      {payment && (
-        <div className="p-6 flex flex-col max-w-2xl mx-auto my-4 text-black dark:text-gray-200 bg-white dark:bg-gray-900 rounded-lg shadow">
-          <div className="my-2">
-            <h2 className="text-3xl font-semibold">Detalles Pago</h2>
+      <PageMeta title="Pago - PoS v2" description="Detalles del pago" />
+      <PageBreadcrum pageTitle='Pago' />
+      <div className="p-6 flex flex-col max-w-2xl mx-auto my-4 mx-2 text-black dark:text-gray-200 bg-white dark:bg-gray-900 rounded-lg shadow">
+        <div className="my-2">
+          <h2 className="text-3xl font-regular">Detalles Pago</h2>
+        </div>
+
+        <div className="grid grid-cols-2 md:flex-col sm:flex-col xs:flex-col space-y-4">
+          <div>
+            <Label htmlFor="venta">Venta</Label>
+            <p>{payment?.venta.codigo ?? '-'}</p>
           </div>
 
-          <div className="grid grid-cols-2 md:flex-col sm:flex-col xs:flex-col space-y-4">
-            <div>
-              <Label htmlFor="venta">Venta</Label>
-              <p>{payment?.venta.codigo ?? '-'}</p>
-            </div>
-
-            <div>
-              <Label htmlFor="cliente">Cliente</Label>
-              <p>{payment?.cliente.nombre ?? '-'}</p>
-            </div>
-
-            <div>
-              <Label htmlFor="usuario">Usuario</Label>
-              <p>{payment?.usuario.usuario ?? '-'}</p>
-            </div>
-
-            <div>
-              <Label htmlFor="metodoPago">Metodo Pago</Label>
-              <p>{parsePaymentMethod(payment.metodoPago)}</p>
-            </div>
-
-            <div>
-              <Label htmlFor="montoPagado">Monto Pagado</Label>
-              <p>RD$ {payment?.montoPagado.toFixed(2)}</p>
-            </div>
-
-            <div>
-              <Label htmlFor="referenciaExterna">Referencia</Label>
-              <p>{payment?.referenciaExterna}</p>
-            </div>
-
-            <div>
-              <Label htmlFor="fecha">Fecha pago</Label>
-              <p>{moment(payment?.fecha).format('DD MM YYYY, hh:mm:ss a')}</p>
-            </div>
+          <div>
+            <Label htmlFor="cliente">Cliente</Label>
+            <p>{payment?.cliente.nombre ?? '-'}</p>
           </div>
 
-          <div className="w-auto flex flex-wrap gap-2 my-5">
-            <Button onClick={() => viewSale(payment.venta.codigo)} size='sm' startIcon={<BiFolderOpen size={24}  />}>
-              Ver venta
-            </Button>
-            <Button size='sm' variant='destructive' startIcon={<BiTrash size={24} />}>
-              Eliminar pago
-            </Button>
+          <div>
+            <Label htmlFor="usuario">Usuario</Label>
+            <p>{payment?.usuario.usuario ?? '-'}</p>
+          </div>
+
+          <div>
+            <Label htmlFor="metodoPago">Metodo Pago</Label>
+            <p>{parsePaymentMethod(payment.metodoPago)}</p>
+          </div>
+
+          <div>
+            <Label htmlFor="montoPagado">Monto Pagado</Label>
+            <p>RD$ {payment?.montoPagado.toFixed(2)}</p>
+          </div>
+
+          <div>
+            <Label htmlFor="referenciaExterna">Referencia</Label>
+            <p>{payment?.referenciaExterna}</p>
+          </div>
+
+          <div>
+            <Label htmlFor="fecha">Fecha pago</Label>
+            <p>{moment(payment?.fecha).format('DD MM YYYY, hh:mm:ss a')}</p>
           </div>
         </div>
-      )}
+
+        <div className="w-auto flex flex-wrap gap-2 my-5">
+          <Button
+            onClick={() => viewSale(payment.venta.codigo)}
+            size="sm"
+            startIcon={<BiFolderOpen size={24} />}
+          >
+            Ver venta
+          </Button>
+          <Button size="sm" variant="destructive" startIcon={<BiTrash size={24} />}>
+            Eliminar pago
+          </Button>
+        </div>
+      </div>
     </>
   );
 };

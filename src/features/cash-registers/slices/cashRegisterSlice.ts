@@ -62,11 +62,11 @@ export const getCashRegisterByCode = createAsyncThunk<
   }
 });
 
-export const getCashRegistersByUser = createAsyncThunk<
+export const getCashRegistersForUser = createAsyncThunk<
   CashRegister[],
   string,
   { rejectValue: string }
->('cashRegisters/getByUser', async (userId, { rejectWithValue }) => {
+>('cashRegisters/getForUser', async (userId, { rejectWithValue }) => {
   try {
     const registersResponse = await cashRegisterService.getByUser(userId);
     return registersResponse.data;
@@ -81,12 +81,24 @@ export const getAllCashRegistersForCurrentUser = createAsyncThunk<
   { rejectValue: string }
 >('cashRegisters/getAllForCurrentUser', async (_, { rejectWithValue }) => {
   try {
-    const registersResponse = await cashRegisterService.getAllForCurrentUser();
+    const registersResponse = await cashRegisterService.getForCurrentUser();
     return registersResponse.data;
   } catch (error: any) {
     return rejectWithValue(error.response?.data?.message || error.message);
   }
 });
+
+export const getOpenCashRegisters = createAsyncThunk<CashRegister[], void, { rejectValue: string }>(
+  'cashRegisters/getOpen',
+  async (_, { rejectWithValue }) => {
+    try {
+      const openCashRegister = await cashRegisterService.getOpen();
+      return openCashRegister.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
 
 export const getOpenCashRegisterForCurrentUser = createAsyncThunk<
   CashRegister,
@@ -101,14 +113,40 @@ export const getOpenCashRegisterForCurrentUser = createAsyncThunk<
   }
 });
 
-export const getAssignedCashRegisterToUser = createAsyncThunk<
+export const getClosedCashRegisters = createAsyncThunk<
   CashRegister[],
   void,
   { rejectValue: string }
->('cashRegisters/getAssignedToUser', async (_, { rejectWithValue }) => {
+>('cashRegisters/getClosed', async (_, { rejectWithValue }) => {
   try {
-    const assignedRegisters = await cashRegisterService.getAssignedCashRegisterToUser();
+    const closedRegisters = await cashRegisterService.getClosed();
+    return closedRegisters.data;
+  } catch (error: any) {
+    return rejectWithValue(error.response?.data?.message || error.message);
+  }
+});
+
+export const getAssignedCashRegisterForUser = createAsyncThunk<
+  CashRegister,
+  string,
+  { rejectValue: string }
+>('cashRegisters/getAssignedForUser', async (userId, { rejectWithValue }) => {
+  try {
+    const assignedRegisters = await cashRegisterService.getAssignedForUser(userId);
     return assignedRegisters.data;
+  } catch (error: any) {
+    return rejectWithValue(error.response?.data?.message || error.message);
+  }
+});
+
+export const getAssignedCashRegisterForCurrentUser = createAsyncThunk<
+  CashRegister[],
+  void,
+  { rejectValue: string }
+>('cashRegisters/getAssignedForCurrentUser', async (_, { rejectWithValue }) => {
+  try {
+    const assignedCashRegister = await cashRegisterService.getAssignedForCurrentUser();
+    return assignedCashRegister.data;
   } catch (error: any) {
     return rejectWithValue(error.response?.data?.message || error.message);
   }
@@ -127,19 +165,6 @@ export const createCashRegister = createAsyncThunk<
   }
 });
 
-export const assignCashRegisterToUser = createAsyncThunk<
-  CashRegister,
-  { userId: string; codigo: string },
-  { rejectValue: string }
->('cashRegisters/assignToUser', async ({ userId, codigo }, { rejectWithValue }) => {
-  try {
-    const registerResponse = await cashRegisterService.assignToUser(userId, codigo);
-    return registerResponse.data;
-  } catch (error: any) {
-    return rejectWithValue(error.response?.data?.message || error.message);
-  }
-});
-
 export const updateCashRegister = createAsyncThunk<
   CashRegister,
   { cashRegisterId: string; updateRegisterDTO: UpdateRegisterDTO },
@@ -147,6 +172,19 @@ export const updateCashRegister = createAsyncThunk<
 >('cashRegisters/update', async ({ cashRegisterId, updateRegisterDTO }, { rejectWithValue }) => {
   try {
     const registerResponse = await cashRegisterService.update(cashRegisterId, updateRegisterDTO);
+    return registerResponse.data;
+  } catch (error: any) {
+    return rejectWithValue(error.response?.data?.message || error.message);
+  }
+});
+
+export const assignCashRegisterToUser = createAsyncThunk<
+  CashRegister,
+  { userId: string; registerId: string },
+  { rejectValue: string }
+>('cashRegisters/assignToUser', async ({ userId, registerId }, { rejectWithValue }) => {
+  try {
+    const registerResponse = await cashRegisterService.assign(userId, registerId);
     return registerResponse.data;
   } catch (error: any) {
     return rejectWithValue(error.response?.data?.message || error.message);
@@ -295,18 +333,18 @@ const cashRegistersSlice = createSlice({
     });
 
     // 4. === Obtener todas las cajas de un usuario ===
-    builder.addCase(getCashRegistersByUser.pending, (state) => {
+    builder.addCase(getCashRegistersForUser.pending, (state) => {
       (state.loading = true), (state.error = null);
     });
 
     builder.addCase(
-      getCashRegistersByUser.fulfilled,
+      getCashRegistersForUser.fulfilled,
       (state, action: PayloadAction<CashRegister[]>) => {
         (state.loading = false), (state.cashRegisters = action.payload);
       }
     );
 
-    builder.addCase(getCashRegistersByUser.rejected, (state, action) => {
+    builder.addCase(getCashRegistersForUser.rejected, (state, action) => {
       (state.loading = false),
         (state.error = (action.payload as string) || 'Error al obtener las cajas');
     });
@@ -328,24 +366,92 @@ const cashRegistersSlice = createSlice({
         (state.error = (action.payload as string) || 'Error al obtener las cajas');
     });
 
-    builder.addCase(getAssignedCashRegisterToUser.pending, (state) => {
+    // 6. Obtener todas las cajas abiertas
+    builder.addCase(getOpenCashRegisters.pending, (state) => {
       (state.loading = true), (state.error = null);
     });
 
     builder.addCase(
-      getAssignedCashRegisterToUser.fulfilled,
+      getOpenCashRegisters.fulfilled,
       (state, action: PayloadAction<CashRegister[]>) => {
         (state.loading = false), (state.cashRegisters = action.payload);
       }
     );
 
-    builder.addCase(getAssignedCashRegisterToUser.rejected, (state, action) => {
+    builder.addCase(getOpenCashRegisters.rejected, (state, action) => {
       (state.loading = false),
-        (state.error =
-          (action.payload as string) || 'Error al obtener las cajas asiganadas al usuario actul');
+        (state.error = (action.payload as string) || 'Error al obtener las cajas abiertas');
     });
 
-    // 6. === Crear una caja ===
+    // 7. Obtener todas las cajas registradoras del usuario actual
+    builder.addCase(getOpenCashRegisterForCurrentUser.pending, (state) => {
+      (state.loading = true), (state.error = null);
+    });
+
+    builder.addCase(
+      getOpenCashRegisterForCurrentUser.fulfilled,
+      (state, action: PayloadAction<CashRegister>) => {
+        (state.loading = false), (state.cashRegister = action.payload);
+      }
+    );
+
+    builder.addCase(getOpenCashRegisterForCurrentUser.rejected, (state, action) => {
+      (state.loading = false),
+        (state.error = (action.payload as string) || 'Error al obtener la caja registradora');
+    });
+
+    // 8. Obtener las cajas cerradas
+    builder.addCase(getClosedCashRegisters.pending, (state) => {
+      (state.loading = true), (state.error = null);
+    });
+
+    builder.addCase(
+      getClosedCashRegisters.fulfilled,
+      (state, action: PayloadAction<CashRegister[]>) => {
+        (state.loading = false), (state.cashRegisters = action.payload);
+      }
+    );
+
+    builder.addCase(getClosedCashRegisters.rejected, (state, action) => {
+      (state.loading = false),
+        (state.error = (action.payload as string) || 'Error al obtener las cajas cerradas');
+    });
+
+    // 8. Obtener las cajas asignadas al usuario
+    builder.addCase(getAssignedCashRegisterForUser.pending, (state) => {
+      (state.loading = false), (state.error = null);
+    });
+
+    builder.addCase(
+      getAssignedCashRegisterForUser.fulfilled,
+      (state, action: PayloadAction<CashRegister>) => {
+        (state.loading = false), (state.cashRegister = action.payload);
+      }
+    );
+
+    builder.addCase(getAssignedCashRegisterForUser.rejected, (state, action) => {
+      (state.loading = false),
+        (state.error = (action.payload as string) || 'Error al obtener la caja registradora');
+    });
+
+    // 9. Obtener las cajas asignadas al usuario actual
+    builder.addCase(getAssignedCashRegisterForCurrentUser.pending, (state) => {
+      (state.loading = false), (state.error = null);
+    });
+
+    builder.addCase(
+      getAssignedCashRegisterForCurrentUser.fulfilled,
+      (state, action: PayloadAction<CashRegister[]>) => {
+        (state.loading = false), (state.cashRegisters = action.payload);
+      }
+    );
+
+    builder.addCase(getAssignedCashRegisterForCurrentUser.rejected, (state, action) => {
+      (state.loading = false),
+        (state.error = (action.payload as string) || 'Error al obtener la caja registradora');
+    });
+
+    // 10. === Crear una caja ===
     builder.addCase(createCashRegister.pending, (state) => {
       (state.loading = true), (state.error = null);
     });
@@ -359,23 +465,7 @@ const cashRegistersSlice = createSlice({
         (state.error = (action.payload as string) || 'Error al crear la caja');
     });
 
-    builder.addCase(assignCashRegisterToUser.pending, (state) => {
-      (state.loading = true), (state.error = null);
-    });
-
-    builder.addCase(
-      assignCashRegisterToUser.fulfilled,
-      (state, action: PayloadAction<CashRegister>) => {
-        (state.loading = false), (state.cashRegister = action.payload);
-      }
-    );
-
-    builder.addCase(assignCashRegisterToUser.rejected, (state, action) => {
-      (state.loading = false),
-        (state.error = (action.payload as string) || 'Error al asignar el usuario a la caja');
-    });
-
-    // 7. === Actualizar una caja ===
+    // 11. === Actualizar una caja ===
     builder.addCase(updateCashRegister.pending, (state) => {
       (state.loading = true), (state.error = null);
     });
@@ -393,7 +483,24 @@ const cashRegistersSlice = createSlice({
         (state.error = (action.payload as string) || 'Error al actualizar la caja');
     });
 
-    // 8. === Abrir una caja ===
+    // 12. Asignar una caja al usuario
+    builder.addCase(assignCashRegisterToUser.pending, (state) => {
+      (state.loading = true), (state.error = null);
+    });
+
+    builder.addCase(
+      assignCashRegisterToUser.fulfilled,
+      (state, action: PayloadAction<CashRegister>) => {
+        (state.loading = false), (state.cashRegister = action.payload);
+      }
+    );
+
+    builder.addCase(assignCashRegisterToUser.rejected, (state, action) => {
+      (state.loading = false),
+        (state.error = (action.payload as string) || 'Error al asignar el usuario a la caja');
+    });
+
+    // 13. === Abrir una caja ===
     builder.addCase(openCashRegister.pending, (state) => {
       (state.loading = true), (state.error = null);
     });
@@ -407,7 +514,7 @@ const cashRegistersSlice = createSlice({
         (state.error = (action.payload as string) || 'Error al abrir la caja');
     });
 
-    // 9. === Cerrar una caja ===
+    // 14. === Cerrar una caja ===
     builder.addCase(closeCashRegister.pending, (state) => {
       (state.loading = true), (state.error = null);
     });
@@ -421,7 +528,7 @@ const cashRegistersSlice = createSlice({
         (state.error = (action.payload as string) || 'Error al cerrar la caja');
     });
 
-    // 10. === Registrar transaccion ===
+    // 15. === Registrar transaccion ===
     builder.addCase(registerTransaction.pending, (state) => {
       (state.loading = true), (state.error = null);
     });
@@ -436,7 +543,7 @@ const cashRegistersSlice = createSlice({
         (state.error = (action.payload as string) || 'Error al registrar la transaccion');
     });
 
-    // 11. === Cerrar todas las cajas ===
+    // 16. === Cerrar todas las cajas ===
     builder.addCase(closeAllCashRegisters.pending, (state) => {
       (state.loading = true), (state.error = null);
     });
@@ -451,7 +558,7 @@ const cashRegistersSlice = createSlice({
         (state.error = (action.payload as string) || 'Error al cerrar todas las cajas');
     });
 
-    // 12. === Eliminar una caja ===
+    // 17. === Eliminar una caja ===
     builder.addCase(deleteCashRegister.pending, (state) => {
       (state.loading = true), (state.error = null);
     });
@@ -467,7 +574,7 @@ const cashRegistersSlice = createSlice({
         (state.error = (action.payload as string) || 'Error al eliminar la cajas');
     });
 
-    // 13. === Eliminar todas las cajas ===
+    // 18. === Eliminar todas las cajas ===
     builder.addCase(deleteAllCashRegisters.pending, (state) => {
       (state.loading = true), (state.error = null);
     });

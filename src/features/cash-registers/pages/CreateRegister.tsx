@@ -17,7 +17,7 @@ import { Select } from '../../../components/UI/Select/Select';
 import Input from '../../../components/UI/Input/Input';
 import Button from '../../../components/UI/Button/Button';
 import Spinner from '../../../components/UI/Spinner/Spinner';
-import { BiTrash } from 'react-icons/bi';
+import { BiSave, BiTrash, BiX } from 'react-icons/bi';
 
 export const CreateRegister: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -130,8 +130,8 @@ export const CreateRegister: React.FC = () => {
       });
   };
 
-  return (
-    <div className="p-6">
+  {
+    /* <div className="p-6">
       <div className="">
         <h2 className="text-2xl font-semibold">Crear Caja</h2>
       </div>
@@ -221,6 +221,95 @@ export const CreateRegister: React.FC = () => {
           </Button>
         </div>
       </form>
+    </div> */
+  }
+
+  return (
+    <div className="p-6 space-y-4 border-2 border-black h-screen">
+      <div className="border border-green-600 py-4 rounded-lg shadow-theme-sm">
+        <div className="space-y-6 px-4">
+          <h2 className="text-xl md:text-2xl lg:text-3xl font-regular">Crear Caja</h2>
+        </div>
+
+        <form onSubmit={handleSubmit(onSubmit)} className="">
+          <div className="grid grid-cols-1 md:grid-cols-2 space-x-4 px-4">
+            <div>
+              <Label>Estado Inicial</Label>
+              <Select onChange={(e) => setRegisterStatus(e.target.value as any)}>
+                <option value="abierta">Abierta</option>
+                <option value="cerrada">Cerrada</option>
+              </Select>
+            </div>
+            <div>
+              <Label>Monto Apertura</Label>
+              <Input
+                type="number"
+                id="montoActual"
+                placeholder="Ingresa Monto inicial"
+                min={0}
+                onChange={(e) => {
+                  let val = parseFloat(e.target.value) || 0;
+                  setRegisterCurrentAmount(val);
+                }}
+              />
+              {errors.montoActual && (
+                <p className="text-sm text-red-500">{errors.montoActual.message}</p>
+              )}
+            </div>
+
+            <div>
+              <Label htmlFor="assignedTo">Asignar a Usuario</Label>
+              <Input
+                type="text"
+                value={userQuery}
+                onChange={(e) => setUserQuery(e.target.value)}
+                placeholder={selectedUser ? selectedUser.usuario : 'Buscar usuario' }
+              />
+              {userQuery && (
+                <ul className="overflow-auto max-h-40 border rounded mt-1 bg-white">
+                  {filteredUsers.map((u) => (
+                    <li
+                      className="px-3 py-2 hover:bg-blue-100 cursor-pointer"
+                      key={u._id}
+                      onClick={() => {
+                        setSelectedUser(u);
+                        setUserQuery('');
+                      }}
+                    >
+                      {u.usuario}
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {selectedUser && (
+                <div className="flex flex-row gap-2 my-2">
+                  <p className="mt-2 font-semibold">📌 {selectedUser.usuario}</p>
+                  <Button
+                    className="bg-transparent hover:bg-gray-100 p-1"
+                    onClick={() => setSelectedUser(null)}
+                    startIcon={<BiTrash className="text-red-400" size={20} />}
+                  ></Button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="flex flex-row gap-2 my-2 px-4 justify-center md:justify-end lg:justify-end">
+            <Button size="sm" variant="primary" type="submit" startIcon={<BiSave size={20} />}>
+              Crear
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              type="button"
+              startIcon={<BiX size={20} />}
+              onClick={cancel}
+            >
+              Cancelar
+            </Button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

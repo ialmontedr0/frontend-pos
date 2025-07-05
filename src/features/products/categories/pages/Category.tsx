@@ -8,6 +8,12 @@ import { getCategoryById, deleteCategory, clearSelectedCategory } from '../slice
 import type { RootState } from '../../../../store/store';
 import type { User } from '../../../users/interfaces/UserInterface';
 import { usersService } from '../../../users/services/usersService';
+import PageMeta from '../../../../components/common/PageMeta';
+import PageBreadcrum from '../../../../components/common/PageBreadCrumb';
+import { Label } from '../../../../components/UI/Label/Label';
+import Button from '../../../../components/UI/Button/Button';
+import { BiArrowBack, BiEdit, BiFolderOpen, BiTrash } from 'react-icons/bi';
+import Spinner from '../../../../components/UI/Spinner/Spinner';
 
 export const Category: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -17,10 +23,6 @@ export const Category: React.FC = () => {
 
   const { category, loading, error } = useAppSelector((state: RootState) => state.categories);
 
-  const [creator, setCreator] = useState<User | null>(null);
-  const [updater, setUpdater] = useState<User | null>(null);
-  const [fetchError, setFetchError] = useState<string | null>(null);
-
   useEffect(() => {
     if (!categoryId) {
       navigate('/products/categories');
@@ -29,34 +31,8 @@ export const Category: React.FC = () => {
     dispatch(getCategoryById(categoryId));
     return () => {
       dispatch(clearSelectedCategory());
-      setCreator(null);
-      setUpdater(null);
-      setFetchError(null);
     };
   }, [dispatch, categoryId, navigate]);
-
-  useEffect(() => {
-    if (!category) return;
-
-    setFetchError(null);
-    const loadById = async (userId: string, setter: (u: User | null) => void) => {
-      try {
-        const userResponse = await usersService.getById(userId);
-        setter(userResponse.data);
-      } catch (error: any) {
-        setter(null);
-        setFetchError(`No se pudo obtener el usuario con el ID: ${userId}`);
-      }
-    };
-
-    if (category.createdBy) {
-      loadById(category.createdBy, setCreator);
-    }
-
-    if (category.updatedBy) {
-      loadById(category.updatedBy, setUpdater);
-    }
-  }, [category]);
 
   const handleDeleteCategory = useCallback(
     (categoryId: string) => {
@@ -100,15 +76,15 @@ export const Category: React.FC = () => {
   );
 
   if (loading) {
-    return <div>Cargando...</div>;
+    return <Spinner />;
   }
 
   if (error) {
     return <div>Error: {error}</div>;
   }
 
-  return (
-    <div className="p-6 max-2-2xl mx-auto bg-white dark:bg-gray-900 rounded-lg shadow-lg">
+  {
+    /* <div className="p-6 max-2-2xl mx-auto bg-white dark:bg-gray-900 rounded-lg shadow-lg">
       <div className="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8">
         <h2 className="text-2xl text-black dark:text-white">Categoria</h2>
 
@@ -173,6 +149,74 @@ export const Category: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
+    </div> */
+  }
+
+  if (!category) {
+    return;
+  }
+
+  return (
+    <>
+      <PageMeta title="Categoria - PoS v2" description="Detalles de la categoria" />
+      <PageBreadcrum pageTitle="Categoria" />
+      <div className="p-6 flex flex-col max-w-2xl mx-auto my-4 mx-2 text-black dark:text-gray-200 bg-white dark:bg-gray-900 rounded-lg shadow">
+        <div className="my-2">
+          <h2 className="text-3xl font-regular">Detalles Categoria</h2>
+        </div>
+
+        <div className="grid grid-cols-2 md:flex-col sm:flex-col xs:flex-col space-y-4">
+          <div>
+            <Label htmlFor="nombre">Nombre</Label>
+            <p>{category.nombre}</p>
+          </div>
+
+          <div>
+            <Label htmlFor="createdBy">Creada por</Label>
+            <p>{category.createdBy.usuario}</p>
+          </div>
+
+          <div>
+            <Label htmlFor="createdAt">Fecha Creacion</Label>
+            <p>{moment(category.createdAt).format('LLLL')}</p>
+          </div>
+
+          {category.updatedBy && (
+            <div>
+              <Label htmlFor="updatedBy">Actualizada por</Label>
+              <p>{category.updatedBy.usuario}</p>
+            </div>
+          )}
+
+          {category.updatedAt && (
+            <div>
+              <Label htmlFor="updatedAt">Fecha Actualizacion</Label>
+              <p>{moment(category.updatedAt).format('LLLL')}</p>
+            </div>
+          )}
+        </div>
+
+        <div className="w-auto flex flex-wrap gap-2 my-5">
+          <Button
+            onClick={() => navigate(-1)}
+            size="sm"
+            startIcon={<BiArrowBack size={20} />}
+          >
+            Volver
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => navigate(`/products/categories/edit/${category._id}`)}
+            startIcon={<BiEdit size={20} />}
+          >
+            Editar
+          </Button>
+          <Button size="sm" variant="destructive" startIcon={<BiTrash size={20} />}>
+            Eliminar
+          </Button>
+        </div>
+      </div>
+    </>
   );
 };

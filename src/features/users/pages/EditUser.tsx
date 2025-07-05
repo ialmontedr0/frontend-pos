@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useParams, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
@@ -23,6 +23,8 @@ import { ToggleSwitch } from '../../../components/UI/ToggleSwitch/ToggleSwitch';
 import { BiKey, BiReset, BiSave, BiTrash, BiX } from 'react-icons/bi';
 import { myAlertError, myAlertSuccess } from '../../../utils/commonFunctions';
 import type { Estado } from '../interfaces/UserInterface';
+import { toast } from '../../../components/UI/Toast/hooks/useToast';
+import { Toaster } from '../../../components/UI/Toaster/Toaster';
 
 export const EditUser: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
@@ -30,7 +32,6 @@ export const EditUser: React.FC = () => {
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
 
-  const [estado, setEstado] = useState<'activo' | 'inactivo'>('activo');
   const { user, loading, error } = useAppSelector((state) => state.users);
 
   const sanitizedUserForForm = (u: any): UpdateUserDTO => {
@@ -109,11 +110,10 @@ export const EditUser: React.FC = () => {
         showCancelButton: true,
       })
       .then((result) => {
-        if (result.isConfirmed) {
-          updateUserDTO.estado = estado;
+        if (result.isConfirmed && user) {
           dispatch(updateUser({ userId: user!._id, updateUserDTO })).then(() => {
             myAlertSuccess(`Usuario actualizado`, `Se ha actualizado el usuario con exito`);
-            navigate(`/users/${userId}`);
+            navigate(`/users/${user.usuario}`);
           });
         }
       });
@@ -176,11 +176,37 @@ export const EditUser: React.FC = () => {
   };
 
   const onDelUser = () => {
-    if (user) {
-      dispatch(deleteUser(user._id)).then(() => {
-        navigate('/users');
+    myAlert
+      .fire({
+        title: `Eliminar usuario`,
+        text: `Estas seguro que deseas eliminar el usuario?`,
+        icon: 'question',
+        showConfirmButton: true,
+        showCancelButton: true,
+        confirmButtonText: 'Eliminar',
+        cancelButtonText: 'Cancelar',
+      })
+      .then((result) => {
+        if (result.isConfirmed && user) {
+          dispatch(deleteUser(user._id))
+            .unwrap()
+            .then(() => {
+              toast({
+                title: 'Usuario eliminado',
+                description: 'Se ha eliminado el usuario exitosamente.',
+                timeout: 3,
+                onTimeout: () => navigate('/users'),
+              });
+            })
+            .catch((error: any) => {
+              toast({
+                title: 'Error',
+                description: `Error eliminando el usuario: ${error}`,
+                variant: 'destructive',
+              });
+            });
+        }
       });
-    }
   };
 
   const cancel = () => {
@@ -316,7 +342,7 @@ export const EditUser: React.FC = () => {
           </div>
         </div>
 
-        {error && <div>Error: {error}</div>}
+        {error && <div className="text-sm text-red-500">Error: {error}</div>}
 
         {/** Botones */}
         <div className="flex flex-wrap justify-end gap-3 pt-4 border-t dark:border-gray-700">
@@ -349,6 +375,7 @@ export const EditUser: React.FC = () => {
           </Button>
         </div>
       </form>
+      <Toaster />
     </div>
   );
 };

@@ -33,7 +33,7 @@ export const Products: React.FC<ProductProps> = ({ search, onSelect }) => {
   }, []);
 
   const filtered = products.filter((p) => {
-    if (activeCat !== 'Todos' && p.categoria !== activeCat) return false;
+    if (activeCat !== 'Todos' && p.categoria.nombre !== activeCat) return false;
     return p.nombre.toLowerCase().includes(search.toLowerCase());
   });
 

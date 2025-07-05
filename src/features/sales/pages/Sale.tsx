@@ -16,6 +16,7 @@ import type { Payment } from '../../payments/interfaces/PaymentInterface';
 import type { SaleProduct } from '../interfaces/SaleProductInterface';
 import PageMeta from '../../../components/common/PageMeta';
 import PageBreadcrum from '../../../components/common/PageBreadCrumb';
+import Badge from '../../../components/UI/Badge/Badge';
 
 export const Sale: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -130,10 +131,10 @@ export const Sale: React.FC = () => {
       <PageBreadcrum pageTitle="Venta" />
       <div className="m-6 p-6 max-w-2xl mx-auto bg-white dark:bg-gray-900 rounded-lg shadow text-black dark:text-gray-200">
         <div>
-          <h2 className="text-3xl font-regular my-4">Detalles Venta</h2>
+          <h2 className="text-2xl md:text-2xl lg:text-3xl font-regular my-4">Detalles Venta</h2>
         </div>
 
-        <div className="grid grid-cols-2 md:flex md:flex-col sm:flex sm:flex-col xs:flex xs:flex-col">
+        <div className="grid grid-cols-2 space-y-4">
           <div>
             <Label htmlFor="codigo">Codigo</Label>
             <p>{sale.codigo}</p>
@@ -156,12 +157,11 @@ export const Sale: React.FC = () => {
 
           <div>
             <Label htmlFor="estado">Estado</Label>
-            <p
-              className={`w-fit px-4 py-1 rounded-full text-white text-xs font-semibold
-                ${sale.estado === 'completada' ? 'bg-green-600' : 'bg-amber-500'}`}
-            >
-              {sale.estado.charAt(0).toUpperCase() + sale.estado.slice(1)}
-            </p>
+            {sale.estado === 'completada' ? (
+              <Badge color="success">Completada</Badge>
+            ) : (
+              <Badge color="warning">Pendiente</Badge>
+            )}
           </div>
 
           <div>
@@ -192,7 +192,7 @@ export const Sale: React.FC = () => {
 
         {sale.pagos.length ? (
           <div className="mt-6">
-            <h3 className="text-lg font-semibold mb-3">Pagos</h3>
+            <h3 className="text-lg font-regular mb-3">Pagos</h3>
             <Table
               columns={paymentColumns}
               data={sale.pagos}
@@ -206,7 +206,7 @@ export const Sale: React.FC = () => {
         )}
 
         <div className="mt-6">
-          <h3 className="text-lg font-semibold mb-3">Productos</h3>
+          <h3 className="text-lg font-regular mb-3">Productos</h3>
           {sale.productos && (
             <Table
               columns={productSaleColumns}
@@ -220,17 +220,15 @@ export const Sale: React.FC = () => {
 
         <div className="my-6 flex flex-wrap w-auto gap-2">
           <Button
-            className="px-3 py-1 rounded-full"
+            size="sm"
+            variant="primary"
             onClick={() => navigate('/sales')}
             startIcon={<BiArrowBack className="" size={20} />}
           >
             Volver
           </Button>
 
-          <Button
-            className="bg-green-600 text-white hover:bg-green-700 transition-colors px-3 py-1 rounded-full"
-            startIcon={<BiDownload size={20} />}
-          >
+          <Button size="sm" variant="success" startIcon={<BiDownload size={20} />}>
             Descargar Factura
           </Button>
         </div>

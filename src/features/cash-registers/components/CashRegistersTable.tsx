@@ -21,7 +21,7 @@ import { SearchBar } from '../../../components/SearchBar/SearchBar';
 
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import { myAlertError, myAlertSuccess } from '../../../utils/commonFunctions';
-import { BiFilter, BiPlusCircle } from 'react-icons/bi';
+import { BiFilter, BiPlusCircle, BiTrash } from 'react-icons/bi';
 import PageMeta from '../../../components/common/PageMeta';
 
 interface CashRegisterTableProps {
@@ -51,9 +51,9 @@ export const CashRegistersTable: React.FC<CashRegisterTableProps> = ({ data, loa
     (cashRegisterId: string) => {
       myAlert
         .fire({
-          title: `Cerrar caja!`,
+          title: `Eliminar caja!`,
           text: `Estas seguro que deseas eliminar esta caja?`,
-          icon: 'question',
+          iconHtml: <BiTrash />,
           showConfirmButton: true,
           showCancelButton: true,
           confirmButtonText: 'Cerrar',

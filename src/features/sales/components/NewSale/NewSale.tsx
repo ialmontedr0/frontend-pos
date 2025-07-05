@@ -15,12 +15,19 @@ import type { Product } from '../../../products/interfaces/ProductInterface';
 import type { SaleItem } from './types';
 import { createSale } from '../../slices/salesSlice';
 import { myAlertError, myAlertSuccess } from '../../../../utils/commonFunctions';
+import { Label } from '../../../../components/UI/Label/Label';
+import Input from '../../../../components/UI/Input/Input';
+import { toast } from '../../../../components/UI/Toast/hooks/useToast';
 
 export const SalePage: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
   const { customers } = useAppSelector((state: RootState) => state.customers);
   const { products } = useAppSelector((state: RootState) => state.products);
+
+  const { user } = useAppSelector((state: RootState) => state.auth);
+  const isAdmin = user?.rol === 'admin';
 
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [customerQuery, setCustomerQuery] = useState<string>('');
@@ -31,6 +38,8 @@ export const SalePage: React.FC = () => {
   const [paymentMethod, setPaymentMethod] = useState<
     'efectivo' | 'credito' | 'tarjetaCreditoDebito' | 'puntos'
   >('efectivo');
+
+  const [cajaCodigo, setCajaCodigo] = useState<string>('');
 
   useEffect(() => {
     dispatch(getAllProducts());
@@ -51,7 +60,7 @@ export const SalePage: React.FC = () => {
       return [...cs, { producto: p, cantidad }];
     });
     setQuantity(1);
-    setProductSearch('')
+    setProductSearch('');
   };
 
   // Seleccionar producto
@@ -71,16 +80,29 @@ export const SalePage: React.FC = () => {
     setCart([]);
     setPaymentAmount(0);
     setPaymentMethod('efectivo');
+    if (isAdmin) setCajaCodigo('');
   };
 
   // Finalizar venta
   const handleFinish = () => {
+    if (isAdmin && !cajaCodigo.trim()) {
+      toast({
+        title: 'Error al crear la venta',
+        description: `El usuario administrador debe ingresar el codigo de la caja registradora para crear la venta.`,
+        variant: 'destructive',
+        timeout: 4,
+      });
+      
+      return;
+    }
+
     dispatch(
       createSale({
         cliente: selectedCustomer?._id || customerQuery,
         productos: cart.map((i) => ({ producto: i.producto._id, cantidad: i.cantidad })),
         pagoVenta: paymentAmount,
         metodoPago: paymentMethod,
+        ...(isAdmin ? { cajaCodigo: cajaCodigo.trim() } : {}),
       })
     )
       .unwrap()
@@ -90,6 +112,7 @@ export const SalePage: React.FC = () => {
         navigate('/sales');
       })
       .catch((error: any) => {
+        
         myAlertError(`Error`, `Error: ${error.response?.data?.message || error.message}`);
       });
   };
@@ -121,6 +144,19 @@ export const SalePage: React.FC = () => {
         </div>
 
         <div className="p-2 md:w-96 lg:w-96 md:p-4 lg:p-4 bg-gray-50 border-1 md:overflow-auto lg:overflow-auto">
+          {isAdmin && (
+            <div className="mb-4">
+              <Label htmlFor="cajaCodigo">Codigo Caja</Label>
+              <Input
+                type="text"
+                value={cajaCodigo}
+                onChange={(e) => setCajaCodigo(e.target.value)}
+                className="w-full border rounded px-3 py-2"
+                placeholder="Ingresa el codigo de la caja"
+              />
+            </div>
+          )}
+
           <SaleDetails
             items={cart}
             paymentAmount={paymentAmount}

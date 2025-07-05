@@ -8,27 +8,29 @@ import type { RegisterTransactionDTO } from '../dtos/register-transaction.dto';
 
 export const cashRegisterService = {
   getAll: () => api.get<CashRegister[]>('/cash-registers'),
-  getById: (cashRegisterId: string) =>
-    api.get<CashRegister>(`/cash-registers/id/${cashRegisterId}`),
+  getById: (registerId: string) => api.get<CashRegister>(`/cash-registers/id/${registerId}`),
   getByCode: (codigo: string) => api.get<CashRegister>(`/cash-registers/code/${codigo}`),
   getByUser: (userId: string) => api.get<CashRegister[]>(`/cash-registers/user/${userId}`),
-  getAllForCurrentUser: () => api.get<CashRegister[]>(`/cash-registers/current-user`),
-  getOpenForCurrentUser: () => api.get<CashRegister>(`/cash-registers/current-user/open`),
-  getAssignedCashRegisterToUser: () =>
-    api.get<CashRegister[]>(`/cash-registers/assigned/current-user`),
+  getForCurrentUser: () => api.get<CashRegister[]>(`/cash-registers/current-user`),
+  getOpen: () => api.get<CashRegister[]>('/cash-registers/open'),
+  getOpenForCurrentUser: () => api.get<CashRegister>(`/cash-registers/open/current-user`),
+  getClosed: () => api.get<CashRegister[]>('/cash-registers/close'),
+  getAssignedForUser: (userId: string) =>
+    api.get<CashRegister>(`/cash-registers/assigned/${userId}`),
+  getAssignedForCurrentUser: () => api.get<CashRegister[]>(`/cash-registers/assigned/current-user`),
   create: (createRegisterDTO: CreateRegisterDTO) =>
     api.post<CashRegister>('/cash-registers', createRegisterDTO),
-  assignToUser: (userId: string, codigo: string) =>
-    api.patch<CashRegister>(`/cash-registers/assign/${userId}/${codigo}`),
-  update: (cashRegisterId: string, updateRegisterDTO: UpdateRegisterDTO) =>
-    api.patch<CashRegister>(`/cash-registers/${cashRegisterId}`, updateRegisterDTO),
-  open: (cashRegisterId: string, openRegisterDTO: OpenRegisterDTO) =>
-    api.patch<CashRegister>(`/cash-registers/open/${cashRegisterId}`, openRegisterDTO),
-  close: (cashRegisterId: string, closeRegisterDTO: CloseRegisterDTO) =>
-    api.patch<CashRegister>(`/cash-registers/close/${cashRegisterId}`, closeRegisterDTO),
-  registerTransaction: (cashRegisterId: string, registerTransactionDTO: RegisterTransactionDTO) =>
+  update: (registerId: string, updateRegisterDTO: UpdateRegisterDTO) =>
+    api.patch<CashRegister>(`/cash-registers/${registerId}`, updateRegisterDTO),
+  assign: (userId: string, registerId: string) =>
+    api.patch<CashRegister>(`/cash-registers/assign/${userId}/${registerId}`),
+  open: (registerId: string, openRegisterDTO: OpenRegisterDTO) =>
+    api.patch<CashRegister>(`/cash-registers/open/${registerId}`, openRegisterDTO),
+  close: (registerId: string, closeRegisterDTO: CloseRegisterDTO) =>
+    api.patch<CashRegister>(`/cash-registers/close/${registerId}`, closeRegisterDTO),
+  registerTransaction: (registerId: string, registerTransactionDTO: RegisterTransactionDTO) =>
     api.post<CashRegister>(
-      `/cash-registers/register-transaction/${cashRegisterId}`,
+      `/cash-registers/register-transaction/${registerId}`,
       registerTransactionDTO
     ),
   closeAll: () => api.post<void>(`/cash-registers/close`),

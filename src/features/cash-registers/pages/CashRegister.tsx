@@ -23,17 +23,12 @@ import type { Action, Column } from '../../../components/Table/types';
 import moment from 'moment';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import { Table } from '../../../components/Table/Table';
-import {
-  BiArrowBack,
-  BiEdit,
-  BiFolderOpen,
-  BiTrash,
-  BiUserPin,
-  BiWindowClose,
-} from 'react-icons/bi';
+import { BiArrowBack, BiCollapse, BiEdit, BiFolderOpen, BiTrash } from 'react-icons/bi';
 import { myAlertError, myAlertSuccess } from '../../../utils/commonFunctions';
 import type { User } from '../../users/interfaces/UserInterface';
 import Badge from '../../../components/UI/Badge/Badge';
+import Button from '../../../components/UI/Button/Button';
+import { UserIcon } from '../../../assets/icons';
 
 export const CashRegister: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -255,12 +250,12 @@ export const CashRegister: React.FC = () => {
         },
       })
       .then((result) => {
-        if (result.isConfirmed && result.value && codigo) {
+        if (result.isConfirmed && result.value && cashRegister) {
           const user = result.value as User;
           dispatch(
             assignCashRegisterToUser({
               userId: user._id,
-              codigo: codigo,
+              registerId: cashRegister._id,
             })
           )
             .unwrap()
@@ -297,9 +292,9 @@ export const CashRegister: React.FC = () => {
   }
 
   return (
-    <div className="h-full space-y-6 p-4 max-w-full">
+    <div className="h-full space-y-6 p-4 max-w-full text-black dark:text-gray-300">
       <div className="space-y-4">
-        <h2 className="lg:text-3xl font-regular md:text-2xl sm:text-xl">Detalles de la caja</h2>
+        <h2 className="text-xl md:text-2xl lg:text-3xl font-regular">Detalles de la caja</h2>
       </div>
       <div className="grid grid-cols-2">
         <div>
@@ -395,30 +390,50 @@ export const CashRegister: React.FC = () => {
           pageSizeOptions={[5, 10, 20]}
         />
       </div>
-      <div className="flex flex-wrap gap-2 mt-4">
-        <button onClick={back} className="rounded-full px-3 py-1 bg-blue-900 text-white text-sm">
-          <BiArrowBack size={28} />
-        </button>
+      <div className="flex flex-wrap justify-center md:justify-end gap-2 mt-4">
+        <Button size="sm" onClick={back} startIcon={<BiArrowBack />}>
+          Volver
+        </Button>
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={() => editRegister(cashRegister.codigo)}
+          startIcon={<BiEdit />}
+        >
+          Editar
+        </Button>
         {cashRegister.assignedTo === undefined && (
-          <button onClick={() => handleAssignToUser()} className="relative flex flex-row">
-            <span>Asignar</span> <BiUserPin size={28} />
-          </button>
+          <Button size="sm" onClick={() => handleAssignToUser()} startIcon={<UserIcon />}>
+            Asignar
+          </Button>
         )}
-        <button onClick={() => editRegister(cashRegister.codigo)}>
-          <BiEdit size={28} />
-        </button>
         {cashRegister.estado === 'abierta' ? (
-          <button onClick={() => closeRegister(cashRegister._id)}>
-            <BiFolderOpen size={28} />
-          </button>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => closeRegister(cashRegister._id)}
+            startIcon={<BiCollapse size={20} />}
+          >
+            Cerrar
+          </Button>
         ) : (
-          <button onClick={() => openRegister(cashRegister._id)}>
-            <BiWindowClose size={28} />
-          </button>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => openRegister(cashRegister._id)}
+            startIcon={<BiFolderOpen />}
+          >
+            Abrir
+          </Button>
         )}
-        <button onClick={() => onDelRegister(cashRegister._id)}>
-          <BiTrash size={28} />
-        </button>
+        <Button
+          size="sm"
+          variant="destructive"
+          onClick={() => onDelRegister(cashRegister._id)}
+          startIcon={<BiTrash size={20} />}
+        >
+          Eliminar
+        </Button>
       </div>
     </div>
   );

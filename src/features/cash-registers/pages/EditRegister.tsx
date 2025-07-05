@@ -203,8 +203,8 @@ export const EditRegister: React.FC = () => {
     );
   }
 
-  return (
-    <div className="p-6">
+  {
+    /* <div className="p-6">
       <div>
         <h2 className="text-2xl font-semibold">Editar Caja</h2>
       </div>
@@ -298,6 +298,103 @@ export const EditRegister: React.FC = () => {
           </Button>
         </div>
       </form>
+    </div> */
+  }
+
+  return (
+    <div className="p-6 space-y-4 border-2 border-black h-screen">
+      <div className="border border-green-600 py-4 rounded-lg shadow-theme-sm">
+        <div className="space-y-6 px-4">
+          <h2 className="text-xl md:text-2xl lg:text-3xl font-regular">Editar Caja</h2>
+        </div>
+
+        <form onSubmit={handleSubmit(onSubmit)} className="mt-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 space-y-4 space-x-4 px-4">
+            <div>
+              <Label>Estado Actual</Label>
+              <Select
+                id="estado"
+                defaultValue={cashRegister.estado}
+                {...register('estado', { required: 'true' })}
+              >
+                <option value="abierta">Abierta</option>
+                <option value="cerrada">Cerrada</option>
+              </Select>
+            </div>
+            <div>
+              <Label>Monto Actual</Label>
+              <Input
+                id="montoActual"
+                type="number"
+                placeholder="Monto actual RD$"
+                min={0}
+                {...register('montoActual', {
+                  required: 'El campo monto actual es obligatorio.',
+                  valueAsNumber: true,
+                })}
+              />
+              {errors.montoActual && (
+                <p className="text-sm text-red-500">{errors.montoActual.message}</p>
+              )}
+            </div>
+
+            <div>
+              <Label htmlFor="assignedTo">Asignar a</Label>
+              <Input
+                type="text"
+                value={userQuery}
+                onChange={(e) => setUserQuery(e.target.value)}
+                placeholder={selectedUser ? selectedUser.usuario : 'Buscar usuario'}
+              />
+              {userQuery && (
+                <ul className="overflow-auto max-h-40 border rounded mt-1 bg-white">
+                  {filteredUsers.map((u) => (
+                    <li
+                      className="px-3 py-2 hover:bg-blue-100 cursor-pointer"
+                      key={u._id}
+                      onClick={() => {
+                        setSelectedUser(u);
+                        setUserQuery('');
+                      }}
+                    >
+                      {u.usuario}
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {selectedUser ? (
+                <div className="flex flex-row gap-2 my-2">
+                  {selectedUser && <p className="">📌 {selectedUser.usuario}</p>}{' '}
+                  <Button
+                    className="bg-transparent hover:bg-gray-100 p-1"
+                    onClick={() => setSelectedUser(null)}
+                    startIcon={<BiTrash className="text-red-400" size={20} />}
+                  ></Button>
+                </div>
+              ) : (
+                <div className="flex flex-row gap-2 my-2">
+                  📌 Usuario asignado: <p>{cashRegister.assignedTo?.usuario}</p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="flex flex-row gap-2 my-2 px-4 justify-center md:justify-end lg:justify-end">
+            <Button size="sm" variant="primary" type="submit" startIcon={<BiSave size={20} />}>
+              Guardar cambios
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              type="button"
+              startIcon={<BiX size={20} />}
+              onClick={cancel}
+            >
+              Cancelar
+            </Button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
