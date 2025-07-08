@@ -16,7 +16,6 @@ import { Label } from '../../../components/UI/Label/Label';
 import { Select } from '../../../components/UI/Select/Select';
 import Input from '../../../components/UI/Input/Input';
 import Button from '../../../components/UI/Button/Button';
-import Spinner from '../../../components/UI/Spinner/Spinner';
 import { BiSave, BiTrash, BiX } from 'react-icons/bi';
 
 export const CreateRegister: React.FC = () => {
@@ -35,12 +34,6 @@ export const CreateRegister: React.FC = () => {
   );
 
   const {
-    cashRegister: createdCashRegister,
-    loading,
-    error,
-  } = useAppSelector((state: RootState) => state.cashRegisters);
-
-  const {
     handleSubmit,
     formState: { errors },
   } = useForm<CreateRegisterDTO>({
@@ -55,12 +48,6 @@ export const CreateRegister: React.FC = () => {
     dispatch(getAllUsers());
     setRegisterCurrentAmount(0);
   }, [dispatch]);
-
-  useEffect(() => {
-    if (createdCashRegister) {
-      navigate('/cash-registers');
-    }
-  }, [createdCashRegister, navigate]);
 
   useEffect(() => {
     return () => {
@@ -102,7 +89,7 @@ export const CreateRegister: React.FC = () => {
             .catch((error: any) => {
               myAlert.fire({
                 title: `Error`,
-                text: `Error: ${error.reponse?.data?.message || error.message}`,
+                text: `Error: ${error}`,
                 icon: 'error',
                 timer: 5000,
                 timerProgressBar: true,

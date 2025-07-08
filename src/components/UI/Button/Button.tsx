@@ -1,8 +1,8 @@
 interface ButtonProps {
   type?: 'submit' | 'button';
   children?: React.ReactNode;
-  size?: 'sm' | 'md';
-  variant?: 'primary' | 'outline' | 'success' | 'destructive';
+  size?: 'sm' | 'md' | 'lg' | 'icon';
+  variant?: 'primary' | 'outline' | 'success' | 'destructive' | 'icon';
   startIcon?: React.ReactNode;
   endIcon?: React.ReactNode;
   onClick?: () => void;
@@ -24,6 +24,8 @@ const Button: React.FC<ButtonProps> = ({
   const sizeClasses = {
     sm: 'px-4 py-3 text-sm',
     md: 'px-5 py-3.5 text-sm',
+    lg: 'px-6 py-3 text-base',
+    icon: 'p-2',
   };
   const variantClasses = {
     primary:
@@ -34,6 +36,7 @@ const Button: React.FC<ButtonProps> = ({
       'cursor-pointer bg-green-600 text-white hover:bg-green-700 shadow-theme-xs dark:bg-green-400 dark:hover:bg-green-600 disabled:bg-green-200',
     destructive:
       'cursor-pointer bg-red-600 text-white hover:bg-red-700 shadow-theme-xs dark:bg-red-400 dark:hover:bg-red-600 disabled:bg-red-200',
+    icon: 'cursor-pointer bg-transparent dark:text-gray-300 rounded-full hover:bg-gray-100 dark:hover:bg-gray-600',
   };
 
   return (

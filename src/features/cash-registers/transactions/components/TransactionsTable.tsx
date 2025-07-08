@@ -41,7 +41,7 @@ export const TransactionsTable: React.FC<TransactionsTableProps> = ({ data, load
 
   return (
     <>
-      <div className="p-6 h-screen max-h-full space-y-4">
+      <div className="p-6 h-screen max-h-full space-y-4 text-black dark:text-gray-200">
         <div className="flex flex-col gap-2 space-y-6">
           <h2 className="text-3xl font-regular">Transacciones</h2>
         </div>

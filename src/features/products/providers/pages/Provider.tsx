@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import moment from 'moment';
+import moment from 'moment/min/moment-with-locales';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
@@ -15,11 +15,14 @@ import { Label } from '../../../../components/UI/Label/Label';
 import Button from '../../../../components/UI/Button/Button';
 import { BiArrowBack, BiEdit, BiTrash } from 'react-icons/bi';
 import PageMeta from '../../../../components/common/PageMeta';
+import PageBreadcrum from '../../../../components/common/PageBreadCrumb';
+import { NotFound } from '../../../../pages/NotFound';
 
 export const Provider: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
+  moment.locale('es');
   const { providerId } = useParams<{ providerId: string }>();
 
   const { provider, loading, error } = useAppSelector((state: RootState) => state.providers);
@@ -81,90 +84,88 @@ export const Provider: React.FC = () => {
     );
 
   if (!provider) {
-    return <div></div>;
+    return <NotFound node="Proveedor" />;
   }
 
   return (
     <>
       <PageMeta title="Proveedor - PoS v2" description="Proveedor" />
-      <div className="h-screen max-h-auto p-4 h-auto">
-        <div className="space-y-4 p-6 max-h-full rounded-lg shadow">
-          <div className="">
-            <h2 className="text-3xl md:text-2xl xs:text-2xl font-regular">{provider.nombre}</h2>
-          </div>
+      <PageBreadcrum pageTitle="Proveedor" />
+      <div className="m-2 mx-2 p-4 max-2-2xl bg-white dark:bg-gray-900 rounded-lg shadow-lg">
+        <div className="flex-1 space-y-4">
+          <h2 className="text-2xl font-regular text-gray-800 dark:text-gray-100">
+            {provider.nombre}
+          </h2>
 
-          <div className="h-auto lg:grid lg:grid-cols-2">
-            <div className="">
-              <Label htmlFor="">Nombre</Label>
-              <p>{provider.nombre}</p>
+          <div className="grid grid-cols sm:grid-cols-2 gap-x-6 gap-y-2">
+            <div>
+              <Label>RNC</Label>
+              <p className="text-gray-800 dark:text-gray-200">{provider.RNC}</p>
             </div>
-
-            <div className="">
-              <Label htmlFor="RNC">RNC</Label>
-              <p>{provider.RNC}</p>
-            </div>
-
-            <div className="">
-              <Label htmlFor="telefono">Telefono</Label>
-              <p>{provider.telefono}</p>
-            </div>
-
-            <div className="">
-              <Label htmlFor="procedencia">Procedencia</Label>
-              <p>{provider.procedencia}</p>
-            </div>
-
-            {provider.createdBy && (
-              <div className="">
-                <Label htmlFor="createdBy">Creado por</Label>
-                <p>{provider.createdBy.usuario || '-'}</p>
-              </div>
-            )}
 
             <div>
-              <Label htmlFor="createdAt">Fecha creacion</Label>
-              <p>{moment(provider.createdAt).format('LLLL')}</p>
+              <Label>Telefono</Label>
+              <p className="text-gray-800 dark:text-gray-200">{provider.telefono}</p>
+            </div>
+
+            <div>
+              <Label>Procedencia</Label>
+              <p className="text-gray-800 dark:text-gray-200">{provider.procedencia}</p>
+            </div>
+
+            <div>
+              <Label>Creado por</Label>
+              <p className="text-gray-700 dark:text-gray-200">{provider.createdBy.usuario}</p>
+            </div>
+
+            <div>
+              <Label>Fecha creacion</Label>
+              <p className="text-gray-800 dark:text-gray-200">
+                {moment(provider.createdAt).format('LLLL')}
+              </p>
             </div>
 
             {provider.updatedBy && (
-              <div className="">
+              <div>
                 <Label htmlFor="updatedBy">Actualizado por</Label>
                 <p>{provider.updatedBy.usuario}</p>
               </div>
             )}
 
             {provider.updatedAt && (
-              <div className="">
-                <Label htmlFor="updatedAt">Fecha actualizacion</Label>
-                <p>{moment(provider.updatedAt).format('LLLL')}</p>
+              <div>
+                <Label>Fecha Actualizacion</Label>
+                <p className="text-gray-800 dark:text-gray-200">
+                  {moment(provider.updatedAt).format('LLLL')}
+                </p>
               </div>
             )}
           </div>
 
-          <div className="flex flex-wrap gap-2 justify-end">
+          <div className="flex gap-2 justify-center md:justify-end mt-4">
             <Button
+              onClick={() => navigate('/products/providers')}
               size="sm"
-              startIcon={<BiEdit size={20} />}
-              onClick={() => navigate(`/products/providers/edit/${provider._id}`)}
               variant="primary"
+              startIcon={<BiArrowBack size={24} />}
+            >
+              Volver
+            </Button>
+            <Button
+              onClick={() => navigate(`/products/providers/edit/${provider._id}`)}
+              size="sm"
+              variant="outline"
+              startIcon={<BiEdit size={24} />}
             >
               Editar
             </Button>
             <Button
-              size="sm"
-              startIcon={<BiTrash size={20} />}
               onClick={() => handleDeleteProvider(provider._id)}
-              className="bg-red-500 text-white dark:bg-red-400 hover:bg-red-700"
+              size="sm"
+              variant="destructive"
+              startIcon={<BiTrash size={24} />}
             >
               Eliminar
-            </Button>
-            <Button
-              size="sm"
-              startIcon={<BiArrowBack size={20} />}
-              onClick={() => navigate('/products/providers')}
-              variant="outline"
-            >
-              Volver
             </Button>
           </div>
         </div>

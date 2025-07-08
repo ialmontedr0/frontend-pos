@@ -1,16 +1,23 @@
 import React from 'react';
 import { Link, useRouteError, isRouteErrorResponse } from 'react-router-dom';
 
-export const NotFound: React.FC = () => {
+type NotFoundProps = {
+  node: string;
+};
+
+export const NotFound: React.FC<NotFoundProps> = ({
+  node
+}) => {
   const error = useRouteError();
 
   let title = '404';
-  let message = 'La pagina que buscas no existe.';
+  let message = `La pagina ${node} no existe.`;
 
   if (isRouteErrorResponse(error)) {
     title = error.status.toString();
     message = error.statusText ?? message;
   }
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 p-4">
       <h1 className="mb-4 text-9xl font-extrabold text-gray-400">{title}</h1>

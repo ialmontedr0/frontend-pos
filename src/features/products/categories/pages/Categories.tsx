@@ -94,10 +94,10 @@ export const Categories: React.FC = () => {
           </Button>
         </div>
 
-        {loading && <Spinner />}
+        {loading && !error && <Spinner />}
         {error && <div className="text-sm text-red-600">Error: {error}</div>}
 
-        {categoriesData.length ? (
+        {categoriesData ? (
           <Table
             columns={categoriesColumns}
             data={categoriesData}

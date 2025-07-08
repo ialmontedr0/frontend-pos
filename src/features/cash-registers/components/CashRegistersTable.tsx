@@ -188,7 +188,7 @@ export const CashRegistersTable: React.FC<CashRegisterTableProps> = ({ data, loa
   return (
     <>
       <PageMeta title="Cajas Registradoras PoS v2" description="Cajas Registradoras" />
-      <div className="p-4 space-y-6 h-screen max-h-full p-4 max-w-full">
+      <div className="p-4 space-y-6 h-screen max-h-full p-4 max-w-full text-black dark:text-gray-200">
         <div className="flex-col space-y-4">
           <h2 className="text-3xl font-regular">Cajas</h2>
           <div className="flex flex-wrap gap-2 my-2">

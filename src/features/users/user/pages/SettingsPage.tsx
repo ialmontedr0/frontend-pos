@@ -3,25 +3,15 @@ import { UserSettingsForm } from '../../../../components/Forms/UserSettingsForm'
 import { SecuritySettingsForm } from '../components/SecuritySettingsForm';
 import { Toaster } from '../../../../components/UI/Toaster/Toaster';
 import { BiShield, BiPaint } from 'react-icons/bi';
-import { useState } from 'react';
-import { useAutoTranslate } from '../../../../hooks/useAutoTranslate';
-
-const originals = {
-  title: 'Configuracion',
-  description: 'Administra tus preferencias y seguridad de la cuenta',
-};
 
 export const SettingsPage: React.FC = () => {
-  const [texts, setTexts] = useState(originals);
-
-  useAutoTranslate(originals, (key, tr) => setTexts((prev) => ({ ...prev, [key]: tr })));
 
   return (
     <div className="container mx-auto py-10 px-4 max-w-4xl text-black dark:text-gray-300">
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-regular tracking-tight">{texts.title}</h1>
-          <p className="text-muted-foreground mt-2">{texts.description}</p>
+          <h1 className="text-3xl font-regular tracking-tight">Configuracion</h1>
+          <p className="text-muted-foreground mt-2">Administra tus preferencias y seguridad de la cuenta.</p>
         </div>
 
         <Tabs defaultValue="visual" className="w-full">

@@ -9,7 +9,9 @@ import type { Customer } from '../interfaces/CustomerInterface';
 import type { Column, Action } from '../../../components/Table/types';
 import { Table } from '../../../components/Table/Table';
 import Button from '../../../components/UI/Button/Button';
-import { BiArrowBack, BiPlusCircle } from 'react-icons/bi';
+import {
+  BiPlusCircle,
+} from 'react-icons/bi';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import { parseCustomerType } from '../../../utils/commonFunctions';
 
@@ -99,9 +101,14 @@ export function Customers() {
 
   return (
     <div className="p-4 space-y-6">
-      <div className="space-y-4">
+      <div className="space-y-4 space-x-4">
         <h2 className="text-3xl font-regular text-black dark:text-gray-200">Clientes</h2>
-        <Button onClick={createCustomer} className="" startIcon={<BiPlusCircle size={24} />}>
+        <Button
+          size="sm"
+          onClick={createCustomer}
+          className=""
+          startIcon={<BiPlusCircle size={24} />}
+        >
           Nuevo Cliente
         </Button>
       </div>

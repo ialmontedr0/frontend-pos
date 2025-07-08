@@ -2,9 +2,12 @@ import { BiMoney, BiCreditCard, BiSolidSchool, BiWallet } from 'react-icons/bi';
 import { TrashBinIcon } from '../../../../assets/icons';
 import type { SaleItem } from './types';
 import { parsePaymentMethod } from '../../../../utils/commonFunctions';
+import { Label } from '../../../../components/UI/Label/Label';
 
 interface SaleDetailsProps {
   items: SaleItem[];
+  discount: number;
+  onDiscountChange: (v: number) => void;
   paymentAmount: number;
   onPaymentChange: (v: number) => void;
   paymentMethod: string;
@@ -17,6 +20,8 @@ interface SaleDetailsProps {
 
 export const SaleDetails: React.FC<SaleDetailsProps> = ({
   items,
+  discount,
+  onDiscountChange,
   paymentAmount,
   onPaymentChange,
   paymentMethod,
@@ -26,13 +31,22 @@ export const SaleDetails: React.FC<SaleDetailsProps> = ({
   onReset,
   onFinish,
 }) => {
+  // Calcular subtotal e ITBIS
   const subtotal = items.reduce((sum, it) => sum + it.producto.precioVenta * it.cantidad, 0);
   const itbis = items.reduce(
     (sum, it) => sum + (it.producto.itbis ? it.producto.precioVenta * it.cantidad * 0.18 : 0),
     0
   );
-  const total = subtotal + itbis;
-  const pending = total - paymentAmount;
+
+  // Total bruto antes del descuento
+  const totalBruto = subtotal + itbis;
+
+  // Validar y aplicar descuento
+  const validDiscount = Math.min(Math.max(discount, 0), totalBruto);
+  const totalNeto = totalBruto - validDiscount;
+
+  // Pendiente despues del pago
+  const pending = totalNeto - paymentAmount;
 
   return (
     <div className="flex flex-col h-full space-y-4 text-black">
@@ -66,9 +80,29 @@ export const SaleDetails: React.FC<SaleDetailsProps> = ({
           <span>ITBIS</span>
           <span>RD$ {itbis.toFixed(2)}</span>
         </div>
+
+        {/** Descuento */}
+        <div className="flex justify-between items-center">
+          <Label>Descuento</Label>
+          <input
+            type="number"
+            min={0}
+            max={totalBruto}
+            step="0.01"
+            value={validDiscount.toFixed(2)}
+            onChange={(e) => {
+              let v = parseFloat(e.target.value) || 0;
+              if (v < 0) v = 0;
+              if (v > totalBruto) v = totalBruto;
+              onDiscountChange(v);
+            }}
+            className="w-24 border rounded px-2 py-1 text-right"
+          />
+        </div>
+
         <div className="flex justify-between font-bold">
           <span>Total</span>
-          <span>RD$ {total.toFixed(2)}</span>
+          <span>RD$ {totalNeto.toFixed(2)}</span>
         </div>
         <div className="flex justify-between">
           <span>Pendiente</span>
@@ -81,31 +115,22 @@ export const SaleDetails: React.FC<SaleDetailsProps> = ({
           Pago RD$
         </label>
         <input
-          type="text"
+          type="number"
           min={0}
-          max={total}
-          value={paymentAmount}
+          max={totalNeto}
+          value={paymentAmount.toFixed(2)}
           onChange={(e) => {
             let val = parseFloat(e.target.value) || 0;
-            if (val > total) val = total;
-            else if (val < 0) val = 0;
+            if (val < 0) val = 0;
+            if (val > totalNeto) val = totalNeto;
             onPaymentChange(val);
           }}
           className="w-full border rounded px-3 py-2"
         />
         <label className="block flex flex-row" htmlFor="">
-          Metodo pago: {paymentMethod && <p>📌 {parsePaymentMethod(paymentMethod)}</p>}
+          Metodo pago:&nbsp;
+          <span>📌 {parsePaymentMethod(paymentMethod)}</span>
         </label>
-        {/* <select
-          value={paymentMethod}
-          onChange={(e) => onMethodChange(e.target.value as any)}
-          className="w-full border rounded px-3 py-2"
-        >
-          <option value="efectivo">Efectivo</option>
-          <option value="tarjetaCreditoDebito">Tarjeta</option>
-          <option value="credito">Credito</option>
-          <option value="puntos">Puntos</option>
-        </select> */}
         <div className="w-full flex flex-row gap-2 justify-around">
           <button
             className="px-4 py-1 rounded-md hover:bg-gray-200 transition-all duration-300"

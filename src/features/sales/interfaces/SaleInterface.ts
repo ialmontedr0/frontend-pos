@@ -6,6 +6,7 @@ export interface Sale {
   codigo: string;
   usuario: { _id: string; usuario: string };
   cliente: { _id: string; nombre: string };
+  caja: { _id: string; codigo: string };
   fecha: string;
   productos: SaleProduct[];
   itbisVenta: number;
@@ -14,6 +15,7 @@ export interface Sale {
   metodoPago: string;
   subtotalVenta: number;
   pagoVenta: number;
+  descuento: number;
   pagos: Payment[];
   totalVenta: number;
   createdBy: string;

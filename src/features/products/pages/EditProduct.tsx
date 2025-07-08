@@ -8,10 +8,10 @@ import withReactContent from 'sweetalert2-react-content';
 import type { RootState } from '../../../store/store';
 import { useAppSelector, useAppDispatch } from '../../../hooks/hooks';
 import {
-  getProductById,
   clearSelectedProduct,
   updateProduct,
   deleteProduct,
+  getProductByCode,
 } from '../slices/productsSlice';
 import type { UpdateProductDTO } from '../dtos/update-product.dto';
 
@@ -24,12 +24,13 @@ import { ToggleSwitch } from '../../../components/UI/ToggleSwitch/ToggleSwitch';
 import { BiSave, BiTrash, BiX } from 'react-icons/bi';
 import PageMeta from '../../../components/common/PageMeta';
 import { myAlertError, myAlertSuccess } from '../../../utils/commonFunctions';
+import { NotFound } from '../../../pages/NotFound';
 
 export const EditProduct: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
-  const { productId } = useParams<{ productId: string }>();
+  const { codigo } = useParams<{ codigo: string }>();
 
   const [selectedCategoryName, setSelectedCategoryName] = useState<string>('');
   const [selectedProviderName, setSelectedProviderName] = useState<string>('');
@@ -94,11 +95,13 @@ export const EditProduct: React.FC = () => {
   }, [product, categories, providers, reset]);
 
   useEffect(() => {
-    dispatch(getProductById(productId!));
+    if (!codigo) return;
+
+    dispatch(getProductByCode(codigo));
     return () => {
       dispatch(clearSelectedProduct());
     };
-  }, [dispatch, productId, navigate]);
+  }, [dispatch, codigo, navigate]);
 
   const onSubmit = (updateProductDTO: UpdateProductDTO) => {
     myAlert
@@ -184,29 +187,25 @@ export const EditProduct: React.FC = () => {
   }
 
   if (!product) {
-    return (
-      <div className="p-6 max-w-lg mx-auto bg-white dark:bg-gray-800 rounded-lg shadow">
-        <p className="text-gray-500 dark:text-gray-400">Producto no encontrado.</p>
-      </div>
-    );
+    return <NotFound node="Producto" />;
   }
 
   return (
     <>
       <PageMeta title="Editar Producto - PoS v2" description="Editar producto" />
 
-      <div className="border-4 border-black h-full max-h-auto">
+      <div className="h-full h-screen max-h-auto">
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="border-3 border-red-500 w-full max-w-4xl mx-auto my-6 p-6 bg-white dark:bg-gray-900 rounded-lg shadow-md space-y-6 text-black dark:text-gray-200"
+          className="w-full max-w-4xl mx-2 md:mx-auto my-6 p-6 bg-white dark:bg-gray-900 rounded-lg shadow-md space-y-6 text-black dark:text-gray-200"
         >
           {/** Header del componente */}
-          <div className="border-2 border-green-500 space-y-4">
+          <div className="space-y-4">
             <h2 className="text-3xl font-regular">Editar producto</h2>
           </div>
 
           {/** Cuerpo del componente */}
-          <div className="border-2 border-purple-600 flex lg:flex-row md:flex-col">
+          <div className="flex flex-col md:flex-row">
             {/** Imagen */}
             <div className="flex-shrink-0 rounded-full">
               <img src={product.foto} className="w-64 h-auto rounded-full" alt="" />

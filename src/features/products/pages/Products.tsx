@@ -144,8 +144,8 @@ export const Products: React.FC = () => {
   ];
 
   const productActions: Action<Product>[] = [
-    { label: 'Ver', onClick: (p) => navigate(`/products/${p._id}`) },
-    { label: 'Editar', onClick: (p) => navigate(`/products/edit/${p._id}`) },
+    { label: 'Ver', onClick: (p) => navigate(`/products/${p.codigo}`) },
+    { label: 'Editar', onClick: (p) => navigate(`/products/edit/${p.codigo}`) },
     { label: 'Act precio compra', onClick: (p) => handleUpdateCost(p._id) },
     { label: 'Act precio venta', onClick: (p) => handleUpdateSell(p._id) },
     { label: 'Eliminar', onClick: (p) => handleDeleteProduct(p._id) },

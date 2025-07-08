@@ -21,14 +21,13 @@ import {
 
 import { Table } from '../../../components/Table/Table';
 import Button from '../../../components/UI/Button/Button';
-import { BiEdit, BiPencil, BiPlusCircle, BiShow } from 'react-icons/bi';
+import { BiPencil, BiPlusCircle, BiShow } from 'react-icons/bi';
 import { BiGrid } from 'react-icons/bi';
 import { BiListUl } from 'react-icons/bi';
 import { Card, type CardItem } from '../../../components/UI/Card/Card';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import Badge from '../../../components/UI/Badge/Badge';
 import PageMeta from '../../../components/common/PageMeta';
-import PageBreadcrum from '../../../components/common/PageBreadCrumb';
 
 export function Users() {
   const dispatch = useAppDispatch();
@@ -72,8 +71,15 @@ export function Users() {
     title: `${u.nombre} ${u.apellido}`,
     subtitle: u.usuario,
     fields: [
-      { label: 'Rol', value: u.rol },
-      { label: 'Estado', value: u.estado ? 'Activo' : 'Inactivo' },
+      { label: 'Rol', value: parseUserRole(u.rol) },
+      {
+        label: 'Estado',
+        value: u.estado ? (
+          <Badge color="success">Activo</Badge>
+        ) : (
+          <Badge color="error">Inactivo</Badge>
+        ),
+      },
     ],
     actions: [
       {
@@ -168,12 +174,13 @@ export function Users() {
     <>
       <PageMeta title="Usuarios - Pos v2" description="Usuarios" />
       <div className="overflow-x-auto space-y-6 p-4 bg-white dark:bg-[#1d2939]">
-        <div className="space-y-4">
+        <div className="flex flex-row md:flex-col w-fit gap-2 space-y-2">
           <h2 className="text-3xl font-regular text-black dark:text-gray-200">Usuarios</h2>
           <Button
             startIcon={<BiPlusCircle size={24} />}
             type="button"
-            className="rounded-full"
+            size="sm"
+            className=""
             onClick={() => navigate('/users/create')}
           >
             Nuevo usuario

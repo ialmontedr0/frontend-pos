@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
+import moment from 'moment/min/moment-with-locales';
 
 import { useAppSelector, useAppDispatch } from '../../../hooks/hooks';
 import type { RootState } from '../../../store/store';
@@ -20,7 +21,7 @@ import { getAllUsers } from '../../users/slices/usersSlice';
 import { Label } from '../../../components/UI/Label/Label';
 import type { Transaction } from '../interfaces/TransactionInterface';
 import type { Action, Column } from '../../../components/Table/types';
-import moment from 'moment';
+
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import { Table } from '../../../components/Table/Table';
 import { BiArrowBack, BiCollapse, BiEdit, BiFolderOpen, BiTrash } from 'react-icons/bi';
@@ -29,11 +30,14 @@ import type { User } from '../../users/interfaces/UserInterface';
 import Badge from '../../../components/UI/Badge/Badge';
 import Button from '../../../components/UI/Button/Button';
 import { UserIcon } from '../../../assets/icons';
+import PageMeta from '../../../components/common/PageMeta';
+import PageBreadcrum from '../../../components/common/PageBreadCrumb';
 
 export const CashRegister: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
+  moment.locale('es');
 
   const { users } = useAppSelector((state: RootState) => state.users);
 
@@ -292,149 +296,159 @@ export const CashRegister: React.FC = () => {
   }
 
   return (
-    <div className="h-full space-y-6 p-4 max-w-full text-black dark:text-gray-300">
-      <div className="space-y-4">
-        <h2 className="text-xl md:text-2xl lg:text-3xl font-regular">Detalles de la caja</h2>
-      </div>
-      <div className="grid grid-cols-2">
-        <div>
-          <Label htmlFor="codigo">Caja</Label>
-          <p>{cashRegister.codigo}</p>
+    <>
+      <PageMeta title="Caja Registradora - PoS v2" description="Caja " />
+      <PageBreadcrum pageTitle="Caja" />
+      <div className="h-full space-y-6 m-2 p-4 md:mx-auto bg-white rounded-xl dark:bg-gray-900 max-w-full text-black dark:text-gray-300">
+        <div className="space-y-4">
+          <h2 className="text-2xl md:text-2xl lg:text-3xl font-regular">Detalles de la caja</h2>
         </div>
+        <div className="grid grid-cols-2 space-y-2">
+          <div>
+            <Label htmlFor="codigo">Caja</Label>
+            <p>{cashRegister.codigo}</p>
+          </div>
 
-        <div>
-          <Label htmlFor="estado">Estado</Label>
-          {cashRegister.estado === 'abierta' ? (
-            <Badge color="success">Abierta</Badge>
-          ) : (
-            <Badge color="warning">Cerrada</Badge>
+          <div>
+            <Label htmlFor="estado">Estado</Label>
+            {cashRegister.estado === 'abierta' ? (
+              <Badge color="success">Abierta</Badge>
+            ) : (
+              <Badge color="warning">Cerrada</Badge>
+            )}
+          </div>
+
+          <div>
+            <Label htmlFor="montoApertura">Monto Apertura</Label>
+            <p>RD$ {cashRegister.montoApertura?.toFixed(2)}</p>
+          </div>
+
+          <div>
+            <Label htmlFor="montoActual">Monto Actual</Label>
+            <p>RD$ {cashRegister.montoActual.toFixed(2)}</p>
+          </div>
+
+          <div>
+            <Label htmlFor="montoCierre">Monto Cierre</Label>
+            <p>RD$ {cashRegister.montoCierre?.toFixed(2)}</p>
+          </div>
+
+          <div>
+            <Label htmlFor="diferencia">Diferencia</Label>
+            <p>RD$ {cashRegister.diferencia?.toFixed(2)}</p>
+          </div>
+
+          {cashRegister.createdBy && (
+            <div>
+              <Label htmlFor="createdBy">Creada por</Label>
+              <p>{cashRegister.createdBy.usuario}</p>
+            </div>
           )}
-        </div>
 
-        <div>
-          <Label htmlFor="montoApertura">Monto Apertura</Label>
-          <p>RD$ {cashRegister.montoApertura?.toFixed(2)}</p>
-        </div>
+          {cashRegister.assignedTo && (
+            <div>
+              <Label htmlFor="assignedTo">Cajero asignado</Label>
+              <p>{cashRegister.assignedTo.usuario}</p>
+            </div>
+          )}
 
-        <div>
-          <Label htmlFor="montoActual">Monto Actual</Label>
-          <p>RD$ {cashRegister.montoActual.toFixed(2)}</p>
-        </div>
+          {cashRegister.openBy && cashRegister.openAt && (
+            <>
+              <div>
+                <Label htmlFor="openBy">Abierta por</Label>
+                <p>{cashRegister.openBy.usuario}</p>
+              </div>
+              <div>
+                <Label htmlFor="openAt">Fecha</Label>
+                <p>{moment(cashRegister.openAt).format('llll')}</p>
+              </div>
+            </>
+          )}
 
-        <div>
-          <Label htmlFor="montoCierre">Monto Cierre</Label>
-          <p>RD$ {cashRegister.montoCierre?.toFixed(2)}</p>
-        </div>
+          {cashRegister.closedBy && cashRegister.closedAt && (
+            <div>
+              <Label htmlFor="closedBy">Cerrada por</Label>
+              <p>{cashRegister.closedBy.usuario}</p>
 
-        <div>
-          <Label htmlFor="diferencia">Diferencia</Label>
-          <p>RD$ {cashRegister.diferencia?.toFixed(2)}</p>
-        </div>
+              <Label htmlFor="closedAt">Fecha cierre</Label>
+              <p>{moment(cashRegister.closedAt).format('llll')}</p>
+            </div>
+          )}
 
-        {cashRegister.createdBy && (
           <div>
-            <Label htmlFor="createdBy">Creada por</Label>
-            <p>{cashRegister.createdBy.usuario}</p>
+            <Label htmlFor="createdAt">Fecha Creacion</Label>
+            <p>{moment(cashRegister.createdAt).format('llll')}</p>
           </div>
-        )}
-
-        {cashRegister.assignedTo && (
-          <div>
-            <Label htmlFor="assignedTo">Cajero asignado</Label>
-            <p>{cashRegister.assignedTo.usuario}</p>
-          </div>
-        )}
-
-        {cashRegister.openBy && (
-          <div>
-            <Label htmlFor="openBy">Abierta por</Label>
-            <p>{cashRegister.openBy.usuario}</p>
-          </div>
-        )}
-
-        {cashRegister.closedBy && (
-          <div>
-            <Label htmlFor="closedBy">Cerrada por</Label>
-            <p>{cashRegister.closedBy.usuario}</p>
-
-            <Label htmlFor="closedAt">Fecha cierre</Label>
-            <p>{moment(cashRegister.closedAt).format('llll')}</p>
-          </div>
-        )}
-
-        <div>
-          <Label htmlFor="createdAt">Fecha Creacion</Label>
-          <p>{moment(cashRegister.createdAt).format('llll')}</p>
-        </div>
-
-        <div>
-          <Label htmlFor="updatedAt">Ultima Actualizacion</Label>
-          <p>{moment(cashRegister.updatedAt).format('LLLL')}</p>
+          
           {cashRegister.updatedBy && (
             <div>
-              <Label>Por</Label>
-              <p>{cashRegister.updatedBy.usuario}</p>
+              <Label htmlFor="updatedAt">Ultima Actualizacion</Label>
+              <p>{moment(cashRegister.updatedAt).format('llll')}</p>
+              <div>
+                <Label>Por</Label>
+                <p>{cashRegister.updatedBy.usuario}</p>
+              </div>
             </div>
           )}
         </div>
-      </div>
-      <div>
-        <Label className="text-xl" htmlFor="transacciones">
-          Transacciones
-        </Label>
-        <Table
-          columns={transactionColumns}
-          actions={transactionActions}
-          data={cashRegister.transacciones}
-          defaultPageSize={5}
-          pageSizeOptions={[5, 10, 20]}
-        />
-      </div>
-      <div className="flex flex-wrap justify-center md:justify-end gap-2 mt-4">
-        <Button size="sm" onClick={back} startIcon={<BiArrowBack />}>
-          Volver
-        </Button>
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={() => editRegister(cashRegister.codigo)}
-          startIcon={<BiEdit />}
-        >
-          Editar
-        </Button>
-        {cashRegister.assignedTo === undefined && (
-          <Button size="sm" onClick={() => handleAssignToUser()} startIcon={<UserIcon />}>
-            Asignar
+        <div>
+          <Label className="text-xl" htmlFor="transacciones">
+            Transacciones
+          </Label>
+          <Table
+            columns={transactionColumns}
+            actions={transactionActions}
+            data={cashRegister.transacciones}
+            defaultPageSize={5}
+            pageSizeOptions={[5, 10, 20]}
+          />
+        </div>
+        <div className="flex flex-wrap justify-center md:justify-end gap-2 mt-4">
+          <Button size="sm" onClick={back} startIcon={<BiArrowBack />}>
+            Volver
           </Button>
-        )}
-        {cashRegister.estado === 'abierta' ? (
           <Button
             size="sm"
             variant="outline"
-            onClick={() => closeRegister(cashRegister._id)}
-            startIcon={<BiCollapse size={20} />}
+            onClick={() => editRegister(cashRegister.codigo)}
+            startIcon={<BiEdit />}
           >
-            Cerrar
+            Editar
           </Button>
-        ) : (
+          {cashRegister.assignedTo === undefined && (
+            <Button size="sm" onClick={() => handleAssignToUser()} startIcon={<UserIcon />}>
+              Asignar
+            </Button>
+          )}
+          {cashRegister.estado === 'abierta' ? (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => closeRegister(cashRegister._id)}
+              startIcon={<BiCollapse size={20} />}
+            >
+              Cerrar
+            </Button>
+          ) : (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => openRegister(cashRegister._id)}
+              startIcon={<BiFolderOpen />}
+            >
+              Abrir
+            </Button>
+          )}
           <Button
             size="sm"
-            variant="outline"
-            onClick={() => openRegister(cashRegister._id)}
-            startIcon={<BiFolderOpen />}
+            variant="destructive"
+            onClick={() => onDelRegister(cashRegister._id)}
+            startIcon={<BiTrash size={20} />}
           >
-            Abrir
+            Eliminar
           </Button>
-        )}
-        <Button
-          size="sm"
-          variant="destructive"
-          onClick={() => onDelRegister(cashRegister._id)}
-          startIcon={<BiTrash size={20} />}
-        >
-          Eliminar
-        </Button>
+        </div>
       </div>
-    </div>
+    </>
   );
 };

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import moment from 'moment';
+import moment from 'moment/min/moment-with-locales';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
@@ -15,12 +15,15 @@ import { Label } from '../../../components/UI/Label/Label';
 import { myAlertSuccess, parseSaleStatus } from '../../../utils/commonFunctions';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import type { CustomerPurchase } from '../interfaces/CustomerPurchaseInterface';
+import { NotFound } from '../../../pages/NotFound';
+import PageMeta from '../../../components/common/PageMeta';
 
 export const Customer: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
   const { customerId } = useParams<{ customerId: string }>();
+  moment.locale('es');
 
   const { customer, loading, error } = useAppSelector((state: RootState) => state.customers);
 
@@ -109,107 +112,112 @@ export const Customer: React.FC = () => {
   }
 
   if (!customer) {
-    return <div>No existe el cliente consultado!</div>;
+    return <NotFound node="Cliente" />;
   }
 
   return (
-    <div className="m-5 ml-5 mr-5 p-4 max-2-2xl mx-auto bg-white dark:bg-gray-900 rounded-lg shadow-lg">
-      <div className="flex-1 space-y-4">
-        <h2 className="text-2xl font-regular text-gray-800 dark:text-gray-100">
-          {customer.nombre} {customer.apellido || ''}
-        </h2>
+    <>
+      <PageMeta title="Cliente - PoS v2" description="Cliente" />
+      <div className="m-2 mx-2 p-4 max-2-2xl bg-white dark:bg-gray-900 rounded-lg shadow-lg">
+        <div className="flex-1 space-y-4">
+          <h2 className="text-2xl font-regular text-gray-800 dark:text-gray-100">
+            {customer.nombre} {customer.apellido || ''}
+          </h2>
 
-        <div className="grid grid-cols sm:grid-cols-2 gap-x-6 gap-y-2">
-          <div>
-            <Label className="text-gray-500 dark:text-gray-400 text-sm">Telefono</Label>
-            <p className="text-gray-800 dark:text-gray-200">{customer.telefono || '-'}</p>
-          </div>
-
-          <div>
-            <Label className="text-gray-500 dark:text-gray-400 text-sm">Correo</Label>
-            <p className="text-gray-800 dark:text-gray-200">
-              {customer?.correo || 'Sin correo registrado'}
-            </p>
-          </div>
-
-          <div>
-            <Label className="text-gray-500 dark:text-gray-400 text-sm">Direccion</Label>
-            <p className="text-gray-800 dark:text-gray-200">{customer.direccion || '-'}</p>
-          </div>
-
-          {customer.createdBy && (
+          <div className="grid grid-cols sm:grid-cols-2 gap-x-6 gap-y-2">
             <div>
-              <Label className="text-gray-500 dark:text-gray-400 text-sm">Creado por</Label>
-              <p className="text-gray-700 dark:text-gray-200">{customer.createdBy.usuario}</p>
+              <Label className="text-gray-500 dark:text-gray-400 text-sm">Telefono</Label>
+              <p className="text-gray-800 dark:text-gray-200">{customer.telefono || '-'}</p>
             </div>
-          )}
 
-          {customer.updatedBy && (
             <div>
-              <Label htmlFor="updatedBy">Actualizado por</Label>
-              <p>{customer.updatedBy.usuario}</p>
+              <Label className="text-gray-500 dark:text-gray-400 text-sm">Correo</Label>
+              <p className="text-gray-800 dark:text-gray-200">
+                {customer?.correo || 'Sin correo registrado'}
+              </p>
             </div>
-          )}
 
-          <div>
-            <Label className="text-gray-500 dark:text-gray-400 text-sm">Fecha creacion</Label>
-            <p className="text-gray-800 dark:text-gray-200">
-              {moment(customer.createdAt).format('MMMM Do YYYY, h:mm:ss a')}
-            </p>
+            <div>
+              <Label className="text-gray-500 dark:text-gray-400 text-sm">Direccion</Label>
+              <p className="text-gray-800 dark:text-gray-200">{customer.direccion || '-'}</p>
+            </div>
+
+            {customer.createdBy && (
+              <div>
+                <Label className="text-gray-500 dark:text-gray-400 text-sm">Creado por</Label>
+                <p className="text-gray-700 dark:text-gray-200">{customer.createdBy.usuario}</p>
+              </div>
+            )}
+
+            {customer.updatedBy && (
+              <div>
+                <Label htmlFor="updatedBy">Actualizado por</Label>
+                <p>{customer.updatedBy.usuario}</p>
+              </div>
+            )}
+
+            <div>
+              <Label className="text-gray-500 dark:text-gray-400 text-sm">Fecha creacion</Label>
+              <p className="text-gray-800 dark:text-gray-200">
+                {moment(customer.createdAt).format('LLLL')}
+              </p>
+            </div>
+
+            <div>
+              <Label className="text-gray-500 dark:text-gray-400 text-sm">
+                Fecha Actualizacion
+              </Label>
+              <p className="text-gray-800 dark:text-gray-200">
+                {moment(customer.updatedAt).format('LLLL')}
+              </p>
+            </div>
           </div>
 
           <div>
-            <Label className="text-gray-500 dark:text-gray-400 text-sm">Fecha Actualizacion</Label>
-            <p className="text-gray-800 dark:text-gray-200">
-              {moment(customer.updatedAt).format('MMMM Do YYYY, h:mm:ss a')}
-            </p>
+            <Label className="text-xl font-regular" htmlFor="historialCompras">
+              Compras
+            </Label>
+            {customer.historialCompras.length ? (
+              <Table
+                data={customerPurchases}
+                columns={purchaseColumns}
+                actions={purcahseActions}
+                pageSizeOptions={[5, 10, 20]}
+                defaultPageSize={5}
+              />
+            ) : (
+              <p className="text-white dark:text-gray-200">Este cliente aun no tiene compras</p>
+            )}
           </div>
-        </div>
 
-        <div>
-          <Label className="text-xl font-regular" htmlFor="historialCompras">
-            Compras
-          </Label>
-          {customer.historialCompras.length ? (
-            <Table
-              data={customerPurchases}
-              columns={purchaseColumns}
-              actions={purcahseActions}
-              pageSizeOptions={[5, 10, 20]}
-              defaultPageSize={5}
-            />
-          ) : (
-            <p className="text-white dark:text-gray-200">Este cliente aun no tiene compras</p>
-          )}
-        </div>
-
-        <div className="mt-6 flex flex-col sm:flex-row items-center justify-end space-y-2 sm:space-y-0 sm:space-x-2">
-          <Button
-            size="sm"
-            onClick={() => navigate('/customers')}
-            variant="primary"
-            startIcon={<BiArrowBack size={20} />}
-          >
-            Atras
-          </Button>
-          <Button
-            size="sm"
-            onClick={() => navigate(`/customers/edit/${customer?._id}`)}
-            variant="outline"
-            startIcon={<BiEdit size={20} />}
-          >
-            Editar
-          </Button>
-          <Button
-            size="sm"
-            onClick={() => handleDeleteCustomer(customer!._id)}
-            variant="destructive"
-            startIcon={<BiTrash size={20} />}
-          >
-            Eliminar
-          </Button>
+          <div className="flex gap-2 justify-center md:justify-end mt-4">
+            <Button
+              onClick={() => navigate('/customers')}
+              size="sm"
+              variant="primary"
+              startIcon={<BiArrowBack />}
+            >
+              Volver
+            </Button>
+            <Button
+              onClick={() => navigate(`/customers/edit/${customer._id}`)}
+              size="sm"
+              variant="outline"
+              startIcon={<BiEdit />}
+            >
+              Editar
+            </Button>
+            <Button
+              onClick={() => handleDeleteCustomer(customer._id)}
+              size="sm"
+              variant="destructive"
+              startIcon={<BiTrash />}
+            >
+              Eliminar
+            </Button>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };

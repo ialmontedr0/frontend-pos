@@ -34,6 +34,7 @@ export const SalePage: React.FC = () => {
   const [productSearch, setProductSearch] = useState<string>('');
   const [quantity, setQuantity] = useState<number>(1);
   const [cart, setCart] = useState<SaleItem[]>([]);
+  const [discount, setDiscount] = useState<number>(0);
   const [paymentAmount, setPaymentAmount] = useState<number>(0);
   const [paymentMethod, setPaymentMethod] = useState<
     'efectivo' | 'credito' | 'tarjetaCreditoDebito' | 'puntos'
@@ -92,15 +93,24 @@ export const SalePage: React.FC = () => {
         variant: 'destructive',
         timeout: 4,
       });
-      
+
       return;
     }
+
+    const payload = {
+      cliente: selectedCustomer?._id || customerQuery,
+      productos: cart.map((i) => ({ producto: i.producto._id, cantidad: i.cantidad })),
+      pagoVenta: paymentAmount,
+      metodoPago: paymentMethod,
+      ...(isAdmin ? { cajaCodigo: cajaCodigo.trim() } : {}),
+    };
 
     dispatch(
       createSale({
         cliente: selectedCustomer?._id || customerQuery,
         productos: cart.map((i) => ({ producto: i.producto._id, cantidad: i.cantidad })),
         pagoVenta: paymentAmount,
+        descuento: discount,
         metodoPago: paymentMethod,
         ...(isAdmin ? { cajaCodigo: cajaCodigo.trim() } : {}),
       })
@@ -111,9 +121,8 @@ export const SalePage: React.FC = () => {
         handleReset();
         navigate('/sales');
       })
-      .catch((error: any) => {
-        
-        myAlertError(`Error`, `Error: ${error.response?.data?.message || error.message}`);
+      .catch(async (error: any) => {
+        myAlertError(`Error`, `Error: ${error}`);
       });
   };
 
@@ -159,6 +168,8 @@ export const SalePage: React.FC = () => {
 
           <SaleDetails
             items={cart}
+            discount={discount}
+            onDiscountChange={setDiscount}
             paymentAmount={paymentAmount}
             onPaymentChange={setPaymentAmount}
             paymentMethod={paymentMethod}

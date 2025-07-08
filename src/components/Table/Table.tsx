@@ -62,29 +62,27 @@ export function Table<T extends { [key: string]: any }>({
               {columns.map((col) => (
                 <td
                   key={String(col.accessor)}
-                  className="px-4 py-3 whitespace-nowrap text-sm text-slate-800 dark:text-slate-200"
+                  className="px-4 py-3 whitespace-nowrap text-sm text-slate-800 dark:text-gray-200"
                 >
                   {col.render ? col.render(row[col.accessor], row) : String(row[col.accessor])}
                 </td>
               ))}
               {actions.length > 0 && (
                 <td className="px-4 py-3 whitespace-nowrap flex space-x-2">
-                  {actions.map(
-                    (act, i) => {
-                      const rendered = act.render ? act.render(row) : act.label;
-                      if (!rendered) return null;
+                  {actions.map((act, i) => {
+                    const rendered = act.render ? act.render(row) : act.label;
+                    if (!rendered) return null;
 
-                      return (
-                        <button
-                          key={i}
-                          onClick={() => act.onClick(row)}
-                          className="px-2 py-1 rounded-full text-xs font-medium bg-brand-500 hover:bg-indigo-600 text-white focus:ouline-none focus:ring-2 focus:ring-offset-1 focus:ring-indigo-400"
-                        >
-                          {rendered}
-                        </button>
-                      );
-                    }
-                  )}
+                    return (
+                      <button
+                        key={i}
+                        onClick={() => act.onClick(row)}
+                        className="px-2 py-1 rounded-full text-xs font-medium bg-brand-500 hover:bg-indigo-600 text-white focus:ouline-none focus:ring-2 focus:ring-offset-1 focus:ring-indigo-400"
+                      >
+                        {rendered}
+                      </button>
+                    );
+                  })}
                 </td>
               )}
             </tr>
@@ -92,7 +90,7 @@ export function Table<T extends { [key: string]: any }>({
         </tbody>
       </table>
       <div className="flex items-center justify-between px-4 py-3 bg-slate-50 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-700">
-        <div>
+        <div className="space-x-2 space-y-2">
           <button
             onClick={() => goToPage(page - 1)}
             disabled={page === pageCount}

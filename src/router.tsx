@@ -54,6 +54,8 @@ import Transactions from './features/cash-registers/transactions/pages/Transacti
 import { SyncLogs } from './features/sync-logs/pages/SyncLogs';
 import { SalePage } from './features/sales/components/NewSale/NewSale';
 import { SettingsPage } from './features/users/user/pages/SettingsPage';
+import { SyncLog } from './features/sync-logs/pages/SyncLog';
+import InvoicesPage from './features/invoices/pages/InvoicesPage';
 
 const routes: RouteObject[] = [
   {
@@ -111,8 +113,8 @@ const routes: RouteObject[] = [
 
           { path: '/products', element: <Products /> },
           { path: '/products/create', element: <CreateProduct /> },
-          { path: '/products/:productId', element: <Product /> },
-          { path: '/products/edit/:productId', element: <EditProduct /> },
+          { path: '/products/:codigo', element: <Product /> },
+          { path: '/products/edit/:codigo', element: <EditProduct /> },
 
           { path: '/products/categories', element: <Categories /> },
           { path: '/products/categories/create', element: <CreateCategory /> },
@@ -142,13 +144,16 @@ const routes: RouteObject[] = [
           { path: '/transactions', element: <Transactions /> },
           { path: '/transactions/:transactionId', element: <Transaction /> },
 
+          { path: '/invoices', element: <InvoicesPage /> },
+
           { path: '/sync-logs', element: <SyncLogs /> },
+          { path: '/sync-logs/:syncLogId', element: <SyncLog /> },
 
           { path: '/notifications', element: <Notifications /> },
 
           { path: '/forbidden', element: <Forbidden /> },
 
-          { path: '*', element: <NotFound /> },
+          { path: '*', element: <NotFound node="" /> },
         ],
       },
     ],

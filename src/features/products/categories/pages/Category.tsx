@@ -1,25 +1,28 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import moment from 'moment';
+import moment from 'moment/min/moment-with-locales';
+
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
+
 import { useAppSelector, useAppDispatch } from '../../../../hooks/hooks';
 import { getCategoryById, deleteCategory, clearSelectedCategory } from '../slices/categoriesSlice';
 import type { RootState } from '../../../../store/store';
-import type { User } from '../../../users/interfaces/UserInterface';
-import { usersService } from '../../../users/services/usersService';
 import PageMeta from '../../../../components/common/PageMeta';
 import PageBreadcrum from '../../../../components/common/PageBreadCrumb';
 import { Label } from '../../../../components/UI/Label/Label';
 import Button from '../../../../components/UI/Button/Button';
-import { BiArrowBack, BiEdit, BiFolderOpen, BiTrash } from 'react-icons/bi';
+import { BiArrowBack, BiEdit, BiTrash } from 'react-icons/bi';
 import Spinner from '../../../../components/UI/Spinner/Spinner';
+import { NotFound } from '../../../../pages/NotFound';
+import { toast } from '../../../../components/UI/Toast/hooks/useToast';
 
 export const Category: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
   const { categoryId } = useParams<{ categoryId: string }>();
+  moment.locale('es');
 
   const { category, loading, error } = useAppSelector((state: RootState) => state.categories);
 
@@ -61,12 +64,10 @@ export const Category: React.FC = () => {
                 navigate('/products/categories');
               })
               .catch((error: any) => {
-                myAlert.fire({
+                toast({
                   title: 'Error',
-                  text: `Error: ${error.response?.data?.message || error.message}`,
-                  icon: 'error',
-                  timer: 5000,
-                  timerProgressBar: true,
+                  description: `Error al eliminar la categoria: ${error}`,
+                  variant: 'destructive',
                 });
               });
           }
@@ -153,15 +154,15 @@ export const Category: React.FC = () => {
   }
 
   if (!category) {
-    return;
+    return <NotFound node="Categoria" />;
   }
 
   return (
     <>
       <PageMeta title="Categoria - PoS v2" description="Detalles de la categoria" />
       <PageBreadcrum pageTitle="Categoria" />
-      <div className="p-6 flex flex-col max-w-2xl mx-auto my-4 mx-2 text-black dark:text-gray-200 bg-white dark:bg-gray-900 rounded-lg shadow">
-        <div className="my-2">
+      <div className="p-6 flex flex-col max-w-2xl  my-4 mx-2 md:mx-auto text-black dark:text-gray-200 bg-white dark:bg-gray-900 rounded-lg shadow">
+        <div className="my-4">
           <h2 className="text-3xl font-regular">Detalles Categoria</h2>
         </div>
 
@@ -197,11 +198,7 @@ export const Category: React.FC = () => {
         </div>
 
         <div className="w-auto flex flex-wrap gap-2 my-5">
-          <Button
-            onClick={() => navigate(-1)}
-            size="sm"
-            startIcon={<BiArrowBack size={20} />}
-          >
+          <Button onClick={() => navigate(-1)} size="sm" startIcon={<BiArrowBack size={20} />}>
             Volver
           </Button>
           <Button
@@ -212,7 +209,12 @@ export const Category: React.FC = () => {
           >
             Editar
           </Button>
-          <Button size="sm" variant="destructive" startIcon={<BiTrash size={20} />}>
+          <Button
+            onClick={() => handleDeleteCategory(category._id)}
+            size="sm"
+            variant="destructive"
+            startIcon={<BiTrash size={20} />}
+          >
             Eliminar
           </Button>
         </div>

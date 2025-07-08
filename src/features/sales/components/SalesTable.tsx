@@ -8,7 +8,7 @@ import { Table } from '../../../components/Table/Table';
 
 import Button from '../../../components/UI/Button/Button';
 import { BiPlusCircle } from 'react-icons/bi';
-import moment from 'moment';
+import moment from 'moment/min/moment-with-locales';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 
 interface SalesTableProps {
@@ -19,6 +19,7 @@ interface SalesTableProps {
 
 export const SalesTable: React.FC<SalesTableProps> = ({ data, loading, error }) => {
   const navigate = useNavigate();
+  moment.locale('es');
 
   const saleColumns: Column<Sale>[] = [
     { header: 'Codigo', accessor: 'codigo' },

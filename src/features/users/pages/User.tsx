@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import moment from 'moment';
+import moment from 'moment/min/moment-with-locales';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
@@ -16,12 +16,14 @@ import { BiArrowBack, BiCog, BiEdit } from 'react-icons/bi';
 import Badge from '../../../components/UI/Badge/Badge';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import { AiFillSetting } from 'react-icons/ai';
+import { NotFound } from '../../../pages/NotFound';
 
 export function User() {
   const { usuario } = useParams<{ usuario: string }>();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
+  moment.locale('es');
 
   const { user, loading, error } = useAppSelector((state: RootState) => state.users);
 
@@ -92,21 +94,11 @@ export function User() {
   }
 
   if (!user) {
-    return (
-      <div className="p-6 max-w-lg mx-auto bg-white dark:bg-gray-800 rounded-lg shadow">
-        <p className="text-gray-500 dark:text-gray-400">Usuario no encontrado</p>
-        <button
-          onClick={() => navigate('/users')}
-          className="mt-4 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-gray-200 dark:hover:bg-gray-600"
-        >
-          Volver
-        </button>
-      </div>
-    );
+    return <NotFound node="Usuario" />;
   }
 
   return (
-    <div className="p-6 max-w-2xl mx-auto bg-white dark:bg-gray-900 rounded-lg shadow-lg">
+    <div className="p-6 max-w-2xl m-2 lg:mx-auto bg-white dark:bg-gray-900 rounded-lg shadow-lg">
       <div className="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8">
         <h2 className="text-2xl font-regular text-gray-800 dark:text-gray-100">
           {user.nombre} {user.apellido}
@@ -168,14 +160,14 @@ export function User() {
           <div>
             <p className="text-gray-500 dark:text-gray-400 text-sm">Fecha creacion</p>
             <p className="text-gray-800 dark:text-gray-200">
-              {moment(user.createdAt).format('MMMM Do YYYY, h:mm:ss a')}
+              {moment(user.createdAt).format('LLLL')}
             </p>
           </div>
 
           <div>
             <p className="text-gray-500 dark:text-gray-400 text-sm">Ultima actualizacion</p>
             <p className="text-gray-800 dark:text-gray-200">
-              {moment(user.updatedAt).format('MMMM Do YYYY, h:mm:ss a')}
+              {moment(user.updatedAt).format('LLLL')}
             </p>
           </div>
 
@@ -188,7 +180,7 @@ export function User() {
             )}
           </div>
         </div>
-        <div className="flex flex-wrap justify-end gap-2">
+        <div className="flex flex-wrap justify-end gap-2 my-6">
           <Button
             size="sm"
             startIcon={<BiArrowBack size={20} />}

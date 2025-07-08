@@ -26,6 +26,7 @@ import paymentsReducer from '../features/payments/slices/paymentsSlices';
 import cashRegistersReducer from '../features/cash-registers/slices/cashRegisterSlice';
 import inventoryReducer from '../features/products/inventory/slices/inventorySlice';
 import transactionReducer from '../features/cash-registers/transactions/slices/transactionsSlice';
+import invoicesReducer from '../features/invoices/slices/invoicesSlice';
 
 const persistConfig = {
   key: 'root',
@@ -77,6 +78,7 @@ const rootReducer = combineReducers({
   cashRegisters: cashRegistersReducer,
   inventory: inventoryReducer,
   transactions: transactionReducer,
+  invoices: invoicesReducer,
   notifications: notificationsReducer,
   [api.reducerPath]: api.reducer,
 });

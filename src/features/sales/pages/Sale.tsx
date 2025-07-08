@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
-import moment from 'moment';
+import moment from 'moment/min/moment-with-locales';
 
 import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
 import type { RootState } from '../../../store/store';
@@ -17,11 +17,14 @@ import type { SaleProduct } from '../interfaces/SaleProductInterface';
 import PageMeta from '../../../components/common/PageMeta';
 import PageBreadcrum from '../../../components/common/PageBreadCrumb';
 import Badge from '../../../components/UI/Badge/Badge';
+import { myAlertSuccess, parsePaymentMethod } from '../../../utils/commonFunctions';
+import { generateInvoice } from '../../invoices/slices/invoicesSlice';
+import { toast } from '../../../components/UI/Toast/hooks/useToast';
 
 export const Sale: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-
+  moment.locale('es');
   const { codigo } = useParams<{ codigo: string }>();
 
   const { sale, loading, error } = useAppSelector((state: RootState) => state.sales);
@@ -30,7 +33,7 @@ export const Sale: React.FC = () => {
     {
       header: 'Metodo pago',
       accessor: 'metodoPago',
-      render: (value: string) => `${renderPaymentMethod(value)}`,
+      render: (value: string) => `${parsePaymentMethod(value)}`,
     },
     {
       header: 'Fecha',
@@ -85,6 +88,29 @@ export const Sale: React.FC = () => {
     };
   }, [dispatch, codigo, navigate]);
 
+  const handleGenerateInvoice = useCallback(
+    (saleId: string) => {
+      dispatch(
+        generateInvoice({
+          tipo: 'venta',
+          refId: saleId,
+        })
+      )
+        .unwrap()
+        .then(() => {
+          myAlertSuccess(`Factura generada`, 'Se ha generado la factura con exito');
+        })
+        .catch((error: any) => {
+          toast({
+            title: 'Error',
+            description: `Error al generar la factura: ${error}`,
+            variant: 'destructive',
+          });
+        });
+    },
+    [dispatch]
+  );
+
   if (loading) {
     return (
       <div>
@@ -92,21 +118,6 @@ export const Sale: React.FC = () => {
       </div>
     );
   }
-
-  const renderPaymentMethod = (method: string) => {
-    switch (method) {
-      case 'efectivo':
-        return 'Efectivo';
-      case 'credito':
-        return 'Credito';
-      case 'tarjetaCreditoDebito':
-        return 'Tarjeta';
-      case 'puntos':
-        return 'Puntos';
-      default:
-        'Unknown';
-    }
-  };
 
   if (!loading && error) {
     return (
@@ -129,7 +140,7 @@ export const Sale: React.FC = () => {
     <>
       <PageMeta title="Venta - PoS v2" description="Detalles de la venta" />
       <PageBreadcrum pageTitle="Venta" />
-      <div className="m-6 p-6 max-w-2xl mx-auto bg-white dark:bg-gray-900 rounded-lg shadow text-black dark:text-gray-200">
+      <div className="p-6 max-w-2xl m-2 md:mx-auto bg-white dark:bg-gray-900 rounded-lg shadow text-black dark:text-gray-200">
         <div>
           <h2 className="text-2xl md:text-2xl lg:text-3xl font-regular my-4">Detalles Venta</h2>
         </div>
@@ -151,8 +162,13 @@ export const Sale: React.FC = () => {
           </div>
 
           <div>
+            <Label htmlFor="caja">Caja</Label>
+            <p>{sale.caja.codigo}</p>
+          </div>
+
+          <div>
             <Label htmlFor="fecha">Fecha</Label>
-            <p>{moment(sale.fecha).locale('es-do').format('llll')}</p>
+            <p>{moment(sale.fecha).format('LLLL')}</p>
           </div>
 
           <div>
@@ -166,7 +182,7 @@ export const Sale: React.FC = () => {
 
           <div>
             <Label htmlFor="metodoPago">Metodo Pago</Label>
-            <p>{renderPaymentMethod(sale.metodoPago)}</p>
+            <p>{parsePaymentMethod(sale.metodoPago)}</p>
           </div>
 
           <div>
@@ -182,6 +198,16 @@ export const Sale: React.FC = () => {
           <div>
             <Label htmlFor="subtotalVenta">Subtotal</Label>
             <p>RD$ {sale.subtotalVenta.toFixed(2)}</p>
+          </div>
+
+          <div>
+            <Label htmlFor="itbisVenta">ITBIS</Label>
+            <p>RD$ {sale.itbisVenta.toFixed(2)}</p>
+          </div>
+
+          <div>
+            <Label htmlFor="descuento">Descuento</Label>
+            <p>RD$ {sale.descuento.toFixed(2)}</p>
           </div>
 
           <div>
@@ -228,8 +254,13 @@ export const Sale: React.FC = () => {
             Volver
           </Button>
 
-          <Button size="sm" variant="success" startIcon={<BiDownload size={20} />}>
-            Descargar Factura
+          <Button
+            onClick={() => handleGenerateInvoice(sale._id)}
+            size="sm"
+            variant="success"
+            startIcon={<BiDownload size={20} />}
+          >
+            Generar Factura
           </Button>
         </div>
       </div>

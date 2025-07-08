@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import type { Column, Action } from '../../../components/Table/types';
 import { Table } from '../../../components/Table/Table';
 import type { SyncLog } from '../interfaces/SyncLogInterface';
@@ -6,6 +7,7 @@ import Button from '../../../components/UI/Button/Button';
 import { BiArrowBack } from 'react-icons/bi';
 
 export const SyncLogs: React.FC = () => {
+  const navigate = useNavigate();
   const loading: boolean = false;
 
   const syncLogs: SyncLog[] = [
@@ -43,14 +45,21 @@ export const SyncLogs: React.FC = () => {
   ];
 
   const syncLogsActions: Action<SyncLog>[] = [
-    { label: 'Ver', onClick: (syncLog) => console.log(syncLog) },
+    { label: 'Ver', onClick: (syncLog) => navigate(syncLog._id) },
   ];
 
   return (
     <div className="p-4 space-y-6">
       <div className="space-y-4">
-        <h2 className="text-3xl font-regular text-black dark:text-gray-200">Sync Logs</h2>
-        <Button className="rounded-full" startIcon={<BiArrowBack size={20} />}>
+        <h2 className="text-2xl md:text-3xl font-regular text-black dark:text-gray-200">
+          Sync Logs
+        </h2>
+        <Button
+          size="sm"
+          variant="primary"
+          onClick={() => navigate(-1)}
+          startIcon={<BiArrowBack size={20} />}
+        >
           Volver
         </Button>
       </div>
