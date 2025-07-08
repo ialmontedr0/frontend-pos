@@ -121,7 +121,8 @@ export const SalePage: React.FC = () => {
         handleReset();
         navigate('/sales');
       })
-      .catch(async (error: any) => {
+      .catch((error: any) => {
+        
         myAlertError(`Error`, `Error: ${error}`);
       });
   };
