@@ -34,6 +34,7 @@ export function withFetchByRole<P extends { data: T | null; loading: boolean; er
       selfFetch: selfFetch,
     });
 
+    // Retorno
     return <WrappedComponent {...(props as P)} data={data} loading={loading} error={error} />;
   };
 }
