@@ -1,6 +1,7 @@
 // src/hooks/useFetchByRole
 import { useEffect, useState } from 'react';
 
+// Props
 interface FetchConfig<T> {
   role: string;
   adminFetch: () => Promise<T>;
