@@ -70,7 +70,7 @@ export const Products: React.FC<ProductProps> = ({ search, onSelect }) => {
               alt={p.nombre}
               className="w-16 h-16 object-cover rounded mb-2"
             />
-            <div className="text-sm font-medium">{p.nombre}</div>
+            <div className="text-sm font-medium dark:text-gray-800">{p.nombre}</div>
             <div className="text-xs text-gray-600">RD$ {p.precioVenta.toFixed(2)}</div>
             <div className="text-xs text-gray-500">Stock: {p.stock}</div>
           </div>

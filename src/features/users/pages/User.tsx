@@ -17,6 +17,7 @@ import Badge from '../../../components/UI/Badge/Badge';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import { AiFillSetting } from 'react-icons/ai';
 import { NotFound } from '../../../pages/NotFound';
+import { Error } from '../../../components/Error/components/Error';
 
 export function User() {
   const { usuario } = useParams<{ usuario: string }>();
@@ -80,17 +81,7 @@ export function User() {
   }
 
   if (error) {
-    return (
-      <div className="p-6 max-w-lg mx-auto bg-white dark:bg-gray-800 rounded-lg shadow">
-        <p className="text-red-600 dark:text-red-400">Error: {error}</p>
-        <button
-          onClick={() => navigate('/users')}
-          className="mt-4 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-gray-200 dark:hover:bg-gray-600"
-        >
-          Volver
-        </button>
-      </div>
-    );
+    return <Error message={error} />;
   }
 
   if (!user) {
@@ -99,8 +90,8 @@ export function User() {
 
   return (
     <div className="p-6 max-w-2xl m-2 lg:mx-auto bg-white dark:bg-gray-900 rounded-lg shadow-lg">
-      <div className="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8">
-        <h2 className="text-2xl font-regular text-gray-800 dark:text-gray-100">
+      <div className="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8 my-4">
+        <h2 className="text-2xl md:text-3xl font-regular text-black dark:text-gray-200">
           {user.nombre} {user.apellido}
         </h2>
         <div className="flex-shrink-0 my-2">

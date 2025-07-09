@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-
 import moment from 'moment/min/moment-with-locales';
 
 import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
@@ -9,7 +8,7 @@ import { getSaleByCode, clearSelectedSale } from '../slices/salesSlice';
 
 import { Label } from '../../../components/UI/Label/Label';
 import Button from '../../../components/UI/Button/Button';
-import { BiArrowBack, BiDownload } from 'react-icons/bi';
+import { BiArrowBack, BiDownload, BiMoney } from 'react-icons/bi';
 import type { Column, Action } from '../../../components/Table/types';
 import { Table } from '../../../components/Table/Table';
 import type { Payment } from '../../payments/interfaces/PaymentInterface';
@@ -20,13 +19,16 @@ import Badge from '../../../components/UI/Badge/Badge';
 import { myAlertSuccess, parsePaymentMethod } from '../../../utils/commonFunctions';
 import { generateInvoice } from '../../invoices/slices/invoicesSlice';
 import { toast } from '../../../components/UI/Toast/hooks/useToast';
+import Spinner from '../../../components/UI/Spinner/Spinner';
+import { Error } from '../../../components/Error/components/Error';
+import { NotFound } from '../../../pages/NotFound';
 
 export const Sale: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
   moment.locale('es');
   const { codigo } = useParams<{ codigo: string }>();
-
   const { sale, loading, error } = useAppSelector((state: RootState) => state.sales);
 
   const paymentColumns: Column<Payment>[] = [
@@ -88,6 +90,13 @@ export const Sale: React.FC = () => {
     };
   }, [dispatch, codigo, navigate]);
 
+  // Implementar aqui
+  const makePayment = (saleId: string, saleCode: string) => {
+    navigate('/payments/create', {
+      state: { saleId, saleCode },
+    });
+  };
+
   const handleGenerateInvoice = useCallback(
     (saleId: string) => {
       dispatch(
@@ -112,28 +121,15 @@ export const Sale: React.FC = () => {
   );
 
   if (loading) {
-    return (
-      <div>
-        <p>Cargando venta...</p>
-      </div>
-    );
+    return <Spinner />;
   }
 
   if (!loading && error) {
-    return (
-      <div className="p-6">
-        <p className="text-sm text-red-500">Error: {error}</p>
-      </div>
-    );
+    return <Error message={error} />;
   }
 
   if (!sale) {
-    return (
-      <div className="p-6">
-        <p className="text-gray-600">No existe la venta..</p>
-        <Button startIcon={<BiArrowBack size={20} />}>Volver</Button>
-      </div>
-    );
+    return <NotFound node="Venta" />;
   }
 
   return (
@@ -247,13 +243,20 @@ export const Sale: React.FC = () => {
         <div className="my-6 flex flex-wrap w-auto gap-2">
           <Button
             size="sm"
-            variant="primary"
+            variant="outline"
             onClick={() => navigate('/sales')}
             startIcon={<BiArrowBack className="" size={20} />}
           >
             Volver
           </Button>
-
+          <Button
+            size="sm"
+            variant="primary"
+            onClick={() => makePayment(sale._id.toString(), sale.codigo)}
+            startIcon={<BiMoney size={20} />}
+          >
+            Realizar Pago
+          </Button>
           <Button
             onClick={() => handleGenerateInvoice(sale._id)}
             size="sm"

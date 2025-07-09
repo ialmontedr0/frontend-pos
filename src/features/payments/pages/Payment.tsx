@@ -106,7 +106,7 @@ export const Payment: React.FC = () => {
           <Button
             size="sm"
             variant="outline"
-            startIcon={<BiArrowBack size={24} />}
+            startIcon={<BiArrowBack size={20} />}
             onClick={() => navigate('/payments')}
           >
             Volver
@@ -114,11 +114,11 @@ export const Payment: React.FC = () => {
           <Button
             onClick={() => viewSale(payment.venta.codigo)}
             size="sm"
-            startIcon={<BiFolderOpen size={24} />}
+            startIcon={<BiFolderOpen size={20} />}
           >
             Ver venta
           </Button>
-          <Button size="sm" variant="destructive" startIcon={<BiTrash size={24} />}>
+          <Button size="sm" variant="destructive" startIcon={<BiTrash size={20} />}>
             Eliminar pago
           </Button>
         </div>

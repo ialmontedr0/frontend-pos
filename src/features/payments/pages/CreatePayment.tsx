@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
@@ -18,13 +18,23 @@ import { myAlertError, myAlertSuccess, parsePaymentMethod } from '../../../utils
 import PageMeta from '../../../components/common/PageMeta';
 import Badge from '../../../components/UI/Badge/Badge';
 import { AiOutlineSearch } from 'react-icons/ai';
+import { toast } from '../../../components/UI/Toast/hooks/useToast';
+
+interface LocationState {
+  saleId?: string;
+  saleCode?: string;
+}
 
 export const CreatePayment: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const myAlert = withReactContent(Swal);
-
+  const { saleId, saleCode } = (location.state || {}) as LocationState;
   const { sale, error } = useAppSelector((state: RootState) => state.sales);
+
+  const { user } = useAppSelector((state: RootState) => state.auth);
+  const isAdmin = user?.rol === 'admin';
 
   const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
   const [saleQuery, setSaleQuery] = useState<string>('');
@@ -33,9 +43,13 @@ export const CreatePayment: React.FC = () => {
     'efectivo' | 'tarjetaCreditoDebito' | 'puntos'
   >('efectivo');
 
+  const [cajaCodigo, setCajaCodigo] = useState<string>('');
+
   useEffect(() => {
     setPaymentAmount(0);
-  }, []);
+
+    if (saleId) dispatch(getSaleByCode(saleCode!));
+  }, [saleId, saleCode]);
 
   const onLoadSale = useCallback(
     (codigo: string) => {
@@ -59,6 +73,17 @@ export const CreatePayment: React.FC = () => {
   const handleSubmit = () => {
     if (!sale) return;
 
+    if (!isAdmin && !cajaCodigo.trim()) {
+      toast({
+        title: 'Error al crear el pago',
+        description: `El usuario administrador ${user?.usuario} debe ingresar el codigo de la caja.`,
+        variant: 'destructive',
+        timeout: 4,
+      });
+
+      return;
+    }
+
     myAlert
       .fire({
         title: `Crear pago`,
@@ -76,6 +101,7 @@ export const CreatePayment: React.FC = () => {
               venta: sale._id,
               metodoPago: paymentMethod,
               montoPagado: paymentAmount,
+              ...(isAdmin ? { cajaCodigo: cajaCodigo.trim() } : {}),
             })
           )
             .unwrap()
@@ -96,6 +122,7 @@ export const CreatePayment: React.FC = () => {
     clearPaymentAmount();
     dispatch(clearSaleError());
     setSaleQuery('');
+    if (isAdmin) setCajaCodigo('');
   };
 
   const cancel = () => {
@@ -109,7 +136,7 @@ export const CreatePayment: React.FC = () => {
       <div className="p-6 space-y-4 text-black m-2 md:mx-auto max-w-3xl rounded-xl bg-white dark:bg-gray-900 dark:text-gray-200 border-3 border-black h-screen md:h-auto shadow-lg md:max-h-full">
         <div className="border-black border-2 space-y-4">
           {/** Header del Componente */}
-          <div className="">
+          <div className="my-2">
             <h2 className="text-2xl md:text-3xl font-regular">Nuevo Pago</h2>
           </div>
 
@@ -177,7 +204,17 @@ export const CreatePayment: React.FC = () => {
                   {/** Pago Venta */}
                   <div>
                     <h2 className="text-xl font-regular">Pago Venta</h2>
-
+                    {isAdmin && (
+                      <div className="mb-4">
+                        <Label htmlFor="cajaCodigo">Codigo Caja</Label>
+                        <Input
+                          type="text"
+                          value={cajaCodigo}
+                          onChange={(e) => setCajaCodigo(e.target.value)}
+                          placeholder="Ingresa el codigo de la caja"
+                        />
+                      </div>
+                    )}
                     <div>
                       <Input
                         type="number"
@@ -225,7 +262,7 @@ export const CreatePayment: React.FC = () => {
           </div>
 
           {/** Botones del Componente */}
-          <div className="flex flex-wrap justify-center md:justify-end gap-2">
+          <div className="flex flex-wrap justify-center md:justify-end gap-2 my-4">
             <Button
               onClick={handleSubmit}
               size="sm"
