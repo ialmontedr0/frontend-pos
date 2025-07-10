@@ -93,7 +93,7 @@ export function Table<T extends { [key: string]: any }>({
         <div className="space-x-2 space-y-2">
           <button
             onClick={() => goToPage(page - 1)}
-            disabled={page === pageCount}
+            disabled={page === 1}
             className="px-5 py-1 mx-1 text-sm cursor-pointer bg-white text-black dark:bg-slate-800 dark:text-white border rounded-full disabled:opacity-50"
           >
             « Anterior

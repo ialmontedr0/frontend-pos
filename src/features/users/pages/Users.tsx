@@ -16,7 +16,6 @@ import {
   myAlertError,
   myAlertSuccess,
   parseUserRole,
-  parseUserStatus,
 } from '../../../utils/commonFunctions';
 
 import { Table } from '../../../components/Table/Table';
@@ -51,7 +50,13 @@ export function Users() {
     {
       header: 'Estado',
       accessor: 'estado',
-      render: (value: string) => `${parseUserStatus(value)}`,
+      render: (value: string) => {
+        if (value === 'activo') {
+          return <Badge color='success'>Activo</Badge>
+        } else {
+          return <Badge color='error'>Inactivo</Badge>
+        }
+      },
     },
   ];
 

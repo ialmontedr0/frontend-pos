@@ -1,6 +1,4 @@
 import React, { useCallback, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import moment from 'moment/min/moment-with-locales';
 
 import type { Invoice } from '../interfaces/InvoiceInterface';
 
@@ -18,10 +16,9 @@ import {
   selectInvoicePreviewUrl,
   previewInvoice,
 } from '../slices/invoicesSlice';
-import { toast } from '../../../components/UI/Toast/hooks/useToast';
-import { Toast } from '../../../components/UI/Toast/Toast';
 import PageMeta from '../../../components/common/PageMeta';
 import { BiX } from 'react-icons/bi';
+import { myAlertError } from '../../../utils/commonFunctions';
 
 interface InvoicesTableProps {
   data: Invoice[] | null;
@@ -29,11 +26,10 @@ interface InvoicesTableProps {
   error: string;
 }
 
-export const InvoicesTable: React.FC<InvoicesTableProps> = ({ data, loading, error }) => {
+export const InvoicesTable: React.FC<InvoicesTableProps> = ({ data, loading }) => {
   const dispatch = useAppDispatch();
   const downloadUrl = useAppSelector(selectInvoicePdfUrl);
   const previewUrl = useAppSelector(selectInvoicePreviewUrl);
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (!downloadUrl) return;
@@ -60,7 +56,7 @@ export const InvoicesTable: React.FC<InvoicesTableProps> = ({ data, loading, err
     {
       header: 'Tipo',
       accessor: 'tipo',
-      render: (value: string) => `${value.charAt(0).toUpperCase() + value.slice(1)}`
+      render: (value: string) => `${value.charAt(0).toUpperCase() + value.slice(1)}`,
     },
     {
       header: 'Venta',
@@ -78,7 +74,9 @@ export const InvoicesTable: React.FC<InvoicesTableProps> = ({ data, loading, err
     (invoiceId: string) => {
       dispatch(downloadInvoice(invoiceId))
         .unwrap()
-        .catch((error: any) => {});
+        .catch((error: any) => {
+          myAlertError(`Error`, `Error: ${error}`);
+        });
     },
     [dispatch]
   );
@@ -87,7 +85,9 @@ export const InvoicesTable: React.FC<InvoicesTableProps> = ({ data, loading, err
     (invoiceId: string) => {
       dispatch(previewInvoice(invoiceId))
         .unwrap()
-        .catch((error: any) => {});
+        .catch((error: any) => {
+          myAlertError(`Error`, `Error: ${error}`);
+        });
     },
     [dispatch]
   );

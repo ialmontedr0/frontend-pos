@@ -1,12 +1,10 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import React, { useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import moment from 'moment/min/moment-with-locales';
 
-import type { RootState } from '../../../store/store';
-import { useAppDispatch } from '../../../hooks/hooks';
 
 import type { SyncLog as SyncLogInterface } from '../interfaces/SyncLogInterface';
 import { Label } from '../../../components/UI/Label/Label';
@@ -19,11 +17,9 @@ import PageBreadcrum from '../../../components/common/PageBreadCrumb';
 import { FileIcon } from '../../../assets/icons';
 
 export const SyncLog: React.FC = () => {
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
 
-  const { syncLogId } = useParams<{ syncLogId: string }>();
   const loading: boolean = false;
   const error: string | null = null;
 
@@ -129,7 +125,7 @@ export const SyncLog: React.FC = () => {
             onClick={() => navigate('/sync-logs')}
             size="sm"
             variant="outline"
-            startIcon={<BiArrowBack size={24} />}
+            startIcon={<BiArrowBack size={20} />}
           >
             Volver
           </Button>
@@ -137,7 +133,7 @@ export const SyncLog: React.FC = () => {
             onClick={() => onDelSyncLog(syncLog._id)}
             size="sm"
             variant="destructive"
-            startIcon={<BiTrash size={24} />}
+            startIcon={<BiTrash size={20} />}
           >
             Eliminar
           </Button>

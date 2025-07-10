@@ -10,6 +10,8 @@ import Button from '../../../components/UI/Button/Button';
 import { BiPlusCircle } from 'react-icons/bi';
 import moment from 'moment/min/moment-with-locales';
 import Spinner from '../../../components/UI/Spinner/Spinner';
+import { Error } from '../../../components/Error/components/Error';
+import Badge from '../../../components/UI/Badge/Badge';
 
 interface SalesTableProps {
   data: Sale[] | null;
@@ -42,13 +44,11 @@ export const SalesTable: React.FC<SalesTableProps> = ({ data, loading, error }) 
       header: 'Estado',
       accessor: 'estado',
       render: (value: string) => {
-        const base = `px-2 py-1 rounded-full text-white text-xs font-semibold`;
-        const color = value === 'completada' ? 'bg-green-600' : 'bg-amber-500';
-        return (
-          <span className={`${base} ${color}`}>
-            {value.charAt(0).toUpperCase() + value.slice(1)}
-          </span>
-        );
+        if (value === 'completada') {
+          return <Badge color="success">Completada</Badge>;
+        } else if (value === 'pendiente') {
+          return <Badge color="error">Pendiente</Badge>;
+        }
       },
     },
     {
@@ -67,15 +67,11 @@ export const SalesTable: React.FC<SalesTableProps> = ({ data, loading, error }) 
   ];
 
   if (!loading && error) {
-    return (
-      <div>
-        <p className="text-red-500 text-sm">Error al cargar las ventas: {error}</p>
-      </div>
-    );
+    return <Error message={error} />;
   }
 
   return (
-    <div className="p-4 space-y-6">
+    <div className="p-4 space-y-6 text-black dark:text-gray-200">
       <div className="space-y-4">
         <h2 className="text-3xl dark:text-gray-200 font-regular">Ventas</h2>
         <div className="w-auto flex flex-wrap gap-2">

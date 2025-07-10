@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import moment from 'moment/min/moment-with-locales';
 
@@ -8,11 +8,14 @@ import type { RootState } from '../../../store/store';
 import { clearSelectedPayment, getPaymentById } from '../slices/paymentsSlices';
 import { Label } from '../../../components/UI/Label/Label';
 import Button from '../../../components/UI/Button/Button';
-import { BiArrowBack, BiFolderOpen, BiTrash } from 'react-icons/bi';
-import { parsePaymentMethod } from '../../../utils/commonFunctions';
+import { BiArrowBack, BiFolderOpen, BiPaperPlane, BiTrash } from 'react-icons/bi';
+import { myAlertError, myAlertSuccess, parsePaymentMethod } from '../../../utils/commonFunctions';
 import PageMeta from '../../../components/common/PageMeta';
 import PageBreadcrum from '../../../components/common/PageBreadCrumb';
 import { NotFound } from '../../../pages/NotFound';
+import { generateInvoice } from '../../invoices/slices/invoicesSlice';
+import Spinner from '../../../components/UI/Spinner/Spinner';
+import { Error } from '../../../components/Error/components/Error';
 
 export const Payment: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -36,20 +39,29 @@ export const Payment: React.FC = () => {
     navigate(`/sales/${codigo}`);
   };
 
-  if (loading) {
-    return (
-      <div className="p-6">
-        <p className="text-gray-600">Cargando pago...</p>
-      </div>
-    );
-  }
+  const handleGenerateInvoice = useCallback(
+    (paymentId: string) => {
+      dispatch(
+        generateInvoice({
+          tipo: 'pago',
+          refId: paymentId,
+        })
+      )
+        .unwrap()
+        .then(() => {
+          myAlertSuccess(`Factura generada`, `Se ha generado la factura exitosamente.`);
+        })
+        .catch((error: any) => {
+          myAlertError(`Error`, `Error: ${error}`);
+        });
+    },
+    [dispatch]
+  );
+
+  if (loading) return <Spinner />;
 
   if (!loading && error) {
-    return (
-      <div className="p-6">
-        <p className="text-red-500 text-sm">Error: {error}</p>
-      </div>
-    );
+    return <Error message={error} />;
   }
 
   if (!payment) {
@@ -117,6 +129,14 @@ export const Payment: React.FC = () => {
             startIcon={<BiFolderOpen size={20} />}
           >
             Ver venta
+          </Button>
+          <Button
+            size="sm"
+            variant="success"
+            startIcon={<BiPaperPlane size={20} />}
+            onClick={() => handleGenerateInvoice(payment._id)}
+          >
+            Generar Factura
           </Button>
           <Button size="sm" variant="destructive" startIcon={<BiTrash size={20} />}>
             Eliminar pago

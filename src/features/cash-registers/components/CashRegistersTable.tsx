@@ -23,6 +23,7 @@ import Spinner from '../../../components/UI/Spinner/Spinner';
 import { myAlertError, myAlertSuccess } from '../../../utils/commonFunctions';
 import { BiFilter, BiPlusCircle, BiTrash } from 'react-icons/bi';
 import PageMeta from '../../../components/common/PageMeta';
+import Badge from '../../../components/UI/Badge/Badge';
 
 interface CashRegisterTableProps {
   data: CashRegister[] | null;
@@ -87,7 +88,13 @@ export const CashRegistersTable: React.FC<CashRegisterTableProps> = ({ data, loa
     {
       header: 'Estado',
       accessor: 'estado',
-      render: (value: string) => `${value.charAt(0).toUpperCase() + value.slice(1)}`,
+      render: (value: string) => {
+        return value === 'abierta' ? (
+          <Badge color="success">Abierta</Badge>
+        ) : (
+          <Badge color="error">Cerrada</Badge>
+        );
+      },
     },
     {
       header: 'Monto Actual',
@@ -98,8 +105,6 @@ export const CashRegistersTable: React.FC<CashRegisterTableProps> = ({ data, loa
 
   const cashRegistersActions: Action<CashRegister>[] = [
     { label: 'Ver', onClick: (c) => navigate(`/cash-registers/${c.codigo}`) },
-    { label: 'Editar', onClick: (c) => navigate(`/cash-registers/edit/${c.codigo}`) },
-    { label: 'Eliminar', onClick: (c) => onDelRegister(c._id) },
     {
       label: 'Abrir',
       onClick: (c) => openRegister(c._id),
@@ -110,6 +115,8 @@ export const CashRegistersTable: React.FC<CashRegisterTableProps> = ({ data, loa
       onClick: (c) => closeRegister(c._id),
       render: (c) => (c.estado === 'abierta' ? <span>Cerrar</span> : null),
     },
+    { label: 'Editar', onClick: (c) => navigate(`/cash-registers/edit/${c.codigo}`) },
+    { label: 'Eliminar', onClick: (c) => onDelRegister(c._id) },
   ];
 
   const openRegister = useCallback(
@@ -213,13 +220,14 @@ export const CashRegistersTable: React.FC<CashRegisterTableProps> = ({ data, loa
           </div>
         </div>
         {showFilters && (
-          <div className="border border-black w-md h-auto p-4 flex flex-row gap-4">
-            <div>
-              <h2 className="text-black dark:text-gray-200 font-semibold">Filtros</h2>
-            </div>
+          <div className="rounded-lg w-fit h-auto p-4 flex flex-row justify-start shadow-theme-md bg-gray-100/50 gap-4">
             <div className="flex flex-wrap gap-2">
-              <button>Cajas abiertas</button>
-              <button>Cajas cerradas</button>
+              <Button size="sm" variant="outline">
+                Cajas abiertas
+              </Button>
+              <Button size="sm" variant="outline">
+                Cajas cerradas
+              </Button>
             </div>
           </div>
         )}

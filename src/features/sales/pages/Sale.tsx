@@ -138,7 +138,7 @@ export const Sale: React.FC = () => {
       <PageBreadcrum pageTitle="Venta" />
       <div className="p-6 max-w-2xl m-2 md:mx-auto bg-white dark:bg-gray-900 rounded-lg shadow text-black dark:text-gray-200">
         <div>
-          <h2 className="text-2xl md:text-2xl lg:text-3xl font-regular my-4">Detalles Venta</h2>
+          <h2 className="text-2xl md:text-3xl font-regular mb-4">Detalles Venta</h2>
         </div>
 
         <div className="grid grid-cols-2 space-y-4">

@@ -31,7 +31,7 @@ const Button: React.FC<ButtonProps> = ({
     primary:
       'cursor-pointer bg-brand-500 hover:bg-blue-700 text-white shadow-theme-xs hover:bg-brand-600 disabled:bg-brand-300',
     outline:
-      'cursor-pointer bg-white text-gray-600 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-white/[0.03] dark:hover:text-gray-300',
+      'cursor-pointer bg-white hover:bg-gray-100 text-gray-600 ring-1 ring-inset ring-gray-300 dark:bg-gray-800 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-white/[0.03] dark:hover:text-gray-300',
     success:
       'cursor-pointer bg-green-600 text-white hover:bg-green-700 shadow-theme-xs dark:bg-green-400 dark:hover:bg-green-600 disabled:bg-green-200',
     destructive:
