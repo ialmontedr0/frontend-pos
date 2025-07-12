@@ -18,6 +18,7 @@ import { router } from './router';
 // Estabelecr espanol globalmente
 moment.locale('es')
 
+// Crear instancia query client
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: { staleTime: 60000, retry: 1 },
