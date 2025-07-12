@@ -27,6 +27,7 @@ import cashRegistersReducer from '../features/cash-registers/slices/cashRegister
 import inventoryReducer from '../features/products/inventory/slices/inventorySlice';
 import transactionReducer from '../features/cash-registers/transactions/slices/transactionsSlice';
 import invoicesReducer from '../features/invoices/slices/invoicesSlice';
+import settingsReducer from '../features/settings/slices/settingsSlice';
 
 const persistConfig = {
   key: 'root',
@@ -60,6 +61,7 @@ export const api = createApi({
     'Notification',
     'Transaction',
     'Stats',
+    'Settings',
   ],
   endpoints: () => ({
     // ex getUsers: builder.query<User[], void>({ query: () => '/users' })
@@ -80,6 +82,7 @@ const rootReducer = combineReducers({
   transactions: transactionReducer,
   invoices: invoicesReducer,
   notifications: notificationsReducer,
+  settings: settingsReducer,
   [api.reducerPath]: api.reducer,
 });
 

@@ -105,7 +105,6 @@ const routes: RouteObject[] = [
           { path: '/user/profile', element: <UserProfilePage /> },
           { path: '/user/settings', element: <UserSettings /> },
           { path: '/settings', element: <SettingsPage /> },
-
           { path: '/customers', element: <Customers /> },
           { path: '/customers/create', element: <CreateCustomer /> },
           { path: '/customers/:customerId', element: <Customer /> },

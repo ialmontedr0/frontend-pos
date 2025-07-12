@@ -3,6 +3,10 @@ import { TrashBinIcon } from '../../../../assets/icons';
 import type { SaleItem } from './types';
 import { parsePaymentMethod } from '../../../../utils/commonFunctions';
 import { Label } from '../../../../components/UI/Label/Label';
+import { useAppDispatch, useAppSelector } from '../../../../hooks/hooks';
+import type { RootState } from '../../../../store/store';
+import { useEffect } from 'react';
+import { getAppSettings } from '../../../settings/slices/settingsSlice';
 
 interface SaleDetailsProps {
   items: SaleItem[];
@@ -31,10 +35,18 @@ export const SaleDetails: React.FC<SaleDetailsProps> = ({
   onReset,
   onFinish,
 }) => {
+  const dispatch = useAppDispatch();
+  const { settings } = useAppSelector((state: RootState) => state.settings);
+  const itbisFee = (settings?.itbisFee)! / 100;
+
+  useEffect(() => {
+    dispatch(getAppSettings());
+  }, [dispatch]);
+
   // Calcular subtotal e ITBIS
   const subtotal = items.reduce((sum, it) => sum + it.producto.precioVenta * it.cantidad, 0);
   const itbis = items.reduce(
-    (sum, it) => sum + (it.producto.itbis ? it.producto.precioVenta * it.cantidad * 0.18 : 0),
+    (sum, it) => sum + (it.producto.itbis ? it.producto.precioVenta * it.cantidad * itbisFee! : 0),
     0
   );
 
@@ -53,7 +65,7 @@ export const SaleDetails: React.FC<SaleDetailsProps> = ({
       <div className="overflow-auto default-scrollbar flex-1 rounded border p-4">
         {items.map((it, i) => {
           const lineSub = it.producto.precioVenta * it.cantidad;
-          const lineItb = it.producto.itbis ? lineSub * 0.18 : 0;
+          const lineItb = it.producto.itbis ? lineSub * itbisFee! : 0;
           const lineTot = (lineSub + lineItb).toFixed(2);
           return (
             <div key={i} className="flex justify-between mb-3 last:mb-0">

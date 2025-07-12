@@ -20,6 +20,8 @@ import type { RootState } from '../../../store/store';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import { tipoMap } from '../types/types';
 import Badge from '../../../components/UI/Badge/Badge';
+import { myAlertError } from '../../../utils/commonFunctions';
+import Button from '../../../components/UI/Button/Button';
 
 export const Notifications: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -44,13 +46,7 @@ export const Notifications: React.FC = () => {
           dispatch(markNotificationAsRead(notificationId))
             .then(() => {})
             .catch((error: any) => {
-              myAlert.fire({
-                title: 'Error',
-                text: `Error: ${error}`,
-                icon: 'error',
-                timer: 5000,
-                timerProgressBar: true,
-              });
+              myAlertError(`Error`, `Error: ${error}`);
             });
         }
       });
@@ -72,13 +68,7 @@ export const Notifications: React.FC = () => {
           dispatch(markNotificationAsUnread(notificationId))
             .then(() => {})
             .catch((error) => {
-              myAlert.fire({
-                title: 'Error',
-                text: `Error: ${error}`,
-                icon: 'error',
-                timer: 5000,
-                timerProgressBar: true,
-              });
+              myAlertError(`Error`, `Error: ${error}`);
             });
         }
       });
@@ -101,11 +91,7 @@ export const Notifications: React.FC = () => {
             .unwrap()
             .then(() => {})
             .catch((error: any) => {
-              myAlert.fire({
-                title: 'Error',
-                text: `Error: ${error}`,
-                icon: 'error',
-              });
+              myAlertError(`Error`, `Error: ${error}`);
             });
         }
       });
@@ -128,13 +114,7 @@ export const Notifications: React.FC = () => {
             .unwrap()
             .then(() => {})
             .catch((error) => {
-              myAlert.fire({
-                title: 'Error',
-                text: `Error: ${error}`,
-                icon: 'error',
-                timer: 5000,
-                timerProgressBar: true,
-              });
+              myAlertError(`Error`, `Error: ${error}`);
             });
         }
       });
@@ -157,13 +137,7 @@ export const Notifications: React.FC = () => {
             .unwrap()
             .then(() => {})
             .catch((error) => {
-              myAlert.fire({
-                title: 'Error',
-                text: `Error: ${error}`,
-                icon: 'error',
-                timer: 5000,
-                timerProgressBar: true,
-              });
+              myAlertError(`Error`, `Error: ${error}`);
             });
         }
       });
@@ -176,20 +150,22 @@ export const Notifications: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-100">Notificaciones</h2>
-        <div className="flex space-x-2">
-          <button
+        <h2 className="text-2xl md:text-3xl font-regular text-black dark:text-gray-200">
+          Notificaciones
+        </h2>
+        <div className="flex gap-2 space-x-2">
+          <Button
+            variant="icon"
+            size="icon"
             onClick={() => handleMarkAllAsRead()}
-            className="flex items-center px-4 py-2 bg-green-100 dark:bg-green-800 dark:text-green-100 rounded hover:bg-green-200 dark:hover:bg-green-700 transition"
-          >
-            <BiCheckDouble className="mr-2" />
-          </button>
-          <button
+            startIcon={<BiCheckDouble size={20} />}
+          ></Button>
+          <Button
+            size="icon"
+            variant="icon"
             onClick={() => handleDeleteAll()}
-            className="flex items-center px-4 py-2 bg-red-100 dark:bg-red-800 dark:text-red-100 rounded hover:bg-gred-200 dark:hover:bg-red-700 transition"
-          >
-            <BiTrashAlt className="mr-2" />
-          </button>
+            startIcon={<BiTrashAlt size={20} />}
+          ></Button>
         </div>
       </div>
 
