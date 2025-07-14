@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
-import { useAppDispatch } from '../../../../hooks/hooks';
-import { changePassword } from '../slices/profileSlice';
-import { clearAuth } from '../../../auth/slices/authSlice';
+import { useAppDispatch } from '../../../../../hooks/hooks';
+import { changePassword } from '../../slices/profileSlice';
+import { clearAuth } from '../../../../auth/slices/authSlice';
 
 import {
   Card,
@@ -13,11 +13,11 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '../../../../components/UI/NewCard/Card';
-import Button from '../../../../components/UI/Button/Button';
-import Input from '../../../../components/UI/Input/Input';
-import { Label } from '../../../../components/UI/Label/Label';
-import { toast } from '../../../../components/UI/Toast/hooks/useToast';
+} from '../../../../../components/UI/NewCard/Card';
+import Button from '../../../../../components/UI/Button/Button';
+import Input from '../../../../../components/UI/Input/Input';
+import { Label } from '../../../../../components/UI/Label/Label';
+import { toast } from '../../../../../components/UI/Toast/hooks/useToast';
 import { AiFillEye, AiFillEyeInvisible, AiOutlineKey } from 'react-icons/ai';
 
 type SecurityForm = {

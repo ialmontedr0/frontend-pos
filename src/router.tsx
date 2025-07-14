@@ -10,7 +10,7 @@ import { Users } from './features/users/pages/Users';
 import { User } from './features/users/pages/User';
 import { CreateUser } from './features/users/pages/CreateUser';
 import { EditUser } from './features/users/pages/EditUser';
-import { UserSettings } from './features/users/user/components/Settings/Settings';
+
 import { Customers } from './features/customers/pages/Customers';
 import { Customer } from './features/customers/pages/Customer';
 import { CreateCustomer } from './features/customers/pages/CreateCustomer';
@@ -48,7 +48,6 @@ import { CashRegister } from './features/cash-registers/pages/CashRegister';
 import { EditRegister } from './features/cash-registers/pages/EditRegister';
 import { CreateRegister } from './features/cash-registers/pages/CreateRegister';
 import { LogInPage } from './features/auth/pages/LogInPage';
-import UserProfilePage from './features/users/user/components/UserProfile/UserProfile';
 import { Transaction } from './features/cash-registers/transactions/pages/Transaction';
 import Transactions from './features/cash-registers/transactions/pages/Transactions';
 import { SyncLogs } from './features/sync-logs/pages/SyncLogs';
@@ -56,6 +55,7 @@ import { SalePage } from './features/sales/components/NewSale/NewSale';
 import { SettingsPage } from './features/users/user/pages/SettingsPage';
 import { SyncLog } from './features/sync-logs/pages/SyncLog';
 import InvoicesPage from './features/invoices/pages/InvoicesPage';
+import { UserProfilePage } from './features/users/user/pages/UserProfilePage';
 
 const routes: RouteObject[] = [
   {
@@ -103,8 +103,8 @@ const routes: RouteObject[] = [
           { path: '/users/edit/:userId', element: <EditUser /> },
 
           { path: '/user/profile', element: <UserProfilePage /> },
-          { path: '/user/settings', element: <UserSettings /> },
           { path: '/settings', element: <SettingsPage /> },
+          
           { path: '/customers', element: <Customers /> },
           { path: '/customers/create', element: <CreateCustomer /> },
           { path: '/customers/:customerId', element: <Customer /> },

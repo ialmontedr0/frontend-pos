@@ -114,63 +114,6 @@ export const AdminSettingsForm: React.FC = () => {
     navigate(-1);
   };
 
-  /*  <div className="m-2 md:mx-auto max-w-lg p-4 shadow-theme-xs space-y-6 bg-white dark:bg-gray-900 text-black dark:text-gray-200 rounded-lg border-2 border-black">
-      <div className="my-4">
-        <h2 className="text-2xl md:text-3xl font-regular">Panel Administrador</h2>
-      </div>
-
-      {error && <div className="text-red-500">Error: {error}</div>}
-      <div>
-        <div className="space-y-6">
-          <div>
-            <LanguageSelector
-              value={appSettingsForm.idioma}
-              onChange={(idioma) => setAppSettingsForm({ ...appSettingsForm, idioma })}
-            />
-          </div>
-
-          <div>
-            <CurrencySelector
-              value={appSettingsForm.moneda}
-              onChange={(moneda) => setAppSettingsForm({ ...appSettingsForm, moneda })}
-            />
-          </div>
-
-          <div>
-            <TextSizeSelector
-              value={appSettingsForm.tamanoTexto}
-              onChange={(tamanoTexto) => setAppSettingsForm({ ...appSettingsForm, tamanoTexto })}
-            />
-          </div>
-
-          <div>
-            <Label>ITBIS (Aplicacion)</Label>
-            <Input
-              type="number"
-              id="itbisFee"
-              value={appSettingsForm.itbisFee}
-              onChange={(e) => handleChange('itbisFee', parseFloat(e.target.value))}
-            />
-          </div>
-        </div>
-
-        <div className="flex gap-2 justify-center md:justify-end my-4">
-          <Button size="sm" variant="outline" startIcon={<BiArrowBack size={20} />} onClick={back}>
-            Volver
-          </Button>
-          <Button
-            onClick={handleSubmit}
-            size="sm"
-            variant="primary"
-            startIcon={<BiSave size={20} />}
-            disabled={loading}
-          >
-            Guardar
-          </Button>
-        </div>
-      </div>
-    </div> */
-
   return (
     <>
       <Card>

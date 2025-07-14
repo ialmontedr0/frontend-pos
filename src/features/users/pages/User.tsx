@@ -76,11 +76,11 @@ export function User() {
     }
   };
 
-  if (loading) {
+  if (!error && loading) {
     return <Spinner />;
   }
 
-  if (error) {
+  if (error && !loading) {
     return <Error message={error} />;
   }
 
@@ -89,7 +89,7 @@ export function User() {
   }
 
   return (
-    <div className="p-6 max-w-2xl m-2 lg:mx-auto bg-white dark:bg-gray-900 rounded-lg shadow-lg">
+    <div className="p-6 max-w-2xl m-2 lg:mx-auto bg-white dark:bg-gray-900 rounded-lg shadow-theme-md">
       <div className="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8 my-4">
         <h2 className="text-2xl md:text-3xl font-regular text-black dark:text-gray-200">
           {user.nombre} {user.apellido}

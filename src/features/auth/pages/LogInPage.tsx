@@ -1,3 +1,4 @@
+//src/features/auth/pages/LoginPage
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -18,7 +19,6 @@ export const LogInPage: React.FC = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isChecked, setIsChecked] = useState<boolean>(false);
-
   const [form, setForm] = useState<LoginDTO>({
     usuario: '',
     contrasena: '',
@@ -37,11 +37,11 @@ export const LogInPage: React.FC = () => {
   };
 
   return (
-    <div className="border-2 border-black flex flex-col flex-1 h-screen">
-      <div className="border border-green-600 my-auto px-4 h-full sm:h-fit flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
+    <div className="flex items-center justify-center min-h-screen px-4 items-start md:items-center my-4 md:my-auto">
+      <div className="border border-gray-200 rounded-lg shadow-theme-md px-6 py-8 w-full max-w-lg">
         <div>
-          <div className="mb-5 sm:mb-8">
-            <h1 className="font-outfit mb-2 text-2xl font-semibold text-gray-800 dark:text-black sm:text-title-md">
+          <div className="my-4 sm:mb-8">
+            <h1 className="font-outfit mb-2 text-3xl font-medium text-gray-800 dark:text-black sm:text-title-md">
               Iniciar sesion
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -49,7 +49,7 @@ export const LogInPage: React.FC = () => {
             </p>
           </div>
           <div>
-            <div className="relative py-3 sm:py-5">
+            <div className="relative py-3">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-gray-200 dark:border-gray-800"></div>
               </div>
@@ -73,7 +73,7 @@ export const LogInPage: React.FC = () => {
                       required
                     />
                     <span className="absolute z-30 -translate-y-1/2 right-4 top-1/2">
-                      <UserIcon className="fill-gray-300 dark:fill-gray-400 size-5" />
+                      <UserIcon className="text-gray-400 dark:text-gray-200 size-5" />
                     </span>
                   </div>
                 </div>

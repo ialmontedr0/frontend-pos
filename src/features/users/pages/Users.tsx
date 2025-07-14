@@ -67,7 +67,7 @@ export function Users() {
       label: 'Restablecer contrasena',
       onClick: (u) => handleResetPassword(u.usuario),
     },
-    { label: 'Eliminar', onClick: (u) => handleDeleteUser(u._id) },
+    { label: 'Eliminar', onClick: (u) => handleDeleteUser(u._id)},
   ];
 
   const cardItems: CardItem[] = users.map((u) => ({

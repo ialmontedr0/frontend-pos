@@ -6,9 +6,11 @@ import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
 import { validateCode, clearRecoveryState } from '../slices/authSlice';
 import type { ValidateCodeDTO } from '../dtos/validate-code.dto';
 import Button from '../../../components/UI/Button/Button';
-import Spinner from '../../../components/UI/Spinner/Spinner';
 import Input from '../../../components/UI/Input/Input';
 import { AiOutlineNumber } from 'react-icons/ai';
+import { Label } from '../../../components/UI/Label/Label';
+import { CheckLineIcon } from '../../../assets/icons';
+import { BiX } from 'react-icons/bi';
 
 export const ValidateCode = () => {
   const dispatch = useAppDispatch();
@@ -61,69 +63,83 @@ export const ValidateCode = () => {
       });
   };
 
-  {
-    /* <div className="flex min-h-full flex-1 h-screen border-2 border-black flex-col m-4 lg:justify-center md:justify-start sm:justify-start px-6 py-12 lg:px-8">
-      <div className="border border-green-900 sm:mx-auto sm:w-full sm:max-w-sm">
-        <h2 className="mt-4 text-3xl font-regular tracking-tight text-black">Validar Codigo</h2>
-      </div>
-      <div className="mt-4 sm:mx-auto sm:w-full sm:max-w-sm">
-
-      </div>
-    </div> */
-  }
-
   return (
-    <div className="border-3 border-black m-4 h-screen flex flex-1 justify-center space-y-4">
-      <div className="w-lg h-fit mt-12 pb-12 px-4 border-2 border-green-900 rounded-lg my-2 p-2">
-        <div className="border-2 border-blue-900 h-auto py-2 my-2">
-          <h2 className="text-3xl font-regular">Validar Codigo</h2>
-        </div>
-        <form onSubmit={handleSubmit} className="">
+    <>
+      <div className="flex items-center justify-center min-h-screen px-4 items-start md:items-center my-4 md:my-auto">
+        <div className="border border-gray-200 rounded-lg shadow-theme-md px-6 py-8 w-full max-w-lg">
           <div>
-            <label htmlFor="codigo" className="text-black">
-              Codigo (6 caracteres A-Z, 0-9)
-            </label>
-            <div className="relative my-2">
-              <Input
-                type="text"
-                name="usuario"
-                value={codigo}
-                onChange={(e) => {
-                  const val = e.target.value.toUpperCase();
-                  if (/^[A-Z0-9]{0,6}$/.test(val)) {
-                    setCodigo(val);
-                  }
-                }}
-                placeholder="Ingresa el codigo"
-                className="dark:bg-white placeholder:text-gray-500"
-                required
-              />
-              <span className="absolute z-30 -translate-y-1/2 right-4 top-1/2">
-                <AiOutlineNumber className="fill-gray-500 dark:fill-gray-400 size-5" />
-              </span>
+            <div className="my-4 sm:mb-8">
+              <h1 className="font-outfit mb-2 text-3xl font-medium text-gray-800 dark:text-black sm:text-title-md">
+                Validacion de Codigo
+              </h1>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Ingresa el codigo enviado a tu correo electronico!
+              </p>
             </div>
-            <p className="mt-1 text-sm text-black">Intentos restantes: {10 - attemps}</p>
-
-            {error && (
-              <div className="my-4 text-red-600 bg-red-100 p-2 rounded-lg text-sm">
-                Error: {error}
+            <div>
+              <div className="relative py-3">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-200 dark:border-gray-800"></div>
+                </div>
               </div>
-            )}
+              <form onSubmit={handleSubmit}>
+                <div className="space-y-6">
+                  <div>
+                    <Label>
+                      Codigo (6 caracteres A-Z, 0-9)
+                      <span className="text-error-500">*</span>{' '}
+                    </Label>
+                    <div className="relative">
+                      <Input
+                        type="text"
+                        name="usuario"
+                        value={codigo}
+                        onChange={(e) => {
+                          const val = e.target.value.toUpperCase();
+                          if (/^[A-Z0-9]{0,6}$/.test(val)) {
+                            setCodigo(val);
+                          }
+                        }}
+                        placeholder="Ingresa el codigo aqui de usuario"
+                        className="dark:bg-white placeholder:text-gray-500"
+                        required
+                      />
+                      <span className="absolute z-30 -translate-y-1/2 right-4 top-1/2">
+                        <AiOutlineNumber className="text-gray-400 dark:text-gray-200 size-5" />
+                      </span>
+                    </div>
+                  </div>
 
-            {loading && <Spinner />}
+                  {error && (
+                    <div className="mb-4 text-red-600 text-sm">
+                      Error al validar el usuario: {error}
+                    </div>
+                  )}
+                </div>
+                <div className="my-4 flex justify-center gap-2">
+                  <Button
+                    variant="primary"
+                    type="submit"
+                    size="sm"
+                    startIcon={<CheckLineIcon fontSize={20} />}
+                  >
+                    {loading ? 'Validando' : 'Validar'}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    type="button"
+                    size="sm"
+                    startIcon={<BiX size={20} />}
+                    onClick={cancel}
+                  >
+                    Cancelar
+                  </Button>
+                </div>
+              </form>
+            </div>
           </div>
-
-          <div className="flex flex-wrap gap-2 my-2 justify-start">
-            <Button size="sm" type="submit" variant="primary" disabled={loading || attemps >= 10}>
-              {loading ? 'Validando...' : 'Validar codigo'}
-            </Button>
-
-            <Button size="sm" variant="outline" type="button" onClick={cancel}>
-              Cancelar
-            </Button>
-          </div>
-        </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 };

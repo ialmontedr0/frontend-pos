@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-import { useAppDispatch } from '../../hooks/hooks';
+import { useAppDispatch } from '../../../../../hooks/hooks';
 
 import {
   Card,
@@ -9,18 +9,18 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '../UI/NewCard/Card';
-import Button from '../UI/Button/Button';
-import { ThemeSelector } from '../ThemeSelector/ThemeSelector';
-import { LanguageSelector } from '../LanguageSelector/LanguageSelector';
-import { CurrencySelector } from '../CurrencySelector/CurrencySelector';
-import { TimeZoneSelector } from '../TimeZoneSelector/TimeZoneSelector';
-import { NotificationToggle } from '../NotificationToggle/NotificationToggle';
-import { Separator } from '../UI/Separator/Separator';
-import { toast } from '../UI/Toast/hooks/useToast';
-import { TextSizeSelector } from '../TextSizeSelector/TextSizeSelector';
-import { useTheme } from '../../contexts/ThemeContext';
-import { setUserTheme } from '../../features/users/slices/usersSlice';
+} from '../../../../../components/UI/NewCard/Card';
+import Button from '../../../../../components/UI/Button/Button';
+import { ThemeSelector } from '../../../../../components/ThemeSelector/ThemeSelector';
+import { LanguageSelector } from '../../../../../components/LanguageSelector/LanguageSelector';
+import { CurrencySelector } from '../../../../../components/CurrencySelector/CurrencySelector';
+import { TimeZoneSelector } from '../../../../../components/TimeZoneSelector/TimeZoneSelector';
+import { NotificationToggle } from '../../../../../components/NotificationToggle/NotificationToggle';
+import { Separator } from '../../../../../components/UI/Separator/Separator';
+import { toast } from '../../../../../components/UI/Toast/hooks/useToast';
+import { TextSizeSelector } from '../../../../../components/TextSizeSelector/TextSizeSelector';
+import { useTheme } from '../../../../../contexts/ThemeContext';
+import { setUserTheme } from '../../../slices/usersSlice';
 import { BiReset, BiSave } from 'react-icons/bi';
 
 export type UserSettings = {

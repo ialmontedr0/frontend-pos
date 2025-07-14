@@ -5,10 +5,11 @@ import withReactContent from 'sweetalert2-react-content';
 import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
 import { changePassword, clearRecoveryState } from '../slices/authSlice';
 import type { ChangePasswordDTO } from '../dtos/change-password.dto';
-import Spinner from '../../../components/UI/Spinner/Spinner';
 import Button from '../../../components/UI/Button/Button';
 import Input from '../../../components/UI/Input/Input';
-import { EyeCloseIcon, EyeIcon } from '../../../assets/icons';
+import { CheckLineIcon, EyeCloseIcon, EyeIcon } from '../../../assets/icons';
+import { Label } from '../../../components/UI/Label/Label';
+import { BiX } from 'react-icons/bi';
 
 export const ChangePassword = () => {
   const dispatch = useAppDispatch();
@@ -81,179 +82,114 @@ export const ChangePassword = () => {
       });
   };
 
-  {
-    /* <div className="flex min-h-full flex-1 flex-col lg:justify-center md:justify-start sm:justify-start p-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <h2 className="mt-2 text-3xl font-regular tracking-tight text-black">Cambiar contrasena</h2>
-      </div>
-
-      <div className="my-8 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="flex flex-col gap-1">
-            <label htmlFor="nuevaContrasena" className="text-black text-sm">
-              Nueva contraseña
-            </label>
-
-            <input
-              type="password"
-              value={nuevaContrasena}
-              placeholder="Nueva contrasena"
-              onChange={(e) => setNuevaContrasena(e.target.value)}
-              className="block w-full px-3 py-1.5 border border-gray-300 rounded-full
-                  bg-gray-200 text-sm font-regular text-gray-600 placeholder-gray-400
-                  "
-            />
-          </div>
-
-          <div>
-            <label htmlFor="" className="text-black text-sm">
-              Confirmar contrasena
-            </label>
-            <input
-              type="password"
-              value={confirmarContrasena}
-              placeholder="Confirmar contrasena"
-              onChange={(e) => setConfirmarContrasena(e.target.value)}
-              className="block w-full px-3 py-1.5 border border-gray-300 rounded-full
-                  bg-gray-200 text-sm font-regular text-gray-600 placeholder-gray-400
-                  "
-            />
-          </div>
-
-          {error && <div className="mb-4 text-red-600 bg-red-100 p-2 rounded">{error}</div>}
-          {loading && <Spinner />}
-
-          <div className="mb-2 space-y-1 text-sm text-white">
-            <p className={validations.length ? 'text-green-600' : 'text-red-600'}>
-              • Minimo 8 caracteres
-            </p>
-            <p className={validations.uppercase ? 'text-green-600' : 'text-red-600'}>
-              • Al menos una mayuscula
-            </p>
-            <p className={validations.digit ? 'text-green-600' : 'text-red-600'}>
-              • Al menos un digito numerico
-            </p>
-            <p className={validations.match ? 'text-green-600' : 'text-red-600'}>
-              • Contrasenas no coinciden
-            </p>
-          </div>
-
-          <div className="flex flex-wrap justify-start gap-2 my-8">
-            <Button
-              type="submit"
-              disabled={loading || Object.values(validations).includes(false)}
-              variant="primary"
-            >
-              {loading ? 'Guardando...' : 'Cambiar'}
-            </Button>
-
-            <Button type="button" onClick={cancel} variant="outline">
-              Cancelar
-            </Button>
-          </div>
-        </form>
-      </div>
-    </div> */
-  }
-
   return (
-    <div className="border-3 border-black m-4 h-screen flex flex-1 justify-center space-y-4">
-      <div className="w-lg h-fit mt-12 pb-12 px-4 border-2 border-green-900 rounded-lg my-2 p-2">
-        <div className="border-2 border-blue-900 h-auto py-2 my-2">
-          <h2 className="text-3xl font-regular">Cambiar Contrasena</h2>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="flex flex-col gap-1 mt-2">
-            <label htmlFor="nuevaContrasena" className="text-black text-sm">
-              Nueva contraseña
-            </label>
-            <div className="relative">
-              <Input
-                type={showPassword ? 'text' : 'password'}
-                name="nuevaContrasena"
-                id="nuevaContrasena"
-                value={nuevaContrasena}
-                onChange={(e) => setNuevaContrasena(e.target.value)}
-                placeholder="Ingresa tu contrasena"
-                className="dark:bg-white placeholder:text-gray-500"
-                required
-              />
-              <span
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
-              >
-                {showPassword ? (
-                  <EyeIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
-                ) : (
-                  <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
-                )}
-              </span>
-            </div>
-          </div>
+    <>
+      <div className="flex items-center justify-center min-h-screen px-4 items-start md:items-center my-4 md:my-auto">
+        <div className="border border-gray-200 rounded-lg shadow-theme-md px-6 py-8 w-full max-w-lg">
           <div>
-            <label htmlFor="" className="text-black text-sm">
-              Confirmar contrasena
-            </label>
-            <div className="relative">
-              <Input
-                type={showPassword ? 'text' : 'password'}
-                name="confirmarContrasena"
-                id="confirmarContrasena"
-                value={confirmarContrasena}
-                onChange={(e) => setConfirmarContrasena(e.target.value)}
-                placeholder="Confirma tu contrasena"
-                className="dark:bg-white placeholder:text-gray-500"
-                required
-              />
-              <span
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
-              >
-                {showPassword ? (
-                  <EyeIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
-                ) : (
-                  <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
-                )}
-              </span>
+            <div className="my-4 sm:mb-8">
+              <h1 className="font-outfit mb-2 text-3xl font-medium text-gray-800 dark:text-black sm:text-title-md">
+                Cambiar Contrasena
+              </h1>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Ingresa tu nueva contraseña!
+              </p>
             </div>
-          </div>
-          {error && (
-            <div className="my-4 text-red-600 bg-red-100 p-2 rounded-lg text-sm">
-              Error: {error}
-            </div>
-          )}
-          {loading && <Spinner />}
-          <div className="mb-2 space-y-1 text-sm text-white">
-            <p className={validations.length ? 'text-green-600' : 'text-red-600'}>
-              • Minimo 8 caracteres
-            </p>
-            <p className={validations.uppercase ? 'text-green-600' : 'text-red-600'}>
-              • Al menos una mayuscula
-            </p>
-            <p className={validations.digit ? 'text-green-600' : 'text-red-600'}>
-              • Al menos un digito numerico
-            </p>
-            <p className={validations.match ? 'text-green-600' : 'text-red-600'}>
-              • Contrasenas no coinciden
-            </p>
-          </div>
-          <div className="flex flex-wrap justify-start gap-2 my-4">
-            <Button
-              size="sm"
-              type="submit"
-              disabled={loading || Object.values(validations).includes(false)}
-              variant="primary"
-            >
-              {loading ? 'Guardando...' : 'Cambiar'}
-            </Button>
+            <div>
+              <div className="relative py-3">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-200 dark:border-gray-800"></div>
+                </div>
+              </div>
+              <form onSubmit={handleSubmit}>
+                <div className="space-y-6">
+                  <div>
+                    <Label>
+                      Nueva Contraseña
+                      <span className="text-error-500"> *</span>
+                    </Label>
+                    <div className="relative">
+                      <Input
+                        type={showPassword ? 'text' : 'password'}
+                        name="nuevaContrasena"
+                        id="nuevaContrasena"
+                        value={nuevaContrasena}
+                        onChange={(e) => setNuevaContrasena(e.target.value)}
+                        placeholder="Ingresa tu nueva contrasena"
+                        className="dark:bg-white placeholder:text-gray-500"
+                        required
+                      />
+                      <span
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
+                      >
+                        {showPassword ? (
+                          <EyeIcon className="fill-gray-400 dark:fill-gray-400 size-5" />
+                        ) : (
+                          <EyeCloseIcon className="fill-gray-400 dark:fill-gray-400 size-5" />
+                        )}
+                      </span>
+                    </div>
+                  </div>
+                  <div>
+                    <Label>
+                      Confirmar Contrasena
+                      <span className="text-error-500"> *</span>
+                    </Label>
+                    <div className="relative">
+                      <Input
+                        type={showPassword ? 'text' : 'password'}
+                        name="confirmarContrasena"
+                        id="confirmarContrasena"
+                        value={confirmarContrasena}
+                        onChange={(e) => setConfirmarContrasena(e.target.value)}
+                        placeholder="Confirma tu contrasena"
+                        className="dark:bg-white placeholder:text-gray-500"
+                        required
+                      />
+                      <span
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
+                      >
+                        {showPassword ? (
+                          <EyeIcon className="fill-gray-400 dark:fill-gray-400 size-5" />
+                        ) : (
+                          <EyeCloseIcon className="fill-gray-400 dark:fill-gray-400 size-5" />
+                        )}
+                      </span>
+                    </div>
+                  </div>
 
-            <Button size="sm" type="button" onClick={cancel} variant="outline">
-              Cancelar
-            </Button>
+                  {error && (
+                    <div className="mb-4 text-red-600 text-sm">
+                      Error al cambiar la contrasena: {error}
+                    </div>
+                  )}
+                </div>
+                <div className="my-4 flex justify-center gap-2">
+                  <Button
+                    variant="primary"
+                    type="submit"
+                    size="sm"
+                    startIcon={<CheckLineIcon fontSize={20} />}
+                  >
+                    {loading ? 'Cambiando' : 'Cambiar Contraseñaf'}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    type="button"
+                    size="sm"
+                    startIcon={<BiX size={20} />}
+                    onClick={cancel}
+                  >
+                    Cancelar
+                  </Button>
+                </div>
+              </form>
+            </div>
           </div>
-        </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 };

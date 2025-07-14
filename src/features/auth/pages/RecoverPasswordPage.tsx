@@ -4,10 +4,11 @@ import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
 import { recoverPassword, clearRecoveryState } from '../slices/authSlice';
-import Spinner from '../../../components/UI/Spinner/Spinner';
 import Button from '../../../components/UI/Button/Button';
 import Input from '../../../components/UI/Input/Input';
-import { UserIcon } from '../../../assets/icons';
+import { CheckLineIcon, UserIcon } from '../../../assets/icons';
+import { Label } from '../../../components/UI/Label/Label';
+import { BiSolidKey, BiX } from 'react-icons/bi';
 
 export const RecoverPassword = () => {
   const dispatch = useAppDispatch();
@@ -33,7 +34,10 @@ export const RecoverPassword = () => {
       .fire({
         title: `Cancelar`,
         text: `Estas seguro que deseas cancelar la recuperacion de tu contraseña?`,
-        icon: 'warning',
+        iconHtml: <BiSolidKey />,
+        customClass: {
+          icon: 'no-default-icon-border'
+        },
         showConfirmButton: true,
         showCancelButton: true,
       })
@@ -46,50 +50,76 @@ export const RecoverPassword = () => {
   };
 
   return (
-    <div className="flex min-h-full flex-1 flex-col justify-start px-6 py-12 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <h2 className="mt-4 text-3xl font-regular tracking-tight text-black">
-          Recuperacion de contraseña
-        </h2>
-      </div>
-      <div className="mt-4 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form onSubmit={handleRecoverPass} className="space-y-6">
-          <div className="flex flex-col gap-2">
-            <label htmlFor="usuario" className="text-black">
-              Nombre de usuario
-            </label>
-            <p className='text-sm text-gray-600'>Ingresa tu nombre de usuario para validar.</p>
-            <div className="relative">
-              <Input
-                type="text"
-                name="usuario"
-                value={usuario}
-                onChange={(e) => setUsuario(e.target.value)}
-                placeholder="Ingresa tu nombre de usuario"
-                className="dark:bg-white placeholder:text-gray-500"
-                required
-              />
-              <span className="absolute z-30 -translate-y-1/2 right-4 top-1/2">
-                <UserIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
-              </span>
+    <>
+      <div className="flex items-center justify-center min-h-screen px-4 items-start md:items-center my-4 md:my-auto">
+        <div className="border border-gray-200 rounded-lg shadow-theme-md px-6 py-8 w-full max-w-lg">
+          <div>
+            <div className="my-4 sm:mb-8">
+              <h1 className="font-outfit mb-2 text-3xl font-medium text-gray-800 dark:text-black sm:text-title-md">
+                Recuperacion de Contraseña
+              </h1>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Ingresa tu nombre de usuario para validacion!
+              </p>
+            </div>
+            <div>
+              <div className="relative py-3">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-200 dark:border-gray-800"></div>
+                </div>
+              </div>
+              <form onSubmit={handleRecoverPass}>
+                <div className="space-y-6">
+                  <div>
+                    <Label>
+                      Usuario <span className="text-error-500">*</span>{' '}
+                    </Label>
+                    <div className="relative">
+                      <Input
+                        type="text"
+                        name="usuario"
+                        value={usuario}
+                        onChange={(e) => setUsuario(e.target.value)}
+                        placeholder="Ingresa tu nombre de usuario"
+                        className="dark:bg-white placeholder:text-gray-500"
+                        required
+                      />
+                      <span className="absolute z-30 -translate-y-1/2 right-4 top-1/2">
+                        <UserIcon className="text-gray-400 dark:text-gray-200 size-5" />
+                      </span>
+                    </div>
+                  </div>
+
+                  {error && (
+                    <div className="mb-4 text-red-600 text-sm">
+                      Error al validar el usuario: {error}
+                    </div>
+                  )}
+                </div>
+                <div className="my-4 flex justify-center gap-2">
+                  <Button
+                    variant="primary"
+                    type="submit"
+                    size="sm"
+                    startIcon={<CheckLineIcon fontSize={20} />}
+                  >
+                    {loading ? 'Validando' : 'Validar'}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    type="button"
+                    size="sm"
+                    startIcon={<BiX size={20} />}
+                    onClick={cancel}
+                  >
+                    Cancelar
+                  </Button>
+                </div>
+              </form>
             </div>
           </div>
-
-          {loading && <Spinner />}
-
-          {error && <div className="mb-4 text-red-600 bg-red-100 p-2 rounded-lg text-sm">Error: {error}</div>}
-
-          <div className="w-full flex flex-wrap gap-2">
-            <Button size="sm" type="submit" variant="primary" disabled={loading}>
-              {loading ? `Validando` : 'Validar'}
-            </Button>
-
-            <Button size="sm" type="button" onClick={cancel} variant="outline">
-              Cancelar
-            </Button>
-          </div>
-        </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
