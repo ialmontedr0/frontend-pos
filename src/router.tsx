@@ -51,7 +51,7 @@ import { LogInPage } from './features/auth/pages/LogInPage';
 import { Transaction } from './features/cash-registers/transactions/pages/Transaction';
 import Transactions from './features/cash-registers/transactions/pages/Transactions';
 import { SyncLogs } from './features/sync-logs/pages/SyncLogs';
-import { SalePage } from './features/sales/components/NewSale/NewSale';
+import { SalePage } from './features/sales/pages/NewSalePage';
 import { SettingsPage } from './features/users/user/pages/SettingsPage';
 import { SyncLog } from './features/sync-logs/pages/SyncLog';
 import InvoicesPage from './features/invoices/pages/InvoicesPage';

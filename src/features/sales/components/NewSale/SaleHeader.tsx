@@ -42,7 +42,7 @@ export const SaleHeader: React.FC<SaleHeaderProps> = ({
           <input
             ref={customerInputRef}
             type="text"
-            className="border rounded px-3 py-2 w-40"
+            className="border rounded-lg px-3 py-2 w-xs placeholder-gray-500"
             placeholder="Buscar cliente..."
             value={selectedCustomer?.nombre || customerQuery}
             onChange={(e) => {
@@ -79,7 +79,7 @@ export const SaleHeader: React.FC<SaleHeaderProps> = ({
         <div className="relative">
           <input
             type="text"
-            className="border rounded px-3 py-2 w-64"
+            className="border rounded-lg px-3 py-2 w-xs placeholder-gray-500"
             placeholder="Buscar producto..."
             value={productSearch}
             onChange={(e) => onSearchChange(e.target.value)}
@@ -90,7 +90,7 @@ export const SaleHeader: React.FC<SaleHeaderProps> = ({
         <input
           type="number"
           min={1}
-          className="border rounded px-3 py-2 w-20 text-center"
+          className="border rounded-lg px-3 py-2 w-20 text-center"
           value={quantity}
           onChange={(e) => onQuantityChange(Number(e.target.value))}
         />

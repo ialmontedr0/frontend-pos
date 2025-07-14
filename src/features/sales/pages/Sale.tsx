@@ -136,7 +136,7 @@ export const Sale: React.FC = () => {
     <>
       <PageMeta title="Venta - PoS v2" description="Detalles de la venta" />
       <PageBreadcrum pageTitle="Venta" />
-      <div className="p-6 max-w-2xl m-2 md:mx-auto bg-white dark:bg-gray-900 rounded-lg shadow text-black dark:text-gray-200">
+      <div className="p-6 max-w-6xl m-2 md:mx-auto bg-white dark:bg-gray-900 rounded-lg shadow text-black dark:text-gray-200">
         <div>
           <h2 className="text-2xl md:text-3xl font-regular mb-4">Detalles Venta</h2>
         </div>

@@ -1,23 +1,23 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useAppDispatch, useAppSelector } from '../../../../hooks/hooks';
-import type { RootState } from '../../../../store/store';
-import { getAllCustomers } from '../../../customers/slices/customerSlice';
-import { getAllProducts } from '../../../products/slices/productsSlice';
+import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
+import type { RootState } from '../../../store/store';
+import { getAllCustomers } from '../../customers/slices/customerSlice';
+import { getAllProducts } from '../../products/slices/productsSlice';
 
-import { SaleHeader } from './SaleHeader';
-import { Products } from './Products';
-import { SaleDetails } from './SaleDetails';
+import { SaleHeader } from '../components/NewSale/SaleHeader';
+import { Products } from '../components/NewSale/Products';
+import { SaleDetails } from '../components/NewSale/SaleDetails';
 
-import type { Customer } from '../../../customers/interfaces/CustomerInterface';
-import type { Product } from '../../../products/interfaces/ProductInterface';
-import type { SaleItem } from './types';
-import { createSale } from '../../slices/salesSlice';
-import { myAlertError, myAlertSuccess } from '../../../../utils/commonFunctions';
-import { Label } from '../../../../components/UI/Label/Label';
-import Input from '../../../../components/UI/Input/Input';
-import { toast } from '../../../../components/UI/Toast/hooks/useToast';
+import type { Customer } from '../../customers/interfaces/CustomerInterface';
+import type { Product } from '../../products/interfaces/ProductInterface';
+import type { SaleItem } from '../components/NewSale/types';
+import { createSale } from '../slices/salesSlice';
+import { myAlertError, myAlertSuccess } from '../../../utils/commonFunctions';
+import { Label } from '../../../components/UI/Label/Label';
+import Input from '../../../components/UI/Input/Input';
+import { toast } from '../../../components/UI/Toast/hooks/useToast';
 
 export const SalePage: React.FC = () => {
   const dispatch = useAppDispatch();

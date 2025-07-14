@@ -57,7 +57,7 @@ export const Products: React.FC<ProductProps> = ({ search, onSelect }) => {
         ))}
       </div>
 
-      <div className="grid grid-cols-3 gap-4 p-4 max-h-[500px] overflow-auto">
+      <div className="grid grid-cols-6 gap-4 p-4 max-h-[500px] overflow-auto">
         {filtered.map((p, i) => (
           <div
             key={p._id}
