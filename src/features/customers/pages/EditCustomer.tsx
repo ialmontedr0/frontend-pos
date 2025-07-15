@@ -117,7 +117,7 @@ export const EditCustomer: React.FC = () => {
                   myAlertSuccess(`Cambios guardados`, `Se ha actualizado el cliente`);
                 })
                 .catch((error) => {
-                  myAlertError(`Error`, `Error: ${error.response?.data?.message || error.message}`);
+                  myAlertError(`Error: ${error}`);
                 });
             }
           }

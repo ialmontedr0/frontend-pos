@@ -66,7 +66,7 @@ export const Products: React.FC = () => {
                 );
               })
               .catch((error: any) => {
-                myAlertError(`Error`, `Error: ${error.response?.data?.message || error.message}`);
+                myAlertError(`Error: ${error}`);
               });
           }
         });
@@ -110,7 +110,7 @@ export const Products: React.FC = () => {
                 );
               })
               .catch((error: any) => {
-                myAlertError(`Error`, `Error: ${error.response?.data?.message || error.message}`);
+                myAlertError(`Error: ${error}`);
               });
           }
         });
@@ -145,7 +145,6 @@ export const Products: React.FC = () => {
 
   const productActions: Action<Product>[] = [
     { label: 'Ver', onClick: (p) => navigate(`/products/${p.codigo}`) },
-    { label: 'Editar', onClick: (p) => navigate(`/products/edit/${p.codigo}`) },
     { label: 'Act precio compra', onClick: (p) => handleUpdateCost(p._id) },
     { label: 'Act precio venta', onClick: (p) => handleUpdateSell(p._id) },
     { label: 'Eliminar', onClick: (p) => handleDeleteProduct(p._id) },
@@ -179,7 +178,7 @@ export const Products: React.FC = () => {
                 navigate('/products');
               })
               .catch((error: any) => {
-                myAlertError(`Error`, `Error: ${error.response?.data?.message || error.message}`);
+                myAlertError(`Error: ${error}`);
               });
           }
         });

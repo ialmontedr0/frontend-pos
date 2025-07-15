@@ -9,7 +9,6 @@ import { Dashboard } from './pages/Dashboard/Dashboard';
 import { Users } from './features/users/pages/Users';
 import { User } from './features/users/pages/User';
 import { CreateUser } from './features/users/pages/CreateUser';
-import { EditUser } from './features/users/pages/EditUser';
 
 import { Customers } from './features/customers/pages/Customers';
 import { Customer } from './features/customers/pages/Customer';
@@ -100,7 +99,6 @@ const routes: RouteObject[] = [
           { path: '/users', element: <Users /> },
           { path: '/users/create', element: <CreateUser /> },
           { path: '/users/:usuario', element: <User /> },
-          { path: '/users/edit/:userId', element: <EditUser /> },
 
           { path: '/user/profile', element: <UserProfilePage /> },
           { path: '/settings', element: <SettingsPage /> },

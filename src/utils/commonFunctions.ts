@@ -102,12 +102,9 @@ export const myAlertSuccess = async (
 };
 
 // myAlert error
-export const myAlertError = async (
-  title: string,
-  text: string
-): Promise<SweetAlertResult<void>> => {
+export const myAlertError = async (text: string): Promise<SweetAlertResult<void>> => {
   return myAlert.fire({
-    title: title,
+    title: `Error`,
     text: text,
     icon: 'error',
     timer: 5000,

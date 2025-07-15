@@ -127,7 +127,7 @@ export const EditProduct: React.FC = () => {
               navigate('/products');
             })
             .catch((error: any) => {
-              myAlertError(`Error`, `Error: ${error.response?.data?.message || error.message}`);
+              myAlertError(`Error: ${error.response?.data?.message || error.message}`);
             });
         }
       });
@@ -154,7 +154,7 @@ export const EditProduct: React.FC = () => {
                 navigate('/product');
               })
               .catch((error: any) => {
-                myAlertError(`Error`, `Error: ${error.response?.data?.message || error.message}`);
+                myAlertError(`Error: ${error.response?.data?.message || error.message}`);
               });
           }
         });

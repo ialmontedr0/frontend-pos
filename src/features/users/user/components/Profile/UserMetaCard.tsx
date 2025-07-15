@@ -74,7 +74,7 @@ export default function UserMetaCard() {
         myAlertSuccess(`Perfil actualizado`, 'Perfil actualizado con exito');
       })
       .catch((error: any) => {
-        myAlertError(`Error`, `Error: ${error.response?.data?.message || error.message}`);
+        myAlertError(`Error: ${error}`);
       });
   };
 
@@ -147,7 +147,7 @@ export default function UserMetaCard() {
               </p>
             </div>
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
-              <div className="custom-scrollbar h-[450px]overflow-y-auto px-2 pb-3">
+              <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
                 <div className="mt-7">
                   <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
                     Informacion Personal

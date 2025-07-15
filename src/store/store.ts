@@ -28,6 +28,9 @@ import inventoryReducer from '../features/products/inventory/slices/inventorySli
 import transactionReducer from '../features/cash-registers/transactions/slices/transactionsSlice';
 import invoicesReducer from '../features/invoices/slices/invoicesSlice';
 import settingsReducer from '../features/settings/slices/settingsSlice';
+import offlineReducer from '../features/offline/slices/offlineSlice';
+import { offlineMiddleware } from '../features/offline/middlewares/offlineMiddleware';
+import { setupOfflineSync } from '../features/offline/sync/offlineSync';
 
 const persistConfig = {
   key: 'root',
@@ -83,6 +86,7 @@ const rootReducer = combineReducers({
   invoices: invoicesReducer,
   notifications: notificationsReducer,
   settings: settingsReducer,
+  offline: offlineReducer,
   [api.reducerPath]: api.reducer,
 });
 
@@ -95,11 +99,14 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(api.middleware),
+    })
+      .concat(api.middleware)
+      .concat(offlineMiddleware),
   devTools: import.meta.env.DEV,
 });
 
 export const persistor = persistStore(store);
+setupOfflineSync();
 
 setupListeners(store.dispatch);
 

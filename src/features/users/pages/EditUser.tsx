@@ -140,7 +140,7 @@ export const EditUser: React.FC = () => {
                 );
               })
               .catch((error: any) => {
-                myAlertError(`Error`, `Error: ${error.response?.data?.message || error.message}`);
+                myAlertError( `Error: ${error}`);
               });
           }
         });
@@ -168,7 +168,7 @@ export const EditUser: React.FC = () => {
                 );
               })
               .catch((error: any) => {
-                myAlertError(`Error`, `Error: ${error.response?.data?.message || error.message}`);
+                myAlertError(`Error: ${error}`);
               });
           }
         });
