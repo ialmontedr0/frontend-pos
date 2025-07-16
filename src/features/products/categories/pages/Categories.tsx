@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
@@ -13,14 +13,17 @@ import { BiPlusCircle } from 'react-icons/bi';
 import Spinner from '../../../../components/UI/Spinner/Spinner';
 import { myAlertError, myAlertSuccess } from '../../../../utils/commonFunctions';
 import PageMeta from '../../../../components/common/PageMeta';
+import { EditCategory } from '../components/EditCategory';
+import { useModal } from '../../../../hooks/useModal';
 
 export const Categories: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { isOpen, openModal, closeModal } = useModal();
   const myAlert = withReactContent(Swal);
 
   const { categories, loading, error } = useAppSelector((state: RootState) => state.categories);
-
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   useEffect(() => {
     dispatch(getAllCategories());
   }, [dispatch]);
@@ -31,7 +34,7 @@ export const Categories: React.FC = () => {
 
   const categoryActions: Action<Category>[] = [
     { label: 'Ver', onClick: (c) => viewCategory(c._id) },
-    { label: 'Editar', onClick: (c) => editCategory(c._id) },
+    { label: 'Editar', onClick: (category: Category) => editCategory(category) },
     { label: 'Eliminar', onClick: (c) => handleDeleteCategory(c._id) },
   ];
 
@@ -46,12 +49,10 @@ export const Categories: React.FC = () => {
     [navigate]
   );
 
-  const editCategory = useCallback(
-    (categoryId: string) => {
-      navigate(`/products/categories/edit/${categoryId}`);
-    },
-    [navigate]
-  );
+  const editCategory = (category: Category) => {
+    setSelectedCategory(category);
+    openModal()
+  };
 
   const handleDeleteCategory = useCallback(
     (categoryId: string) => {
@@ -74,7 +75,7 @@ export const Categories: React.FC = () => {
                 dispatch(getAllCategories());
               })
               .catch((error: any) => {
-                myAlertError(`Error`, `Error: ${error.response?.data?.message || error.message}`);
+                myAlertError(`Error: ${error}`);
               });
           }
         });
@@ -109,6 +110,7 @@ export const Categories: React.FC = () => {
           <div>No hay categorias</div>
         )}
       </div>
+      <EditCategory isOpen={isOpen} closeModal={closeModal} category={selectedCategory!} />
     </>
   );
 };

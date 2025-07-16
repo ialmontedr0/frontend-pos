@@ -21,7 +21,6 @@ import { EditProduct } from './features/products/pages/EditProduct';
 import { Categories } from './features/products/categories/pages/Categories';
 import { Category } from './features/products/categories/pages/Category';
 import { CreateCategory } from './features/products/categories/pages/CreateCategory';
-import { EditCategory } from './features/products/categories/pages/EditCategory';
 import { Providers } from './features/products/providers/pages/Providers';
 import { Provider } from './features/products/providers/pages/Provider';
 import { CreateProvider } from './features/products/providers/pages/CreateProvider';
@@ -116,7 +115,6 @@ const routes: RouteObject[] = [
           { path: '/products/categories', element: <Categories /> },
           { path: '/products/categories/create', element: <CreateCategory /> },
           { path: '/products/categories/:categoryId', element: <Category /> },
-          { path: '/products/categories/edit/:categoryId', element: <EditCategory /> },
 
           { path: '/products/providers', element: <Providers /> },
           { path: '/products/providers/create', element: <CreateProvider /> },

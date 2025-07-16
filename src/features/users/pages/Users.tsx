@@ -12,11 +12,7 @@ import { resetPassword } from '../../auth/slices/authSlice';
 import type { User } from '../interfaces/UserInterface';
 import type { Column, Action } from '../../../components/Table/types';
 
-import {
-  myAlertError,
-  myAlertSuccess,
-  parseUserRole,
-} from '../../../utils/commonFunctions';
+import { myAlertError, myAlertSuccess, parseUserRole } from '../../../utils/commonFunctions';
 
 import { Table } from '../../../components/Table/Table';
 import Button from '../../../components/UI/Button/Button';
@@ -27,12 +23,16 @@ import { Card, type CardItem } from '../../../components/UI/Card/Card';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import Badge from '../../../components/UI/Badge/Badge';
 import PageMeta from '../../../components/common/PageMeta';
+import { EditUser } from '../components/EditUser';
+import { useModal } from '../../../hooks/useModal';
 
 export function Users() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
   const [mode, setMode] = useState<'list' | 'grid'>('list');
+  const { isOpen, openModal, closeModal } = useModal();
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
   const { users, loading, error } = useAppSelector((state: RootState) => state.users);
 
@@ -52,9 +52,9 @@ export function Users() {
       accessor: 'estado',
       render: (value: string) => {
         if (value === 'activo') {
-          return <Badge color='success'>Activo</Badge>
+          return <Badge color="success">Activo</Badge>;
         } else {
-          return <Badge color='error'>Inactivo</Badge>
+          return <Badge color="error">Inactivo</Badge>;
         }
       },
     },
@@ -62,12 +62,16 @@ export function Users() {
 
   const userActions: Action<User>[] = [
     { label: 'Ver', onClick: (u) => viewUser(u.usuario) },
-    { label: 'Editar', onClick: (u) => editUser(u._id) },
+    { label: 'Editar', onClick: (u: User) => editUser(u) },
     {
       label: 'Restablecer contrasena',
       onClick: (u) => handleResetPassword(u.usuario),
     },
-    { label: 'Eliminar', onClick: (u) => handleDeleteUser(u._id)},
+    {
+      label: 'Eliminar',
+      onClick: (u) => handleDeleteUser(u._id),
+      render: (u) => (u.estado === 'inactivo' ? 'Eliminar' : ''),
+    },
   ];
 
   const cardItems: CardItem[] = users.map((u) => ({
@@ -94,7 +98,7 @@ export function Users() {
       },
       {
         icon: <BiPencil size={20} />,
-        onClick: () => navigate(`/users/edit/${u._id}`),
+        onClick: () => editUser(u),
         toolTip: 'Editar usuario',
       },
     ],
@@ -109,12 +113,10 @@ export function Users() {
     [navigate]
   );
 
-  const editUser = useCallback(
-    (userId: string) => {
-      navigate(`/users/edit/${userId}`);
-    },
-    [navigate]
-  );
+  const editUser = useCallback((user: User) => {
+    setSelectedUser(user);
+    openModal();
+  }, []);
 
   const handleResetPassword = useCallback(
     (usuario: string) => {
@@ -138,7 +140,7 @@ export function Users() {
                 dispatch(getAllUsers());
               })
               .catch((error: any) => {
-                myAlertError(`Error`, `Error: ${error.response?.data?.message || error.message}`);
+                myAlertError(error);
               });
           }
         });
@@ -165,7 +167,7 @@ export function Users() {
                 dispatch(getAllUsers());
               })
               .catch((error: any) => {
-                myAlertError(`Error`, `Error: ${error.response?.data?.message || error.message}`);
+                myAlertError(error);
               });
           }
         });
@@ -219,6 +221,7 @@ export function Users() {
           </div>
         )}
       </div>
+      <EditUser isOpen={isOpen} closeModal={closeModal} user={selectedUser!} />
     </>
   );
 }

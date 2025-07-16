@@ -1,5 +1,4 @@
-import { useCallback, useEffect } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import moment from 'moment/min/moment-with-locales';
 import Swal from 'sweetalert2';
@@ -8,36 +7,18 @@ import withReactContent from 'sweetalert2-react-content';
 import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
 import type { RootState } from '../../../store/store';
 
-import {
-  clearSelectedUser,
-  deleteUser,
-  getUserByUsername,
-  clearUserError,
-  updateUser,
-} from '../slices/usersSlice';
-import {
-  myAlertError,
-  myAlertSuccess,
-  parseTextSizeName,
-  parseUserRole,
-} from '../../../utils/commonFunctions';
+import { clearSelectedUser, getUserByUsername } from '../slices/usersSlice';
+import { parseTextSizeName, parseUserRole } from '../../../utils/commonFunctions';
 
-import { Modal } from '../../../components/UI/Modal/Modal';
-
-import { Select } from '../../../components/UI/Select/Select';
-import { ToggleSwitch } from '../../../components/UI/ToggleSwitch/ToggleSwitch';
-import type { Estado } from '../interfaces/UserInterface';
 import Button from '../../../components/UI/Button/Button';
-import { BiArrowBack, BiCog, BiEdit, BiSave, BiTrash, BiX } from 'react-icons/bi';
+import { BiArrowBack, BiCog, BiEdit } from 'react-icons/bi';
 import Badge from '../../../components/UI/Badge/Badge';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import { AiFillSetting } from 'react-icons/ai';
 import { NotFound } from '../../../pages/NotFound';
 import { Error } from '../../../components/Error/components/Error';
 import { useModal } from '../../../hooks/useModal';
-import Input from '../../../components/UI/Input/Input';
-import { Label } from '../../../components/UI/Label/Label';
-import type { UpdateUserDTO } from '../dtos/update-user.dto';
+import { EditUser } from '../components/EditUser';
 
 export const User: React.FC = () => {
   const { usuario } = useParams<{ usuario: string }>();
@@ -59,132 +40,6 @@ export const User: React.FC = () => {
       dispatch(clearSelectedUser());
     };
   }, [dispatch, usuario, navigate]);
-
-  const sanitizedUserForForm = (user: any): UpdateUserDTO => {
-    const {
-      nombre,
-      apellido,
-      usuario: useername,
-      correo,
-      telefono,
-      direccion,
-      rol,
-      estado,
-      foto,
-      configuracion,
-    } = user;
-    return {
-      nombre,
-      apellido,
-      usuario: useername,
-      correo,
-      telefono,
-      direccion,
-      rol,
-      estado,
-      foto,
-      configuracion,
-    };
-  };
-
-  const {
-    register,
-    handleSubmit,
-    reset,
-    control,
-    formState: { errors },
-  } = useForm<UpdateUserDTO>({
-    defaultValues: {
-      nombre: '',
-      apellido: '',
-      usuario: '',
-      correo: '',
-      telefono: '',
-      direccion: '',
-      rol: 'cajero',
-      estado: 'activo',
-      foto: '',
-      configuracion: undefined,
-    },
-  });
-
-  useEffect(() => {
-    if (user) {
-      reset(sanitizedUserForForm(user));
-    }
-  }, [user, reset]);
-
-  const onSubmit = useCallback((updateUserDTO: UpdateUserDTO) => {
-    myAlert
-      .fire({
-        title: 'Guardar Cambios!',
-        text: `Estas seguro que deseas guardar estos cambios?`,
-        iconHtml: <BiSave />,
-        customClass: {
-          icon: 'no-default-icon-border',
-          container: 'swal2-container z-[999999]',
-          popup: 'z-[1000000]',
-        },
-        showConfirmButton: true,
-        showCancelButton: true,
-        confirmButtonText: 'Guardar',
-        cancelButtonText: 'Cancelar',
-      })
-      .then((result) => {
-        if (result.isConfirmed) {
-          dispatch(
-            updateUser({
-              userId: user!._id,
-              updateUserDTO,
-            })
-          )
-            .unwrap()
-            .then(() => {
-              dispatch(clearUserError());
-              myAlertSuccess(`Cambios Guardados`, 'Se ha actualizado el usuario con exito.');
-              closeModal();
-            })
-            .catch((error: any) => {
-              myAlertError(`Error: ${error}`);
-            });
-        }
-      });
-  }, []);
-
-  const onDelUser = useCallback(
-    (userId: string) => {
-      myAlert
-        .fire({
-          title: `Eliminar Usuario`,
-          text: `Estas seguro que deseas eliminar este usuario?`,
-          iconHtml: <BiTrash color="red" />,
-          customClass: {
-            icon: 'no-default-icon-border',
-            container: 'swal2-container z-[999999]',
-            popup: 'z-[1000000]',
-          },
-          showConfirmButton: true,
-          showCancelButton: true,
-          confirmButtonText: 'Eliminar',
-          cancelButtonText: 'Cancelar',
-          confirmButtonColor: '#ff0000',
-        })
-        .then((result) => {
-          if (result.isConfirmed) {
-            dispatch(deleteUser(userId))
-              .unwrap()
-              .then(() => {
-                dispatch(clearSelectedUser());
-                myAlertSuccess(`Usuario eliminado!`, `Se ha eliminado el usuario con exito.`);
-              })
-              .catch((error: any) => {
-                myAlertError(`Error: ${error}`);
-              });
-          }
-        });
-    },
-    [dispatch]
-  );
 
   const showSettings = () => {
     if (user && user.configuracion) {
@@ -321,6 +176,7 @@ export const User: React.FC = () => {
           </div>
           <div className="flex flex-wrap justify-end gap-2 my-6">
             <Button
+              variant="outline"
               size="sm"
               startIcon={<BiArrowBack size={20} />}
               onClick={() => navigate('/users')}
@@ -340,7 +196,7 @@ export const User: React.FC = () => {
 
             <Button
               size="sm"
-              variant="outline"
+              variant="primary"
               startIcon={<BiEdit size={20} />}
               onClick={openModal}
             >
@@ -348,161 +204,7 @@ export const User: React.FC = () => {
             </Button>
           </div>
         </div>
-
-        <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[700px]">
-          <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
-            <div className="px-2 pr-14">
-              <h4 className="mb-2 text-2xl font-semibold text-black dark:text-gray-200">
-                Editar Usuario
-              </h4>
-              <p className="mb-6 text-sm text-gray-500 dark:text-gray-200 lg:mb-7">
-                Actualiza los datos del usuario
-              </p>
-            </div>
-            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
-              <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
-                <div className="mt-7">
-                  <h5 className="mb-5 text-lg font-medium text-black dark:text-gray-200 lg:mb-6">
-                    {user.nombre} {user.apellido}
-                  </h5>
-                  <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
-                    <div className="col-span-2 lg:col-span-1">
-                      <Label>Nombre</Label>
-                      <Input
-                        id="nombre"
-                        {...register('nombre', { required: 'El campo nombre es obligatorio.' })}
-                        placeholder={user.nombre}
-                      />
-                      {errors.nombre && (
-                        <div className="text-sm text-red-500">{errors.nombre.message}</div>
-                      )}
-                    </div>
-                    <div>
-                      <Label>Apellido</Label>
-                      <Input
-                        id="apellido"
-                        {...register('apellido', { required: 'El campo apellido es obligatorio.' })}
-                        placeholder={user.apellido}
-                      />
-                      {errors.apellido && (
-                        <div className="text-sm text-red-500">{errors.apellido.message}</div>
-                      )}
-                    </div>
-                    <div>
-                      <Label htmlFor="usuario">Usuario</Label>
-                      <Input
-                        id="usuario"
-                        {...register('usuario', { required: 'El campo usuario es obligatorio' })}
-                        placeholder={user.usuario}
-                      />
-                      {errors.usuario && (
-                        <div className="text-sm text-red-500">{errors.usuario.message}</div>
-                      )}
-                    </div>
-                    <div>
-                      <Label htmlFor="correo">Correo Electronico</Label>
-                      <Input
-                        id="correo"
-                        {...register('correo', { required: 'El campo correo es obgligatorio' })}
-                        placeholder={user.correo}
-                      />
-                      {errors.correo && (
-                        <div className="text-sm text-red-500">{errors.correo.message}</div>
-                      )}
-                    </div>
-                    <div>
-                      <Label htmlFor="telefono">Telefono</Label>
-                      <Input
-                        id="telefono"
-                        {...register('telefono', { required: 'El campo telefono es obligatorio' })}
-                        placeholder={user.telefono}
-                      />
-                      {errors.telefono && (
-                        <div className="text-sm text-red-500">{errors.telefono.message}</div>
-                      )}
-                    </div>
-                    <div>
-                      <Label>Rol</Label>
-                      <Select
-                        id="rol"
-                        {...register('rol', { required: true })}
-                        defaultValue={user.rol}
-                      >
-                        <option value="admin">Administrador</option>
-                        <option value="cajero">Cajero</option>
-                        <option value="inventarista">Inventarista</option>
-                      </Select>
-                      {errors.rol && (
-                        <div className="text-sm text-red-500">{errors.rol.message}</div>
-                      )}
-                    </div>
-
-                    <div>
-                      <Label>Estado</Label>
-                      <Controller<UpdateUserDTO, 'estado'>
-                        name="estado"
-                        control={control}
-                        defaultValue="activo"
-                        render={({ field }) => (
-                          <ToggleSwitch<Estado>
-                            value={field.value!}
-                            offValue="inactivo"
-                            onValue="activo"
-                            offLabel="Inactivo"
-                            onLabel="Activo"
-                            className="mt-1"
-                            onToggle={field.onChange}
-                          />
-                        )}
-                      />
-                      {errors.estado && (
-                        <div className="text-sm text-red-500">{errors.estado.message}</div>
-                      )}
-                    </div>
-
-                    <div>
-                      <Label>Direccion</Label>
-                      <Input
-                        id="direccion"
-                        {...register('direccion')}
-                        placeholder={user.direccion}
-                      />
-                      {errors.direccion && (
-                        <div className="text-sm text-red-500">{errors.direccion.message}</div>
-                      )}
-                    </div>
-
-                    <div>
-                      <Label>Foto (URL)</Label>
-                      <Input id="foto" {...register('foto')} placeholder={user.foto} />
-                      {errors.foto && (
-                        <div className="text-sm text-red-500">{errors.foto.message}</div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {error && <div className="text-sm text-red-500">Error: {error}</div>}
-              <div className="flex items-center gap-3 px-2 mt-6 justify-center lg:justify-end">
-                <Button type="submit" size="sm" variant="primary" startIcon={<BiSave />}>
-                  Guardar
-                </Button>
-                <Button size="sm" variant="outline" startIcon={<BiX />} onClick={closeModal}>
-                  Cancelar
-                </Button>
-                <Button
-                  size="sm"
-                  variant="destructive"
-                  startIcon={<BiTrash />}
-                  onClick={() => onDelUser(user._id)}
-                >
-                  Eliminar
-                </Button>
-              </div>
-            </form>
-          </div>
-        </Modal>
+        <EditUser user={user} isOpen={isOpen} closeModal={closeModal} error={error!} />
       </div>
     </>
   );
