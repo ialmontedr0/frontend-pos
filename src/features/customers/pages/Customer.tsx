@@ -182,7 +182,7 @@ export const Customer: React.FC = () => {
             </Button>
           </div>
         </div>
-        <EditCustomer customer={customer} isOpen={isOpen} closeModal={closeModal} />
+        <EditCustomer customer={customer} isOpen={isOpen} closeModal={closeModal} error={error!} />
       </div>
     </>
   );

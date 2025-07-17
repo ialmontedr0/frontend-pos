@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import Swal from 'sweetalert2';
@@ -16,11 +16,15 @@ import { Table } from '../../../components/Table/Table';
 import Button from '../../../components/UI/Button/Button';
 import { BiMoney, BiPlusCircle, BiTrash } from 'react-icons/bi';
 import Spinner from '../../../components/UI/Spinner/Spinner';
+import { EditProduct } from '../components/EditProduct';
+import { useModal } from '../../../hooks/useModal';
 
 export const Products: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
+  const { isOpen, openModal, closeModal } = useModal();
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const { products, loading, error } = useAppSelector((state: RootState) => state.products);
 
@@ -35,7 +39,7 @@ export const Products: React.FC = () => {
         .fire({
           title: `Actualizar precio de compra`,
           text: 'Ingresa el nuevo precio de compra del producto!',
-          iconHtml: <BiMoney className='text-green-500'/>,
+          iconHtml: <BiMoney className="text-green-500" />,
           customClass: {
             icon: 'no-default-icon-border',
           },
@@ -145,6 +149,7 @@ export const Products: React.FC = () => {
 
   const productActions: Action<Product>[] = [
     { label: 'Ver', onClick: (p) => navigate(`/products/${p.codigo}`) },
+    { label: 'Editar', onClick: (product) => onEditProduct(product) },
     { label: 'Act precio compra', onClick: (p) => handleUpdateCost(p._id) },
     { label: 'Act precio venta', onClick: (p) => handleUpdateSell(p._id) },
     { label: 'Eliminar', onClick: (p) => handleDeleteProduct(p._id) },
@@ -152,6 +157,11 @@ export const Products: React.FC = () => {
 
   const createProduct = () => {
     navigate('/products/create');
+  };
+
+  const onEditProduct = (product: Product) => {
+    setSelectedProduct(product);
+    openModal();
   };
 
   const handleDeleteProduct = useCallback(
@@ -187,34 +197,42 @@ export const Products: React.FC = () => {
   );
 
   return (
-    <div className="p-4 space-y-6">
-      <div className="space-y-4">
-        <h2 className="text-3xl font-regular text-black dark:text-gray-200">Productos</h2>
+    <>
+      <div className="p-4 space-y-6">
+        <div className="space-y-4">
+          <h2 className="text-3xl font-regular text-black dark:text-gray-200">Productos</h2>
 
-        <Button
-          onClick={() => createProduct()}
-          variant="primary"
-          startIcon={<BiPlusCircle size={24} />}
-        >
-          Nuevo Producto
-        </Button>
+          <Button
+            onClick={() => createProduct()}
+            variant="primary"
+            startIcon={<BiPlusCircle size={24} />}
+          >
+            Nuevo Producto
+          </Button>
+        </div>
+
+        {loading && <Spinner />}
+
+        {error && <div className="text-red-500">Error: {error}</div>}
+
+        {productsData.length ? (
+          <Table
+            columns={productColumns}
+            data={products}
+            defaultPageSize={10}
+            pageSizeOptions={[5, 10, 20]}
+            actions={productActions}
+          />
+        ) : (
+          <div>No hay productos en el sistema.</div>
+        )}
       </div>
-
-      {loading && <Spinner />}
-
-      {error && <div className="text-red-500">Error: {error}</div>}
-
-      {productsData.length ? (
-        <Table
-          columns={productColumns}
-          data={products}
-          defaultPageSize={10}
-          pageSizeOptions={[5, 10, 20]}
-          actions={productActions}
-        />
-      ) : (
-        <div>No hay productos en el sistema.</div>
-      )}
-    </div>
+      <EditProduct
+        product={selectedProduct!}
+        isOpen={isOpen}
+        closeModal={closeModal}
+        error={error!}
+      />
+    </>
   );
 };

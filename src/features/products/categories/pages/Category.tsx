@@ -2,10 +2,7 @@ import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import moment from 'moment/min/moment-with-locales';
 import { useAppSelector, useAppDispatch } from '../../../../hooks/hooks';
-import {
-  getCategoryById,
-  clearSelectedCategory,
-} from '../slices/categoriesSlice';
+import { getCategoryById, clearSelectedCategory } from '../slices/categoriesSlice';
 import type { RootState } from '../../../../store/store';
 import PageMeta from '../../../../components/common/PageMeta';
 import PageBreadcrum from '../../../../components/common/PageBreadCrumb';
@@ -105,7 +102,7 @@ export const Category: React.FC = () => {
             Editar
           </Button>
         </div>
-        <EditCategory isOpen={isOpen} closeModal={closeModal} category={category} />
+        <EditCategory isOpen={isOpen} closeModal={closeModal} category={category} error={error!} />
       </div>
     </>
   );

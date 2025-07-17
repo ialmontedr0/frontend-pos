@@ -20,6 +20,7 @@ interface EditCategoryProps {
   category: Category;
   isOpen: boolean;
   closeModal: () => void;
+  error?: string;
 }
 
 export const EditCategory: React.FC<EditCategoryProps> = ({ category, isOpen, closeModal }) => {

@@ -51,7 +51,7 @@ export const Categories: React.FC = () => {
 
   const editCategory = (category: Category) => {
     setSelectedCategory(category);
-    openModal()
+    openModal();
   };
 
   const handleDeleteCategory = useCallback(
@@ -110,7 +110,12 @@ export const Categories: React.FC = () => {
           <div>No hay categorias</div>
         )}
       </div>
-      <EditCategory isOpen={isOpen} closeModal={closeModal} category={selectedCategory!} />
+      <EditCategory
+        isOpen={isOpen}
+        closeModal={closeModal}
+        category={selectedCategory!}
+        error={error!}
+      />
     </>
   );
 };

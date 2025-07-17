@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
@@ -9,16 +9,18 @@ import type { Customer } from '../interfaces/CustomerInterface';
 import type { Column, Action } from '../../../components/Table/types';
 import { Table } from '../../../components/Table/Table';
 import Button from '../../../components/UI/Button/Button';
-import {
-  BiPlusCircle,
-} from 'react-icons/bi';
+import { BiPlusCircle } from 'react-icons/bi';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import { parseCustomerType } from '../../../utils/commonFunctions';
+import { EditCustomer } from '../components/EditCustomer';
+import { useModal } from '../../../hooks/useModal';
 
 export function Customers() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
+  const { isOpen, openModal, closeModal } = useModal();
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
 
   const { customers, loading, error } = useAppSelector((state: RootState) => state.customers);
 
@@ -36,7 +38,7 @@ export function Customers() {
 
   const customerActions: Action<Customer>[] = [
     { label: 'Ver', onClick: (c) => viewCustomer(c._id) },
-    { label: 'Editar', onClick: (c) => editCustomer(c._id) },
+    { label: 'Editar', onClick: (customer: Customer) => editCustomer(customer) },
     { label: 'Eliminar', onClick: (c) => handleDeleteCustomer(c._id) },
   ];
 
@@ -51,12 +53,10 @@ export function Customers() {
     [navigate]
   );
 
-  const editCustomer = useCallback(
-    (customerId: string) => {
-      navigate(`/customers/edit/${customerId}`);
-    },
-    [navigate]
-  );
+  const editCustomer = (customer: Customer) => {
+    setSelectedCustomer(customer);
+    openModal();
+  };
 
   const handleDeleteCustomer = useCallback(
     (customerId: string) => {
@@ -100,31 +100,39 @@ export function Customers() {
   );
 
   return (
-    <div className="p-4 space-y-6">
-      <div className="space-y-4 space-x-4">
-        <h2 className="text-3xl font-regular text-black dark:text-gray-200">Clientes</h2>
-        <Button
-          size="sm"
-          onClick={createCustomer}
-          className=""
-          startIcon={<BiPlusCircle size={24} />}
-        >
-          Nuevo Cliente
-        </Button>
+    <>
+      <div className="p-4 space-y-6">
+        <div className="space-y-4 space-x-4">
+          <h2 className="text-3xl font-regular text-black dark:text-gray-200">Clientes</h2>
+          <Button
+            size="sm"
+            onClick={createCustomer}
+            className=""
+            startIcon={<BiPlusCircle size={24} />}
+          >
+            Nuevo Cliente
+          </Button>
+        </div>
+
+        {loading && <Spinner />}
+
+        {!loading && customers.length === 0 && <div>No hay clientes</div>}
+
+        {error && <div className="text-sm text-red-600">Error: {error}</div>}
+        <Table
+          columns={customerColumns}
+          data={customers}
+          defaultPageSize={10}
+          pageSizeOptions={[5, 10, 20]}
+          actions={customerActions}
+        />
       </div>
-
-      {loading && <Spinner />}
-
-      {!loading && customers.length === 0 && <div>No hay clientes</div>}
-
-      {error && <div className="text-sm text-red-600">Error: {error}</div>}
-      <Table
-        columns={customerColumns}
-        data={customers}
-        defaultPageSize={10}
-        pageSizeOptions={[5, 10, 20]}
-        actions={customerActions}
+      <EditCustomer
+        customer={selectedCustomer!}
+        isOpen={isOpen}
+        closeModal={closeModal}
+        error={error!}
       />
-    </div>
+    </>
   );
 }

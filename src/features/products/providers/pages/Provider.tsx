@@ -17,11 +17,15 @@ import { BiArrowBack, BiEdit, BiTrash } from 'react-icons/bi';
 import PageMeta from '../../../../components/common/PageMeta';
 import PageBreadcrum from '../../../../components/common/PageBreadCrumb';
 import { NotFound } from '../../../../pages/NotFound';
+import { EditProvider } from '../components/EditProvider';
+import { useModal } from '../../../../hooks/useModal';
+import { Error } from '../../../../components/Error/components/Error';
 
 export const Provider: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
+  const { isOpen, openModal, closeModal } = useModal();
   moment.locale('es');
   const { providerId } = useParams<{ providerId: string }>();
 
@@ -60,7 +64,7 @@ export const Provider: React.FC = () => {
                 navigate('/products/providers');
               })
               .catch((error: any) => {
-                myAlertError(`Error`, `Error: ${error.response?.data?.message || error.message}`);
+                myAlertError(error);
               });
           }
         });
@@ -70,18 +74,7 @@ export const Provider: React.FC = () => {
 
   if (loading) return <Spinner />;
 
-  if (error)
-    return (
-      <div className="p-6 max-w-lg mx-auto bg-white dark:bg-gray-800 rounded-lg shadow">
-        <p className="text-red-600 dark:text-red-40">Error: {error}</p>
-        <button
-          onClick={() => navigate('/products/providers')}
-          className="mt-4 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200"
-        >
-          Volver
-        </button>
-      </div>
-    );
+  if (error) return <Error message={error} />;
 
   if (!provider) {
     return <NotFound node="Proveedor" />;
@@ -152,7 +145,7 @@ export const Provider: React.FC = () => {
               Volver
             </Button>
             <Button
-              onClick={() => navigate(`/products/providers/edit/${provider._id}`)}
+              onClick={openModal}
               size="sm"
               variant="outline"
               startIcon={<BiEdit size={24} />}
@@ -169,6 +162,7 @@ export const Provider: React.FC = () => {
             </Button>
           </div>
         </div>
+        <EditProvider provider={provider} isOpen={isOpen} closeModal={closeModal} error={error!} />
       </div>
     </>
   );

@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import Swal from 'sweetalert2';
@@ -15,12 +15,16 @@ import Spinner from '../../../../components/UI/Spinner/Spinner';
 import PageMeta from '../../../../components/common/PageMeta';
 import Button from '../../../../components/UI/Button/Button';
 import { BiPlusCircle } from 'react-icons/bi';
+import { EditProvider } from '../components/EditProvider';
+import { myAlertError, myAlertSuccess } from '../../../../utils/commonFunctions';
+import { useModal } from '../../../../hooks/useModal';
 
 export const Providers: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
-
+  const { isOpen, openModal, closeModal } = useModal();
+  const [selectedProvider, setSelectedProvider] = useState<Provider | null>(null);
   const { providers, loading, error } = useAppSelector((state: RootState) => state.providers);
 
   useEffect(() => {
@@ -38,7 +42,7 @@ export const Providers: React.FC = () => {
 
   const providerActions: Action<Provider>[] = [
     { label: 'Ver', onClick: (p) => viewProvider(p._id) },
-    { label: 'Editar', onClick: (p) => editProvider(p._id) },
+    { label: 'Editar', onClick: (provider) => editProvider(provider) },
     { label: 'Eliminar', onClick: (p) => handleDeleteProvider(p._id) },
   ];
 
@@ -53,12 +57,10 @@ export const Providers: React.FC = () => {
     [navigate]
   );
 
-  const editProvider = useCallback(
-    (providerId: string) => {
-      navigate(`/products/providers/edit/${providerId}`);
-    },
-    [navigate]
-  );
+  const editProvider = (provider: Provider) => {
+    setSelectedProvider(provider);
+    openModal();
+  };
 
   const handleDeleteProvider = useCallback(
     (providerId: string) => {
@@ -77,28 +79,16 @@ export const Providers: React.FC = () => {
             dispatch(deleteProvider(providerId))
               .unwrap()
               .then(() => {
-                myAlert.fire({
-                  title: 'Proveedor eliminado',
-                  text: `Se ha eliminado el proveedor con exito`,
-                  icon: 'success',
-                  timer: 5000,
-                  timerProgressBar: true,
-                });
+                myAlertSuccess(`Proveedor Elimindo`, `Se ha eliminado el proveedor con exito.`);
                 navigate(`/products/providers`);
               })
               .catch((error: any) => {
-                myAlert.fire({
-                  title: 'Error',
-                  text: `Error: ${error.response?.data?.message || error.message}`,
-                  icon: 'error',
-                  timer: 5000,
-                  timerProgressBar: true,
-                });
+                myAlertError(error);
               });
           }
         });
     },
-    [dispatch, myAlert, navigate]
+    [dispatch, myAlert, navigate, myAlertSuccess, myAlertError]
   );
 
   return (
@@ -127,6 +117,12 @@ export const Providers: React.FC = () => {
           <div>No hay proveedores en el sistema.</div>
         )}
       </div>
+      <EditProvider
+        provider={selectedProvider!}
+        isOpen={isOpen}
+        closeModal={closeModal}
+        error={error!}
+      />
     </>
   );
 };

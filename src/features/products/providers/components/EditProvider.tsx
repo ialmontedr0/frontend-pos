@@ -1,30 +1,35 @@
 import React, { useEffect, useCallback } from 'react';
 
-import Button from '../../../components/UI/Button/Button';
-import Input from '../../../components/UI/Input/Input';
-import { Label } from '../../../components/UI/Label/Label';
-import { Modal } from '../../../components/UI/Modal/Modal';
-import { myAlertSuccess, myAlertError } from '../../../utils/commonFunctions';
-import type { Customer } from '../interfaces/CustomerInterface';
-import { useAppDispatch } from '../../../hooks/hooks';
+import Button from '../../../../components/UI/Button/Button';
+import Input from '../../../../components/UI/Input/Input';
+import { Label } from '../../../../components/UI/Label/Label';
+import { Modal } from '../../../../components/UI/Modal/Modal';
+import { myAlertSuccess, myAlertError } from '../../../../utils/commonFunctions';
+import type { Provider } from '../interfaces/ProviderInterface';
+import { useAppDispatch } from '../../../../hooks/hooks';
 import { useNavigate } from 'react-router-dom';
 import withReactContent from 'sweetalert2-react-content';
 import Swal from 'sweetalert2';
-import type { UpdateCustomerDTO } from '../dtos/update-customer.dto';
+
 import { useForm } from 'react-hook-form';
 import { BiSave, BiSolidSave, BiSolidTrash, BiTrash, BiX } from 'react-icons/bi';
-import { deleteCustomer, getCustomerById, updateCustomer } from '../slices/customerSlice';
+import {
+  deleteProvider,
+  getProviderById,
+  updateProvider,
+} from '../slices/providersSlice';
+import type { UpdateProviderDTO } from '../dtos/update-provider.dto';
 
-interface EditCustomerProps {
-  customer: Customer;
+interface EditProviderProps {
+  provider: Provider;
   isOpen: boolean;
   closeModal: () => void;
   error?: string;
 }
 
-export const EditCustomer: React.FC<EditCustomerProps> = ({
+export const EditProvider: React.FC<EditProviderProps> = ({
   isOpen,
-  customer,
+  provider,
   closeModal,
   error,
 }) => {
@@ -32,14 +37,13 @@ export const EditCustomer: React.FC<EditCustomerProps> = ({
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
 
-  const sanitizedCustomerForForm = (customer: Customer): UpdateCustomerDTO => {
-    const { nombre, apellido, telefono, correo, direccion } = customer;
+  const sanitizedProviderForForm = (provider: Provider): UpdateProviderDTO => {
+    const { nombre, RNC, telefono, procedencia } = provider;
     return {
       nombre,
-      apellido,
+      RNC,
       telefono,
-      correo,
-      direccion,
+      procedencia,
     };
   };
 
@@ -48,35 +52,34 @@ export const EditCustomer: React.FC<EditCustomerProps> = ({
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<UpdateCustomerDTO>({
+  } = useForm<UpdateProviderDTO>({
     defaultValues: {
       nombre: '',
-      apellido: '',
+      RNC: '',
       telefono: '',
-      correo: '',
-      direccion: '',
+      procedencia: '',
     },
   });
 
   useEffect(() => {
-    if (customer) {
-        reset(sanitizedCustomerForForm(customer))
+    if (provider) {
+      reset(sanitizedProviderForForm(provider));
     }
-  }, [customer, reset])
+  }, [provider, reset]);
 
   useEffect(() => {
-    if (!customer) {
-      navigate('/customers');
+    if (!provider) {
+      navigate('/products/providers');
       return;
     }
     return () => {};
-  }, [customer, navigate]);
+  }, [provider, navigate]);
 
   const onSubmit = useCallback(
-    (updateCustomerDTO: UpdateCustomerDTO) => {
+    (updateProviderDTO: UpdateProviderDTO) => {
       myAlert
         .fire({
-          title: 'Actualizar Cliente',
+          title: 'Actualizar Proveedor',
           text: `Estas seguro que deseas guardar los cambios?`,
           iconHtml: <BiSolidSave />,
           customClass: {
@@ -88,21 +91,21 @@ export const EditCustomer: React.FC<EditCustomerProps> = ({
           cancelButtonText: 'Cancelar',
         })
         .then((result) => {
-          if (result.isConfirmed && customer) {
+          if (result.isConfirmed && provider) {
             dispatch(
-              updateCustomer({
-                customerId: customer._id,
-                updateCustomerDTO,
+              updateProvider({
+                providerId: provider._id,
+                updateProviderDTO,
               })
             )
               .unwrap()
-              .then((customer) => {
+              .then((provider) => {
                 closeModal();
                 myAlertSuccess(
-                  `Cliente ${customer.nombre} actualizado`,
-                  `Se ha actualizado el cliente con exito`
+                  `Proveedor ${provider.nombre} actualizado`,
+                  `Se ha actualizado el proveedor con exito`
                 );
-                getCustomerById(customer._id);
+                getProviderById(provider._id);
               })
               .catch((error: any) => {
                 myAlertError(error);
@@ -114,12 +117,12 @@ export const EditCustomer: React.FC<EditCustomerProps> = ({
   );
 
   const onDelCustomer = useCallback(
-    (customerId: string) => {
+    (providerId: string) => {
       myAlert
         .fire({
-          title: 'Eliminar Cliente',
-          text: `Estas seguro que deseas eliminar el cliente?`,
-          iconHtml: <BiSolidTrash />,
+          title: 'Eliminar Proveedor',
+          text: `Estas seguro que deseas eliminar el proveedor?`,
+          iconHtml: <BiSolidTrash color='red'/>,
           customClass: {
             icon: 'no-default-icon-border',
           },
@@ -127,13 +130,14 @@ export const EditCustomer: React.FC<EditCustomerProps> = ({
           showCancelButton: true,
           confirmButtonText: 'Eliminar',
           cancelButtonText: 'Cancelar',
+          confirmButtonColor: 'red'
         })
         .then((result) => {
           if (result.isConfirmed) {
-            dispatch(deleteCustomer(customerId))
+            dispatch(deleteProvider(providerId))
               .unwrap()
               .then(() => {
-                myAlertSuccess(`Cliente Eliminado`, `Se ha eliminado el cliente con exito`);
+                myAlertSuccess(`Proveedor Eliminado`, `Se ha eliminado el proveedor con exito`);
                 navigate(-1);
               })
               .catch((error: any) => {
@@ -149,7 +153,7 @@ export const EditCustomer: React.FC<EditCustomerProps> = ({
     myAlert
       .fire({
         title: 'Cancelar edicion!',
-        text: `Estas seguro que deseas cancelar la edicion del cliente?`,
+        text: `Estas seguro que deseas cancelar la edicion del proveedor?`,
         icon: 'warning',
         showConfirmButton: true,
         showCancelButton: true,
@@ -161,7 +165,7 @@ export const EditCustomer: React.FC<EditCustomerProps> = ({
       });
   };
 
-  if (!customer) return;
+  if (!provider) return;
 
   return (
     <>
@@ -169,17 +173,17 @@ export const EditCustomer: React.FC<EditCustomerProps> = ({
         <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
           <div className="px-2 pr-14">
             <h4 className="mb-2 text-2xl font-semibold text-black dark:text-gray-200">
-              Editar Cliente
+              Editar Proveedor
             </h4>
             <p className="mb-6 text-sm text-gray-500 dark:text-gray-200 lg:mb-7">
-              Actualiza los datos del cliente
+              Actualiza los datos del proveedor
             </p>
           </div>
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
             <div className="custom-scrollbar h-fit overflow-y-auto px-2">
               <div className="">
                 <h5 className="text-lg font-medium text-black dark:text-gray-200">
-                  {customer.nombre} {customer.apellido || ''}
+                  {provider.nombre}
                 </h5>
                 <div className="flex flex-col md:grid md:grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                   <div className="col-span-2 lg:col-span-1">
@@ -187,22 +191,16 @@ export const EditCustomer: React.FC<EditCustomerProps> = ({
                     <Input
                       id="nombre"
                       {...register('nombre', { required: 'El campo nombre es obligatorio.' })}
-                      placeholder={customer.nombre}
+                      placeholder={provider.nombre}
                     />
                     {errors.nombre && (
                       <div className="text-sm text-red-500">{errors.nombre.message}</div>
                     )}
                   </div>
                   <div>
-                    <Label htmlFor="apellido">Apellido</Label>
-                    <Input
-                      id="apellido"
-                      {...register('apellido')}
-                      placeholder={customer.apellido}
-                    />
-                    {errors.apellido && (
-                      <div className="text-sm text-red-500">{errors.apellido.message}</div>
-                    )}
+                    <Label htmlFor="RNC">RNC</Label>
+                    <Input id="RNC" {...register('RNC')} placeholder={provider.RNC} />
+                    {errors.RNC && <div className="text-sm text-red-500">{errors.RNC.message}</div>}
                   </div>
                   <div>
                     <Label htmlFor="telefono">Telefono</Label>
@@ -212,34 +210,22 @@ export const EditCustomer: React.FC<EditCustomerProps> = ({
                         required: 'El campo telefono es obligatorio.',
                         pattern: /^\+1\s\d{3}-\d{3}-\d{4}$/,
                       })}
-                      placeholder={customer.telefono}
+                      placeholder={provider.telefono}
                     />
                     {errors.telefono && (
                       <div className="text-sm text-red-500">{errors.telefono.message}</div>
                     )}
                   </div>
                   <div>
-                    <Label htmlFor="correo">Correo</Label>
+                    <Label htmlFor="procedencia">Procedencia</Label>
                     <Input
-                      id="correo"
-                      type="email"
-                      {...register('correo')}
-                      placeholder={customer.correo}
+                      id="procedencia"
+                      type="text"
+                      {...register('procedencia')}
+                      placeholder={provider.procedencia}
                     />
-                    {errors.correo && (
-                      <div className="text-sm text-red-500">{errors.correo.message}</div>
-                    )}
-                  </div>
-
-                  <div>
-                    <Label htmlFor="direccion">Direccion</Label>
-                    <Input
-                      id="direccion"
-                      {...register('direccion')}
-                      placeholder={customer.direccion}
-                    />
-                    {errors.direccion && (
-                      <div className="text-sm text-red-500">{errors.direccion.message}</div>
+                    {errors.procedencia && (
+                      <div className="text-sm text-red-500">{errors.procedencia.message}</div>
                     )}
                   </div>
                 </div>
@@ -247,7 +233,7 @@ export const EditCustomer: React.FC<EditCustomerProps> = ({
             </div>
 
             {error && <div className="text-sm text-red-500">Error: {error}</div>}
-            <div className="flex flex-wrap items-center gap-3 px-2 my-4 justify-center md:justify-end">
+            <div className="flex flex-wrap items-center gap-3 px-2 mt-4 justify-center md:justify-end">
               <Button type="submit" size="sm" variant="primary" startIcon={<BiSave size={20} />}>
                 Guardar Cambios
               </Button>
@@ -255,7 +241,7 @@ export const EditCustomer: React.FC<EditCustomerProps> = ({
                 size="sm"
                 variant="destructive"
                 startIcon={<BiTrash size={20} />}
-                onClick={() => onDelCustomer(customer._id)}
+                onClick={() => onDelCustomer(provider._id)}
               >
                 Eliminar
               </Button>

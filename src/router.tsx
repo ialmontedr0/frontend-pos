@@ -13,18 +13,15 @@ import { CreateUser } from './features/users/pages/CreateUser';
 import { Customers } from './features/customers/pages/Customers';
 import { Customer } from './features/customers/pages/Customer';
 import { CreateCustomer } from './features/customers/pages/CreateCustomer';
-import { EditCustomer } from './features/customers/pages/EditCustomer';
 import { Products } from './features/products/pages/Products';
 import { Product } from './features/products/pages/Product';
 import { CreateProduct } from './features/products/pages/CreateProduct';
-import { EditProduct } from './features/products/pages/EditProduct';
 import { Categories } from './features/products/categories/pages/Categories';
 import { Category } from './features/products/categories/pages/Category';
 import { CreateCategory } from './features/products/categories/pages/CreateCategory';
 import { Providers } from './features/products/providers/pages/Providers';
 import { Provider } from './features/products/providers/pages/Provider';
 import { CreateProvider } from './features/products/providers/pages/CreateProvider';
-import { EditProvider } from './features/products/providers/pages/EditProvider';
 import { Notifications } from './features/notifications/pages/Notifications';
 import { Forbidden } from './pages/Forbidden';
 import { NotFound } from './pages/NotFound';
@@ -43,7 +40,6 @@ import { Payment } from './features/payments/pages/Payment';
 import { CreatePayment } from './features/payments/pages/CreatePayment';
 import CashRegisters from './features/cash-registers/pages/CashRegisters';
 import { CashRegister } from './features/cash-registers/pages/CashRegister';
-import { EditRegister } from './features/cash-registers/pages/EditRegister';
 import { CreateRegister } from './features/cash-registers/pages/CreateRegister';
 import { LogInPage } from './features/auth/pages/LogInPage';
 import { Transaction } from './features/cash-registers/transactions/pages/Transaction';
@@ -105,12 +101,10 @@ const routes: RouteObject[] = [
           { path: '/customers', element: <Customers /> },
           { path: '/customers/create', element: <CreateCustomer /> },
           { path: '/customers/:customerId', element: <Customer /> },
-          { path: '/customers/edit/:customerId', element: <EditCustomer /> },
 
           { path: '/products', element: <Products /> },
           { path: '/products/create', element: <CreateProduct /> },
           { path: '/products/:codigo', element: <Product /> },
-          { path: '/products/edit/:codigo', element: <EditProduct /> },
 
           { path: '/products/categories', element: <Categories /> },
           { path: '/products/categories/create', element: <CreateCategory /> },
@@ -119,7 +113,6 @@ const routes: RouteObject[] = [
           { path: '/products/providers', element: <Providers /> },
           { path: '/products/providers/create', element: <CreateProvider /> },
           { path: '/products/providers/:providerId', element: <Provider /> },
-          { path: '/products/providers/edit/:providerId', element: <EditProvider /> },
 
           { path: '/products/inventory', element: <InventoryPage /> },
 
@@ -133,7 +126,6 @@ const routes: RouteObject[] = [
 
           { path: '/cash-registers', element: <CashRegisters /> },
           { path: '/cash-registers/:codigo', element: <CashRegister /> },
-          { path: '/cash-registers/edit/:codigo', element: <EditRegister /> },
           { path: '/cash-registers/create', element: <CreateRegister /> },
 
           { path: '/transactions', element: <Transactions /> },

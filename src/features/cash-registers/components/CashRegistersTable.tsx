@@ -24,6 +24,8 @@ import { myAlertError, myAlertSuccess } from '../../../utils/commonFunctions';
 import { BiFilter, BiPlusCircle, BiTrash } from 'react-icons/bi';
 import PageMeta from '../../../components/common/PageMeta';
 import Badge from '../../../components/UI/Badge/Badge';
+import { useModal } from '../../../hooks/useModal';
+import { EditRegister } from './EditRegister';
 
 interface CashRegisterTableProps {
   data: CashRegister[] | null;
@@ -35,10 +37,12 @@ export const CashRegistersTable: React.FC<CashRegisterTableProps> = ({ data, loa
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
+  const { isOpen, openModal, closeModal } = useModal();
   let openAmount: number = 0;
   let closeAmount: number = 0;
 
   const [showFilters, setShowFilters] = useState<boolean>(false);
+  const [selectedRegister, setSelectedRegister] = useState<CashRegister | null>(null);
 
   const toggleFilters = () => {
     if (showFilters === true) {
@@ -46,6 +50,11 @@ export const CashRegistersTable: React.FC<CashRegisterTableProps> = ({ data, loa
     } else {
       setShowFilters(true);
     }
+  };
+
+  const onEditRegister = (cashRegister: CashRegister) => {
+    setSelectedRegister(cashRegister);
+    openModal();
   };
 
   const onDelRegister = useCallback(
@@ -70,7 +79,7 @@ export const CashRegistersTable: React.FC<CashRegisterTableProps> = ({ data, loa
                 navigate('/cash-registers', { replace: true });
               })
               .catch((error: any) => {
-                myAlertError(`Error`, `Error: ${error.response?.data?.message || error.message}`);
+                myAlertError(error);
               });
           }
         });
@@ -115,7 +124,7 @@ export const CashRegistersTable: React.FC<CashRegisterTableProps> = ({ data, loa
       onClick: (c) => closeRegister(c._id),
       render: (c) => (c.estado === 'abierta' ? <span>Cerrar</span> : null),
     },
-    { label: 'Editar', onClick: (c) => navigate(`/cash-registers/edit/${c.codigo}`) },
+    { label: 'Editar', onClick: (cashRegister) => onEditRegister(cashRegister) },
     { label: 'Eliminar', onClick: (c) => onDelRegister(c._id) },
   ];
 
@@ -149,7 +158,7 @@ export const CashRegistersTable: React.FC<CashRegisterTableProps> = ({ data, loa
                 myAlertSuccess(`Caja abierta`, `Se ha abierto la caja con exito`);
               })
               .catch((error: any) => {
-                myAlertError(`Error`, `Error: ${error.response?.data?.message || error.message}`);
+                myAlertError(error);
               });
           }
         });
@@ -248,6 +257,12 @@ export const CashRegistersTable: React.FC<CashRegisterTableProps> = ({ data, loa
           </div>
         )}
       </div>
+      <EditRegister
+        cashRegister={selectedRegister!}
+        isOpen={isOpen}
+        closeModal={closeModal}
+        error={error!}
+      />
     </>
   );
 };

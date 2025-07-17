@@ -32,11 +32,14 @@ import Button from '../../../components/UI/Button/Button';
 import { UserIcon } from '../../../assets/icons';
 import PageMeta from '../../../components/common/PageMeta';
 import PageBreadcrum from '../../../components/common/PageBreadCrumb';
+import { EditRegister } from '../components/EditRegister';
+import { useModal } from '../../../hooks/useModal';
 
 export const CashRegister: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
+  const { isOpen, openModal, closeModal } = useModal();
   moment.locale('es');
 
   const { users } = useAppSelector((state: RootState) => state.users);
@@ -90,8 +93,8 @@ export const CashRegister: React.FC = () => {
     navigate('/cash-registers');
   };
 
-  const editRegister = (codigo: string) => {
-    navigate(`/cash-registers/edit/${codigo}`);
+  const editRegister = () => {
+    openModal();
   };
 
   const openRegister = useCallback(
@@ -124,7 +127,7 @@ export const CashRegister: React.FC = () => {
                 myAlertSuccess(`Caja abierta`, `Se ha abierto la caja exitosamente!`);
               })
               .catch((error: any) => {
-                myAlertError(`Error`, `Error: ${error.response?.data?.message || error.message}`);
+                myAlertError(error);
               });
           }
         });
@@ -189,7 +192,7 @@ export const CashRegister: React.FC = () => {
                 });
               })
               .catch((error: any) => {
-                myAlertError('Error', `Error: ${error.response?.data?.message || error.message}`);
+                myAlertError(error);
               });
           }
         });
@@ -267,7 +270,7 @@ export const CashRegister: React.FC = () => {
               myAlertSuccess('Usuario asignado', `Se ha asignado el usuario con exito.`);
             })
             .catch((error: any) => {
-              myAlertError(`Error`, `Error: ${error.response?.data?.message || error.message}`);
+              myAlertError(error);
               dispatch(clearCashRegisterError());
             });
         }
@@ -379,7 +382,7 @@ export const CashRegister: React.FC = () => {
             <Label htmlFor="createdAt">Fecha Creacion</Label>
             <p>{moment(cashRegister.createdAt).format('llll')}</p>
           </div>
-          
+
           {cashRegister.updatedBy && (
             <div>
               <Label htmlFor="updatedAt">Ultima Actualizacion</Label>
@@ -410,7 +413,7 @@ export const CashRegister: React.FC = () => {
           <Button
             size="sm"
             variant="outline"
-            onClick={() => editRegister(cashRegister.codigo)}
+            onClick={editRegister}
             startIcon={<BiEdit />}
           >
             Editar
@@ -449,6 +452,12 @@ export const CashRegister: React.FC = () => {
           </Button>
         </div>
       </div>
+      <EditRegister
+        cashRegister={cashRegister}
+        isOpen={isOpen}
+        closeModal={closeModal}
+        error={error!}
+      />
     </>
   );
 };
