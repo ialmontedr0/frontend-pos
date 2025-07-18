@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { BiCheck, BiRefresh, BiTrash, BiCheckDouble, BiTrashAlt } from 'react-icons/bi';
 import { formatDistanceToNow } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -23,7 +23,7 @@ import Badge from '../../../components/UI/Badge/Badge';
 import { myAlertError } from '../../../utils/commonFunctions';
 import Button from '../../../components/UI/Button/Button';
 
-export const Notifications: React.FC = () => {
+export default function Notifications() {
   const dispatch = useAppDispatch();
   const myAlert = withReactContent(Swal);
   const { notifications, loading, error } = useAppSelector(
@@ -46,7 +46,7 @@ export const Notifications: React.FC = () => {
           dispatch(markNotificationAsRead(notificationId))
             .then(() => {})
             .catch((error: any) => {
-              myAlertError(`Error`, `Error: ${error}`);
+              myAlertError(error);
             });
         }
       });
@@ -68,7 +68,7 @@ export const Notifications: React.FC = () => {
           dispatch(markNotificationAsUnread(notificationId))
             .then(() => {})
             .catch((error) => {
-              myAlertError(`Error`, `Error: ${error}`);
+              myAlertError(error)
             });
         }
       });
@@ -91,7 +91,7 @@ export const Notifications: React.FC = () => {
             .unwrap()
             .then(() => {})
             .catch((error: any) => {
-              myAlertError(`Error`, `Error: ${error}`);
+              myAlertError(error);
             });
         }
       });
@@ -114,7 +114,7 @@ export const Notifications: React.FC = () => {
             .unwrap()
             .then(() => {})
             .catch((error) => {
-              myAlertError(`Error`, `Error: ${error}`);
+              myAlertError(error);
             });
         }
       });
@@ -137,7 +137,7 @@ export const Notifications: React.FC = () => {
             .unwrap()
             .then(() => {})
             .catch((error) => {
-              myAlertError(`Error`, `Error: ${error}`);
+              myAlertError(error);
             });
         }
       });

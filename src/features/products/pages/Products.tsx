@@ -1,126 +1,35 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
 
 import type { RootState } from '../../../store/store';
 import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
-import { getAllProducts, deleteProduct, updateProduct } from '../slices/productsSlice';
-import { myAlertError, myAlertSuccess } from '../../../utils/commonFunctions';
+import { getAllProducts } from '../slices/productsSlice';
 
 import type { Product } from '../interfaces/ProductInterface';
 import type { Column, Action } from '../../../components/Table/types';
 import { Table } from '../../../components/Table/Table';
 
 import Button from '../../../components/UI/Button/Button';
-import { BiMoney, BiPlusCircle, BiTrash } from 'react-icons/bi';
+import { BiPlusCircle } from 'react-icons/bi';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import { EditProduct } from '../components/EditProduct';
 import { useModal } from '../../../hooks/useModal';
+import { ProductPrice } from '../components/ProductPrice';
 
-export const Products: React.FC = () => {
+export default function Products() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const myAlert = withReactContent(Swal);
-  const { isOpen, openModal, closeModal } = useModal();
+  const { isOpen: isEditOpen, openModal: openEditModal, closeModal: closeEditModal } = useModal();
+  const {
+    isOpen: isUpdatePriceOpen,
+    openModal: openUpdatePriceModal,
+    closeModal: closeUpdatePriceModal,
+  } = useModal();
+  const [actionType, setActionType] = useState<'updateCost' | 'updateBuy'>('updateCost');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-
   const { products, loading, error } = useAppSelector((state: RootState) => state.products);
 
-  let buyCost: number = 0;
-  let sellCost: number = 0;
-
   const productsData: Product[] = products;
-
-  const handleUpdateCost = useCallback(
-    (productId: string) => {
-      myAlert
-        .fire({
-          title: `Actualizar precio de compra`,
-          text: 'Ingresa el nuevo precio de compra del producto!',
-          iconHtml: <BiMoney className="text-green-500" />,
-          customClass: {
-            icon: 'no-default-icon-border',
-          },
-          input: 'number',
-          inputValue: buyCost,
-          inputPlaceholder: `RD$ .00`,
-          showConfirmButton: true,
-          showCancelButton: true,
-          confirmButtonText: 'Actualizar',
-          cancelButtonText: 'Cancelar',
-        })
-        .then((result) => {
-          if (result.isConfirmed) {
-            buyCost = Number(result.value);
-            dispatch(
-              updateProduct({
-                productId: productId,
-                updateProductDTO: {
-                  precioCompra: buyCost,
-                },
-              })
-            )
-              .unwrap()
-              .then(() => {
-                myAlertSuccess(
-                  `Producto actualizado`,
-                  `Se ha actualizado el precio de compra del producto`
-                );
-              })
-              .catch((error: any) => {
-                myAlertError(`Error: ${error}`);
-              });
-          }
-        });
-    },
-    [dispatch, myAlertSuccess, myAlertError]
-  );
-
-  const handleUpdateSell = useCallback(
-    (productId: string) => {
-      myAlert
-        .fire({
-          title: `Actualizar precio venta`,
-          text: `Ingresa el nuevo monto de venta del producto por favor!`,
-          iconHtml: <BiMoney className="text-green-400" />,
-          customClass: {
-            icon: 'no-default-icon-border',
-          },
-          input: 'number',
-          inputValue: sellCost,
-          showConfirmButton: true,
-          showCancelButton: true,
-          confirmButtonText: 'Actualizar',
-          cancelButtonText: 'Cancelar',
-        })
-        .then((result) => {
-          if (result.isConfirmed) {
-            sellCost = Number(result.value);
-            dispatch(
-              updateProduct({
-                productId: productId,
-                updateProductDTO: {
-                  precioVenta: sellCost,
-                },
-              })
-            )
-              .unwrap()
-              .then(() => {
-                myAlertSuccess(
-                  `Precio de venta actualizado!`,
-                  `Se ha actualizado el precio de venta del producto con exito!`
-                );
-              })
-              .catch((error: any) => {
-                myAlertError(`Error: ${error}`);
-              });
-          }
-        });
-    },
-    [dispatch, myAlertSuccess, myAlertError]
-  );
 
   useEffect(() => {
     dispatch(getAllProducts());
@@ -150,9 +59,8 @@ export const Products: React.FC = () => {
   const productActions: Action<Product>[] = [
     { label: 'Ver', onClick: (p) => navigate(`/products/${p.codigo}`) },
     { label: 'Editar', onClick: (product) => onEditProduct(product) },
-    { label: 'Act precio compra', onClick: (p) => handleUpdateCost(p._id) },
-    { label: 'Act precio venta', onClick: (p) => handleUpdateSell(p._id) },
-    { label: 'Eliminar', onClick: (p) => handleDeleteProduct(p._id) },
+    { label: 'Act precio compra', onClick: (product) => onUpdateCost(product) },
+    { label: 'Act precio venta', onClick: (product) => onUpdateSell(product) },
   ];
 
   const createProduct = () => {
@@ -161,40 +69,20 @@ export const Products: React.FC = () => {
 
   const onEditProduct = (product: Product) => {
     setSelectedProduct(product);
-    openModal();
+    openEditModal();
   };
 
-  const handleDeleteProduct = useCallback(
-    (productId: string) => {
-      myAlert
-        .fire({
-          title: 'Eliminar producto',
-          text: `Estas seguro que deseas eliminar este producto?`,
-          iconHtml: <BiTrash className="text-red-400" />,
-          customClass: {
-            icon: 'no-default-icon-border',
-          },
-          showConfirmButton: true,
-          showCancelButton: true,
-          confirmButtonText: 'Si, eliminar!',
-          cancelButtonText: 'Cancelar',
-        })
-        .then((result) => {
-          if (result.isConfirmed) {
-            dispatch(deleteProduct(productId))
-              .unwrap()
-              .then(() => {
-                myAlertSuccess(`Producto eliminado`, `Se ha eliminado el producto exitosamente~`);
-                navigate('/products');
-              })
-              .catch((error: any) => {
-                myAlertError(`Error: ${error}`);
-              });
-          }
-        });
-    },
-    [dispatch, navigate]
-  );
+  const onUpdateCost = (product: Product) => {
+    setSelectedProduct(product);
+    setActionType('updateCost');
+    openUpdatePriceModal();
+  };
+
+  const onUpdateSell = (product: Product) => {
+    setSelectedProduct(product);
+    setActionType('updateBuy');
+    openUpdatePriceModal()
+  }
 
   return (
     <>
@@ -229,8 +117,15 @@ export const Products: React.FC = () => {
       </div>
       <EditProduct
         product={selectedProduct!}
-        isOpen={isOpen}
-        closeModal={closeModal}
+        isOpen={isEditOpen}
+        closeModal={closeEditModal}
+        error={error!}
+      />
+      <ProductPrice 
+        product={selectedProduct!}
+        isOpen={isUpdatePriceOpen}
+        closeModal={closeUpdatePriceModal}
+        actionType={actionType}
         error={error!}
       />
     </>

@@ -16,7 +16,7 @@ import { AppWrapper } from './components/common/PageMeta';
 import { router } from './router';
 
 // Estabelecr espanol globalmente
-moment.locale('es')
+moment.locale('es');
 
 // Crear instancia query client
 const queryClient = new QueryClient({
@@ -24,7 +24,7 @@ const queryClient = new QueryClient({
     queries: { staleTime: 60000, retry: 1 },
     mutations: { retry: false },
   },
-}); 
+});
 
 createRoot(document.getElementById('root')!).render(
   <Provider store={store}>

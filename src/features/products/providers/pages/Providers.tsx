@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useState } from 'react';
+import { useEffect, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import Swal from 'sweetalert2';
@@ -19,7 +19,7 @@ import { EditProvider } from '../components/EditProvider';
 import { myAlertError, myAlertSuccess } from '../../../../utils/commonFunctions';
 import { useModal } from '../../../../hooks/useModal';
 
-export const Providers: React.FC = () => {
+export default function Providers() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);

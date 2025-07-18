@@ -5,12 +5,7 @@ import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
 import { useAppDispatch } from '../../../hooks/hooks';
-import {
-  clearCashRegisterError,
-  closeCashRegister,
-  deleteCashRegister,
-  openCashRegister,
-} from '../slices/cashRegisterSlice';
+import { clearCashRegisterError, deleteCashRegister } from '../slices/cashRegisterSlice';
 
 import { Table } from '../../../components/Table/Table';
 import type { Column, Action } from '../../../components/Table/types';
@@ -26,6 +21,7 @@ import PageMeta from '../../../components/common/PageMeta';
 import Badge from '../../../components/UI/Badge/Badge';
 import { useModal } from '../../../hooks/useModal';
 import { EditRegister } from './EditRegister';
+import { OpenAndCloseRegister } from './OpenAndCloseRegister';
 
 interface CashRegisterTableProps {
   data: CashRegister[] | null;
@@ -37,9 +33,13 @@ export const CashRegistersTable: React.FC<CashRegisterTableProps> = ({ data, loa
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
-  const { isOpen, openModal, closeModal } = useModal();
-  let openAmount: number = 0;
-  let closeAmount: number = 0;
+  const { isOpen: isEditOpen, openModal: openEditModal, closeModal: closeEditModal } = useModal();
+  const {
+    isOpen: isOpenOrClose,
+    openModal: openOpenOrCloseModal,
+    closeModal: closeOpenOrCloseModal,
+  } = useModal();
+  const [actionType, setActionType] = useState<'open' | 'close'>('open');
 
   const [showFilters, setShowFilters] = useState<boolean>(false);
   const [selectedRegister, setSelectedRegister] = useState<CashRegister | null>(null);
@@ -52,9 +52,9 @@ export const CashRegistersTable: React.FC<CashRegisterTableProps> = ({ data, loa
     }
   };
 
-  const onEditRegister = (cashRegister: CashRegister) => {
-    setSelectedRegister(cashRegister);
-    openModal();
+  const onEditRegister = (register: CashRegister) => {
+    setSelectedRegister(register);
+    openEditModal();
   };
 
   const onDelRegister = useCallback(
@@ -116,86 +116,25 @@ export const CashRegistersTable: React.FC<CashRegisterTableProps> = ({ data, loa
     { label: 'Ver', onClick: (c) => navigate(`/cash-registers/${c.codigo}`) },
     {
       label: 'Abrir',
-      onClick: (c) => openRegister(c._id),
+      onClick: (register) => {
+        setSelectedRegister(register);
+        setActionType('open');
+        openOpenOrCloseModal();
+      },
       render: (c) => (c.estado === 'cerrada' ? <span>Abrir</span> : null),
     },
     {
       label: 'Cerrar',
-      onClick: (c) => closeRegister(c._id),
+      onClick: (register: CashRegister) => {
+        setSelectedRegister(register);
+        setActionType('close');
+        openOpenOrCloseModal();
+      },
       render: (c) => (c.estado === 'abierta' ? <span>Cerrar</span> : null),
     },
     { label: 'Editar', onClick: (cashRegister) => onEditRegister(cashRegister) },
     { label: 'Eliminar', onClick: (c) => onDelRegister(c._id) },
   ];
-
-  const openRegister = useCallback(
-    (registerId: string) => {
-      myAlert
-        .fire({
-          title: `Abrir caja`,
-          text: `Seguro que deseas abrir esta caja?`,
-          icon: 'question',
-          input: 'number',
-          inputValue: openAmount,
-          showConfirmButton: true,
-          showCancelButton: true,
-          confirmButtonText: 'Abrir',
-          cancelButtonText: 'Cancelar',
-        })
-        .then((result) => {
-          if (result.isConfirmed) {
-            openAmount = Number(result.value);
-            dispatch(
-              openCashRegister({
-                cashRegisterId: registerId,
-                openRegisterDTO: {
-                  montoApertura: openAmount,
-                },
-              })
-            )
-              .unwrap()
-              .then(() => {
-                myAlertSuccess(`Caja abierta`, `Se ha abierto la caja con exito`);
-              })
-              .catch((error: any) => {
-                myAlertError(error);
-              });
-          }
-        });
-    },
-    [dispatch, myAlert, openAmount]
-  );
-
-  const closeRegister = useCallback(
-    (registerId: string) => {
-      myAlert
-        .fire({
-          title: 'Cerrar caja',
-          text: `Seguro que deseas cerrar esta caja?`,
-          icon: 'question',
-          input: 'number',
-          inputValue: closeAmount,
-          showConfirmButton: true,
-          showCancelButton: true,
-          confirmButtonText: 'Cerrar',
-          cancelButtonText: 'Cancelar',
-        })
-        .then((result) => {
-          if (result.isConfirmed) {
-            closeAmount = Number(result.value);
-            dispatch(
-              closeCashRegister({
-                cashRegisterId: registerId,
-                closeRegisterDTO: {
-                  montoCierre: closeAmount,
-                },
-              })
-            );
-          }
-        });
-    },
-    [dispatch, myAlert, closeAmount]
-  );
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -259,8 +198,15 @@ export const CashRegistersTable: React.FC<CashRegisterTableProps> = ({ data, loa
       </div>
       <EditRegister
         cashRegister={selectedRegister!}
-        isOpen={isOpen}
-        closeModal={closeModal}
+        isOpen={isEditOpen}
+        closeModal={closeEditModal}
+        error={error!}
+      />
+      <OpenAndCloseRegister
+        cashRegister={selectedRegister!}
+        isOpen={isOpenOrClose}
+        closeModal={closeOpenOrCloseModal}
+        actionType={actionType}
         error={error!}
       />
     </>

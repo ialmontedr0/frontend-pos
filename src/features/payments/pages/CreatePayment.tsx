@@ -111,7 +111,7 @@ export const CreatePayment: React.FC = () => {
               clear();
             })
             .catch((error: any) => {
-              myAlertError(`Error`, `Error: ${error}`);
+              myAlertError(error);
             });
         }
       });

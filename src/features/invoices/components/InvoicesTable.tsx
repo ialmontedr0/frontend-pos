@@ -1,33 +1,33 @@
 import React, { useCallback, useEffect } from 'react';
 
-import type { Invoice } from '../interfaces/InvoiceInterface';
+import type { Invoice as InvoiceInterface } from '../interfaces/InvoiceInterface';
 
 import type { Column, Action } from '../../../components/Table/types';
 import { Table } from '../../../components/Table/Table';
 
-import Button from '../../../components/UI/Button/Button';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
 import {
   downloadInvoice,
   clearPdfUrl,
-  clearPreviewUrl,
   selectInvoicePdfUrl,
   selectInvoicePreviewUrl,
   previewInvoice,
 } from '../slices/invoicesSlice';
 import PageMeta from '../../../components/common/PageMeta';
-import { BiX } from 'react-icons/bi';
 import { myAlertError } from '../../../utils/commonFunctions';
+import { Invoice } from './Invoice';
+import { useModal } from '../../../hooks/useModal';
 
 interface InvoicesTableProps {
-  data: Invoice[] | null;
+  data: InvoiceInterface[] | null;
   loading: boolean;
   error: string;
 }
 
-export const InvoicesTable: React.FC<InvoicesTableProps> = ({ data, loading }) => {
+export const InvoicesTable: React.FC<InvoicesTableProps> = ({ data, loading, error }) => {
   const dispatch = useAppDispatch();
+  const { isOpen, openModal, closeModal } = useModal();
   const downloadUrl = useAppSelector(selectInvoicePdfUrl);
   const previewUrl = useAppSelector(selectInvoicePreviewUrl);
 
@@ -48,7 +48,7 @@ export const InvoicesTable: React.FC<InvoicesTableProps> = ({ data, loading }) =
     if (!previewUrl) return;
   }, [previewUrl]);
 
-  const invoicesColumns: Column<Invoice>[] = [
+  const invoicesColumns: Column<InvoiceInterface>[] = [
     {
       header: 'Codigo',
       accessor: 'codigo',
@@ -65,7 +65,7 @@ export const InvoicesTable: React.FC<InvoicesTableProps> = ({ data, loading }) =
     },
   ];
 
-  const invoicesActions: Action<Invoice>[] = [
+  const invoicesActions: Action<InvoiceInterface>[] = [
     { label: 'Ver', onClick: (i) => handlePreviewInvoice(i._id) },
     { label: 'Descargar', onClick: (i) => handleDownloadInvoice(i._id) },
   ];
@@ -75,7 +75,7 @@ export const InvoicesTable: React.FC<InvoicesTableProps> = ({ data, loading }) =
       dispatch(downloadInvoice(invoiceId))
         .unwrap()
         .catch((error: any) => {
-          myAlertError(`Error`, `Error: ${error}`);
+          myAlertError(error);
         });
     },
     [dispatch]
@@ -85,8 +85,11 @@ export const InvoicesTable: React.FC<InvoicesTableProps> = ({ data, loading }) =
     (invoiceId: string) => {
       dispatch(previewInvoice(invoiceId))
         .unwrap()
+        .then(() => {
+          openModal();
+        })
         .catch((error: any) => {
-          myAlertError(`Error`, `Error: ${error}`);
+          myAlertError(error);
         });
     },
     [dispatch]
@@ -115,23 +118,7 @@ export const InvoicesTable: React.FC<InvoicesTableProps> = ({ data, loading }) =
         )}
 
         {previewUrl && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white w-11/12 md:w-3/4 lg:w-2/3 h-5/6 p-2 relative">
-              <Button
-                className="absolute top-2 right-2"
-                onClick={() => dispatch(clearPreviewUrl())}
-                size="icon"
-                variant="icon"
-                startIcon={<BiX />}
-              ></Button>
-
-              <iframe
-                src={previewUrl}
-                className="w-full h-full border"
-                title="Vista previa Factura"
-              ></iframe>
-            </div>
-          </div>
+          <Invoice previewUrl={previewUrl} isOpen={isOpen} closeModal={closeModal} error={error!} />
         )}
       </div>
     </>

@@ -86,7 +86,7 @@ export const PaymentsTable: React.FC<PaymentsTableProps> = ({ data, loading, err
                 myAlertSuccess(`Pago eliminado`, `Se ha eliminado el pago exitosamente!`);
               })
               .catch((error: any) => {
-                myAlertError(`Error`, `Error: ${error.response?.data?.message || error.message}`);
+                myAlertError(error);
               });
           }
         });

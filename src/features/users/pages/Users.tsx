@@ -26,7 +26,7 @@ import PageMeta from '../../../components/common/PageMeta';
 import { EditUser } from '../components/EditUser';
 import { useModal } from '../../../hooks/useModal';
 
-export function Users() {
+export default function Users() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
@@ -182,7 +182,7 @@ export function Users() {
       <PageMeta title="Usuarios - Pos v2" description="Usuarios" />
       <div className="overflow-x-auto space-y-6 p-4 bg-white dark:bg-[#1d2939]">
         <div className="flex flex-row md:flex-col w-fit gap-2 space-y-2">
-          <h2 className="text-3xl font-regular text-black dark:text-gray-200">Usuarios</h2>
+          <h2 className="text-3xl font-medium text-black dark:text-gray-200">Usuarios</h2>
           <Button
             startIcon={<BiPlusCircle size={24} />}
             type="button"

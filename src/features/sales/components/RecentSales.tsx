@@ -38,9 +38,11 @@ export const RecentSales: React.FC = () => {
     },
   ];
 
-  const saleActions: Action<Sale>[] = [
-    { label: 'Ver', onClick: (sale) => alert(`Ver venta ${sale.codigo}`) },
-  ];
+  const saleActions: Action<Sale>[] = [{ label: 'Ver', onClick: (sale) => viewSale(sale.codigo) }];
+
+  const viewSale = (codigo: string) => {
+    navigate(`/sales/${codigo}`);
+  };
 
   const tableData: Sale[] = sales;
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useState } from 'react';
+import { useEffect, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
@@ -16,7 +16,7 @@ import PageMeta from '../../../../components/common/PageMeta';
 import { EditCategory } from '../components/EditCategory';
 import { useModal } from '../../../../hooks/useModal';
 
-export const Categories: React.FC = () => {
+export default function Categories() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { isOpen, openModal, closeModal } = useModal();
@@ -118,4 +118,4 @@ export const Categories: React.FC = () => {
       />
     </>
   );
-};
+}

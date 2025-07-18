@@ -41,6 +41,8 @@ export const EditProduct: React.FC<EditProductProps> = ({ product, isOpen, close
     control,
     formState: { errors },
   } = useForm<UpdateProductDTO>({
+    mode: 'onChange',
+    reValidateMode: 'onBlur',
     defaultValues: {
       nombre: '',
       categoria: '',

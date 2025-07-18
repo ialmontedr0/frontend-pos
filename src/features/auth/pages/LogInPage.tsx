@@ -57,7 +57,7 @@ export const LogInPage: React.FC = () => {
             <form onSubmit={handleLogin}>
               <div className="space-y-6">
                 <div>
-                  <Label>
+                  <Label htmlFor="usuario">
                     Usuario <span className="text-error-500">*</span>{' '}
                   </Label>
                   <div className="relative">
@@ -78,7 +78,7 @@ export const LogInPage: React.FC = () => {
                   </div>
                 </div>
                 <div>
-                  <Label>
+                  <Label htmlFor="contrasena">
                     Contrasena <span className="text-error-500">*</span>{' '}
                   </Label>
                   <div className="relative">

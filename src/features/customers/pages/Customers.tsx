@@ -15,7 +15,7 @@ import { parseCustomerType } from '../../../utils/commonFunctions';
 import { EditCustomer } from '../components/EditCustomer';
 import { useModal } from '../../../hooks/useModal';
 
-export function Customers() {
+export default function Customers() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);

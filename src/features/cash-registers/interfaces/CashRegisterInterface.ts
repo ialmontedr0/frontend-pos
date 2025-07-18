@@ -3,8 +3,8 @@ import type { Transaction } from './TransactionInterface';
 export interface CashRegister {
   _id: string;
   codigo: string;
-  montoApertura?: number;
-  montoCierre?: number;
+  montoApertura: number;
+  montoCierre: number;
   diferencia?: number;
   estado: 'abierta' | 'cerrada';
   transacciones: Transaction[];

@@ -1,55 +1,57 @@
 import { createBrowserRouter, type RouteObject, Navigate } from 'react-router-dom';
+import { lazy } from 'react';
 
+// Auth Routes
 import { AppLayout } from './layouts/AppLayout';
 import { RecoverPassword } from './features/auth/pages/RecoverPasswordPage';
 import { ValidateCode } from './features/auth/pages/ValidateCodePage';
 import { ChangePassword } from './features/auth/pages/ChangePasswordPage';
 
+// Common Load Routes
 import { Dashboard } from './pages/Dashboard/Dashboard';
-import { Users } from './features/users/pages/Users';
 import { User } from './features/users/pages/User';
 import { CreateUser } from './features/users/pages/CreateUser';
-
-import { Customers } from './features/customers/pages/Customers';
 import { Customer } from './features/customers/pages/Customer';
 import { CreateCustomer } from './features/customers/pages/CreateCustomer';
-import { Products } from './features/products/pages/Products';
 import { Product } from './features/products/pages/Product';
 import { CreateProduct } from './features/products/pages/CreateProduct';
-import { Categories } from './features/products/categories/pages/Categories';
 import { Category } from './features/products/categories/pages/Category';
 import { CreateCategory } from './features/products/categories/pages/CreateCategory';
-import { Providers } from './features/products/providers/pages/Providers';
 import { Provider } from './features/products/providers/pages/Provider';
 import { CreateProvider } from './features/products/providers/pages/CreateProvider';
-import { Notifications } from './features/notifications/pages/Notifications';
 import { Forbidden } from './pages/Forbidden';
 import { NotFound } from './pages/NotFound';
 import { PublicRoute } from './components/Routes/PublicRoute/PublicRoute';
 import { PrivateRoute } from './components/Routes/ProtectedRoute/ProtectedRoute';
-/* import { RoleRoute } from './components/Routes/RoleRoute/RoleRoute'; */
-
 import { RecoverGuard } from './features/auth/guards/RecoverGuard';
 import { ValidateGuard } from './features/auth/guards/ValidateGuard';
 import { ChangeGuard } from './features/auth/guards/ChangeGuard';
 import { InventoryPage } from './features/products/inventory/pages/InventoryPage';
-import Sales from './features/sales/pages/Sales';
-import Payments from './features/payments/pages/Payments';
 import { Sale } from './features/sales/pages/Sale';
 import { Payment } from './features/payments/pages/Payment';
 import { CreatePayment } from './features/payments/pages/CreatePayment';
-import CashRegisters from './features/cash-registers/pages/CashRegisters';
 import { CashRegister } from './features/cash-registers/pages/CashRegister';
 import { CreateRegister } from './features/cash-registers/pages/CreateRegister';
 import { LogInPage } from './features/auth/pages/LogInPage';
 import { Transaction } from './features/cash-registers/transactions/pages/Transaction';
-import Transactions from './features/cash-registers/transactions/pages/Transactions';
 import { SyncLogs } from './features/sync-logs/pages/SyncLogs';
 import { SalePage } from './features/sales/pages/NewSalePage';
 import { SettingsPage } from './features/users/user/pages/SettingsPage';
 import { SyncLog } from './features/sync-logs/pages/SyncLog';
-import InvoicesPage from './features/invoices/pages/InvoicesPage';
 import { UserProfilePage } from './features/users/user/pages/UserProfilePage';
+
+// Lazy Loading Routes
+const Users = lazy(() => import('./features/users/pages/Users'))
+const Customers = lazy(() => import('./features/customers/pages/Customers'))
+const Sales = lazy(() => import('./features/sales/pages/Sales'));
+const Transactions = lazy(() => import('./features/cash-registers/transactions/pages/Transactions'))
+const CashRegisters = lazy(() =>  import('./features/cash-registers/pages/CashRegisters'));
+const Payments = lazy(() => import('./features/payments/pages/Payments'));
+const Notifications = lazy(() => import('./features/notifications/pages/Notifications'));
+const Providers = lazy(() => import('./features/products/providers/pages/Providers'));
+const Categories = lazy(() => import('./features/products/categories/pages/Categories'));
+const Products = lazy(() => import('./features/products/pages/Products'));
+const Invoices = lazy(() => import('./features/invoices/pages/Invoices'))
 
 const routes: RouteObject[] = [
   {
@@ -97,7 +99,7 @@ const routes: RouteObject[] = [
 
           { path: '/user/profile', element: <UserProfilePage /> },
           { path: '/settings', element: <SettingsPage /> },
-          
+
           { path: '/customers', element: <Customers /> },
           { path: '/customers/create', element: <CreateCustomer /> },
           { path: '/customers/:customerId', element: <Customer /> },
@@ -131,7 +133,7 @@ const routes: RouteObject[] = [
           { path: '/transactions', element: <Transactions /> },
           { path: '/transactions/:transactionId', element: <Transaction /> },
 
-          { path: '/invoices', element: <InvoicesPage /> },
+          { path: '/invoices', element: <Invoices /> },
 
           { path: '/sync-logs', element: <SyncLogs /> },
           { path: '/sync-logs/:syncLogId', element: <SyncLog /> },

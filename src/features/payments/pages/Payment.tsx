@@ -52,7 +52,7 @@ export const Payment: React.FC = () => {
           myAlertSuccess(`Factura generada`, `Se ha generado la factura exitosamente.`);
         })
         .catch((error: any) => {
-          myAlertError(`Error`, `Error: ${error}`);
+          myAlertError(error);
         });
     },
     [dispatch]
