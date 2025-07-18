@@ -104,7 +104,7 @@ export const AdminSettingsForm: React.FC = () => {
               );
             })
             .catch((error: any) => {
-              myAlertError(`Error`, `Error: ${error}`);
+              myAlertError(error);
             });
         }
       });

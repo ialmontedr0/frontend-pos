@@ -22,11 +22,13 @@ import { toast } from '../../../components/UI/Toast/hooks/useToast';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import { Error } from '../../../components/Error/components/Error';
 import { NotFound } from '../../../pages/NotFound';
+import { MakePayment } from '../components/MakePayment';
+import { useModal } from '../../../hooks/useModal';
 
 export const Sale: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-
+  const { isOpen, openModal, closeModal } = useModal();
   moment.locale('es');
   const { codigo } = useParams<{ codigo: string }>();
   const { sale, loading, error } = useAppSelector((state: RootState) => state.sales);
@@ -91,10 +93,8 @@ export const Sale: React.FC = () => {
   }, [dispatch, codigo, navigate]);
 
   // Implementar aqui
-  const makePayment = (saleId: string, saleCode: string) => {
-    navigate('/payments/create', {
-      state: { saleId, saleCode },
-    });
+  const makePayment = () => {
+    openModal();
   };
 
   const handleGenerateInvoice = useCallback(
@@ -252,7 +252,7 @@ export const Sale: React.FC = () => {
           <Button
             size="sm"
             variant="primary"
-            onClick={() => makePayment(sale._id.toString(), sale.codigo)}
+            onClick={makePayment}
             startIcon={<BiMoney size={20} />}
           >
             Realizar Pago
@@ -267,6 +267,12 @@ export const Sale: React.FC = () => {
           </Button>
         </div>
       </div>
+      <MakePayment
+        sale={sale}
+        isOpen={isOpen}
+        closeModal={closeModal}
+        error={error!}
+      />
     </>
   );
 };
