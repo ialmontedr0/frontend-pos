@@ -11,7 +11,11 @@ export interface User {
   contrasena: string;
   correo: string;
   telefono: string;
-  direccion?: string;
+  direccion?: {
+    calle: string;
+    casa: string;
+    ciudad: string;
+  };
   rol: UserRole;
   estado: string;
   configuracion: UserSettings;

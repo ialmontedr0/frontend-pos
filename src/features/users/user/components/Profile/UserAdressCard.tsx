@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { useAppDispatch, useAppSelector } from '../../../../../hooks/hooks';
-import { updateUser } from '../../../slices/usersSlice';
+import { getUserById, updateUser } from '../../../slices/usersSlice';
 import type { RootState } from '../../../../../store/store';
 
 import { myAlertSuccess, myAlertError } from '../../../../../utils/commonFunctions';
@@ -14,7 +14,11 @@ import Input from '../../../../../components/UI/Input/Input';
 import { Label } from '../../../../../components/UI/Label/Label';
 
 interface EditUserAdressDTO {
-  direccion: string;
+  direccion: {
+    calle: string;
+    casa: string;
+    ciudad: string;
+  };
 }
 
 export default function UserAddressCard() {
@@ -30,7 +34,11 @@ export default function UserAddressCard() {
     formState: { errors },
   } = useForm<EditUserAdressDTO>({
     defaultValues: {
-      direccion: user?.direccion || '',
+      direccion: {
+        calle: user?.direccion?.calle || '',
+        casa: user?.direccion?.casa || '',
+        ciudad: user?.direccion?.ciudad || '',
+      },
     },
   });
 
@@ -57,11 +65,14 @@ export default function UserAddressCard() {
       .then(() => {
         closeModal();
         myAlertSuccess(`Direccion actualizada`, `Se ha actualizado la direccion con exito`);
+        dispatch(getUserById(user._id));
       })
       .catch((error: any) => {
-        myAlertError(`Error`, `Error: ${error.response?.data?.message || error.message}`);
+        myAlertError(error);
       });
   };
+
+  const fullAdress: string = `Calle ${user!.direccion?.calle}, Numero ${user!.direccion?.casa}, ${user!.direccion?.ciudad}`;
 
   return (
     <>
@@ -74,12 +85,17 @@ export default function UserAddressCard() {
 
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-7 2xl:gap-x-32">
               <div>
-                <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
+                <Label
+                  htmlFor="direccion"
+                  className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400"
+                >
                   Direccion
-                </p>
-                <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                  {user?.direccion}
-                </p>
+                </Label>
+                <div>
+                  <p className="text-sm font-regular text-gray-800 dark:text-white/90">
+                    {fullAdress}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -119,13 +135,45 @@ export default function UserAddressCard() {
           </div>
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
             <div className="px-2 overflow-y-auto custom-scrollbar">
-              <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
-                <div>
-                  <Label>Direccion</Label>
-                  <Input id="direccion" {...register('direccion')} />
-                  {errors.direccion && (
-                    <p className="text-sm text-red-500">{errors.direccion.message}</p>
-                  )}
+              <div>
+                <Label>Direccion</Label>
+                <div className="space-x-2 space-y-2">
+                  <div>
+                    <Label htmlFor="calle">Calle</Label>
+                    <Input
+                      id="calle"
+                      type="text"
+                      placeholder="Ingresa la calle de residencia del usuario"
+                      {...register('direccion.calle', {
+                        required: 'El campo calle es obligatorio',
+                      })}
+                    />
+                    {errors.direccion?.calle && <div>{errors.direccion.calle.message}</div>}
+                  </div>
+                  <div>
+                    <Label htmlFor="casa">Casa</Label>
+                    <Input
+                      id="casa"
+                      type="text"
+                      placeholder="Numero de la casa #"
+                      {...register('direccion.casa', {
+                        required: 'El campo casa es obligatorio',
+                      })}
+                    />
+                    {errors.direccion?.casa && <div>{errors.direccion.casa.message}</div>}
+                  </div>
+                  <div>
+                    <Label htmlFor="ciudad">Ciudad</Label>
+                    <Input
+                      id="ciudad"
+                      type="text"
+                      placeholder="Ciudad"
+                      {...register('direccion.ciudad', {
+                        required: 'El campo ciudad es obligatorio',
+                      })}
+                    />
+                    {errors.direccion?.ciudad && <div>{errors.direccion.ciudad.message}</div>}
+                  </div>
                 </div>
               </div>
             </div>

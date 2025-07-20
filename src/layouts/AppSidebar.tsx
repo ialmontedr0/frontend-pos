@@ -5,6 +5,7 @@ import {
   BiBarChart,
   BiBell,
   BiBox,
+  BiBuildingHouse,
   BiCart,
   BiCategoryAlt,
   BiCheckbox,
@@ -84,6 +85,7 @@ const AppSidebar: React.FC = () => {
       { name: 'Cajas', path: '/cash-registers', icon: <BiMoneyWithdraw /> },
       { name: 'Transacciones', path: '/transactions', icon: <BiSpreadsheet /> },
       { name: 'Facturas', path: '/invoices', icon: <BiPaperclip /> },
+      { name: 'Sucursales', path: '/branches', icon: <BiBuildingHouse /> },
       { name: 'Sync Logs', path: '/sync-logs', icon: <BiSync /> },
       { name: 'Estadisticas', path: '/stats', icon: <BiBarChart /> },
     ];

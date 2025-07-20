@@ -109,7 +109,7 @@ export const User: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex-1 space-y-4">
+        <div className="flex-1 space-y-4 text-black dark:text-gray-200">
           <div className="grid grid-cols sm:grid-cols-2 gap-x-6 gap-y-2">
             <div>
               <p className="text-gray-500 dark:text-gray-400 text-sm">Usuario</p>
@@ -133,8 +133,18 @@ export const User: React.FC = () => {
 
             <div>
               <p className="text-gray-500 dark:text-gray-400 text-sm">Direccion</p>
-              <p className="text-gray-800 dark:text-gray-200">{user.direccion}</p>
-              <p></p>
+              <p className="text-gray-800 dark:text-gray-200">
+                <strong>Calle: </strong>
+                {user.direccion?.calle}
+              </p>
+              <p>
+                <strong>Numero: </strong>
+                {user.direccion?.casa}
+              </p>
+              <p>
+                <strong>Ciudad: </strong>
+                {user.direccion?.ciudad}
+              </p>
             </div>
 
             {user.createdBy && (

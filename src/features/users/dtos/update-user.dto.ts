@@ -6,7 +6,11 @@ export interface UpdateUserDTO {
   usuario?: string;
   correo?: string;
   telefono?: string;
-  direccion?: string;
+  direccion?: {
+    calle: string;
+    casa: string;
+    ciudad: string;
+  };
   rol?: string;
   estado?: Estado;
   configuracion?: {

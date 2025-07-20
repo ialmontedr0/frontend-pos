@@ -12,6 +12,7 @@ import { Label } from '../../../../../components/UI/Label/Label';
 import Spinner from '../../../../../components/UI/Spinner/Spinner';
 import { myAlertError, myAlertSuccess, parseUserRole } from '../../../../../utils/commonFunctions';
 import { getUserById, updateUser } from '../../../slices/usersSlice';
+import { BiSolidSave, BiX } from 'react-icons/bi';
 
 interface EditUserInfoDTO {
   nombre?: string;
@@ -84,6 +85,8 @@ export default function UserMetaCard() {
 
   if (loading) return <Spinner />;
 
+  const fullAdress: string = `Calle ${user.direccion?.calle}, Numero ${user.direccion?.casa}, ${user.direccion?.ciudad}`;
+
   return (
     <>
       <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6 dark:bg-gray-800 shadow-theme-sm dark:shadow-theme-md">
@@ -109,7 +112,7 @@ export default function UserMetaCard() {
                   {parseUserRole(user.rol)}
                 </p>
                 <div className="hidden h-3.5 w-px bg-gray-300 dark:bg-gray-700 xl:block"></div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">{user.direccion || ''}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">{fullAdress}</p>
               </div>
             </div>
           </div>
@@ -147,7 +150,7 @@ export default function UserMetaCard() {
               </p>
             </div>
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
-              <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
+              <div className="custom-scrollbar h-[350px] overflow-y-auto px-2 pb-3">
                 <div className="mt-7">
                   <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
                     Informacion Personal
@@ -196,10 +199,20 @@ export default function UserMetaCard() {
                 </div>
               </div>
               <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-                <Button size="sm" variant="outline" onClick={closeModal}>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={closeModal}
+                  startIcon={<BiX size={24} />}
+                >
                   Cerrar
                 </Button>
-                <Button size="sm" type="submit">
+                <Button
+                  size="sm"
+                  variant="primary"
+                  startIcon={<BiSolidSave size={24} />}
+                  type="submit"
+                >
                   Guardar
                 </Button>
               </div>

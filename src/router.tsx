@@ -39,19 +39,24 @@ import { SalePage } from './features/sales/pages/NewSalePage';
 import { SettingsPage } from './features/users/user/pages/SettingsPage';
 import { SyncLog } from './features/sync-logs/pages/SyncLog';
 import { UserProfilePage } from './features/users/user/pages/UserProfilePage';
+import { Branche } from './features/branches/pages/Branche';
+import { CreateBranche } from './features/branches/pages/CreateBranche';
 
 // Lazy Loading Routes
-const Users = lazy(() => import('./features/users/pages/Users'))
-const Customers = lazy(() => import('./features/customers/pages/Customers'))
+const Users = lazy(() => import('./features/users/pages/Users'));
+const Customers = lazy(() => import('./features/customers/pages/Customers'));
 const Sales = lazy(() => import('./features/sales/pages/Sales'));
-const Transactions = lazy(() => import('./features/cash-registers/transactions/pages/Transactions'))
-const CashRegisters = lazy(() =>  import('./features/cash-registers/pages/CashRegisters'));
+const Transactions = lazy(
+  () => import('./features/cash-registers/transactions/pages/Transactions')
+);
+const CashRegisters = lazy(() => import('./features/cash-registers/pages/CashRegisters'));
 const Payments = lazy(() => import('./features/payments/pages/Payments'));
 const Notifications = lazy(() => import('./features/notifications/pages/Notifications'));
 const Providers = lazy(() => import('./features/products/providers/pages/Providers'));
 const Categories = lazy(() => import('./features/products/categories/pages/Categories'));
 const Products = lazy(() => import('./features/products/pages/Products'));
-const Invoices = lazy(() => import('./features/invoices/pages/Invoices'))
+const Invoices = lazy(() => import('./features/invoices/pages/Invoices'));
+const Branches = lazy(() => import('./features/branches/pages/Branches'));
 
 const routes: RouteObject[] = [
   {
@@ -129,6 +134,10 @@ const routes: RouteObject[] = [
           { path: '/cash-registers', element: <CashRegisters /> },
           { path: '/cash-registers/:codigo', element: <CashRegister /> },
           { path: '/cash-registers/create', element: <CreateRegister /> },
+
+          { path: '/branches', element: <Branches /> },
+          { path: '/branches/:brancheId', element: <Branche /> },
+          { path: '/branches/create', element: <CreateBranche /> },
 
           { path: '/transactions', element: <Transactions /> },
           { path: '/transactions/:transactionId', element: <Transaction /> },

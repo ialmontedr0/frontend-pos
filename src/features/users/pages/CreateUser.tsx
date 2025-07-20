@@ -11,7 +11,6 @@ import type { CreateUserDTO } from '../dtos/create-user.dto';
 // Componentes reutilizables
 import Button from '../../../components/UI/Button/Button';
 import Input from '../../../components/UI/Input/Input';
-import { Textarea } from '../../../components/UI/TextArea/TextArea';
 import { Label } from '../../../components/UI/Label/Label';
 import { Select } from '../../../components/UI/Select/Select';
 import { BiSave, BiX } from 'react-icons/bi';
@@ -39,7 +38,11 @@ export const CreateUser: React.FC = () => {
       usuario: '',
       correo: '',
       telefono: '',
-      direccion: '',
+      direccion: {
+        calle: '',
+        casa: '',
+        ciudad: '',
+      },
       rol: 'cajero',
       estado: 'activo',
       foto: '',
@@ -107,7 +110,7 @@ export const CreateUser: React.FC = () => {
           onSubmit={handleSubmit(onSubmit)}
           className="w-full max-w-4xl mx-auto p-6 bg-white dark:bg-gray-900 rounded-lg shadow-md space-y-6"
         >
-          <h2 className="text-2xl font-regular text-gray-800 dark:text-gray-200 mb-4">
+          <h2 className="text-2xl font-medium text-gray-800 dark:text-gray-200 mb-4">
             Crear Usuario
           </h2>
 
@@ -220,11 +223,42 @@ export const CreateUser: React.FC = () => {
 
             <div className="col-span-full">
               <Label htmlFor="direccion">Direccion</Label>
-              <Textarea
-                id="direccion"
-                placeholder="Calle 01, Ciudad Modelo"
-                {...register('direccion')}
-              />
+              <div className="grid grid-cols-2 space-x-2 space-y-2">
+                <div>
+                  <Label htmlFor="calle">Calle</Label>
+                  <Input
+                    id="calle"
+                    type="text"
+                    placeholder="Ingresa la calle de residencia del usuario"
+                    {...register('direccion.calle', { required: 'El campo calle es obligatorio' })}
+                  />
+                  {errors.direccion?.calle && <div>{errors.direccion.calle.message}</div>}
+                </div>
+                <div>
+                  <Label htmlFor="casa">Casa</Label>
+                  <Input
+                    id="casa"
+                    type="text"
+                    placeholder="Numero de la casa #"
+                    {...register('direccion.casa', {
+                      required: 'El campo casa es obligatorio',
+                    })}
+                  />
+                  {errors.direccion?.casa && <div>{errors.direccion.casa.message}</div>}
+                </div>
+                <div>
+                  <Label htmlFor="ciudad">Ciudad</Label>
+                  <Input
+                    id="ciudad"
+                    type="text"
+                    placeholder="Ciudad"
+                    {...register('direccion.ciudad', {
+                      required: 'El campo ciudad es obligatorio',
+                    })}
+                  />
+                  {errors.direccion?.ciudad && <div>{errors.direccion.ciudad.message}</div>}
+                </div>
+              </div>
             </div>
           </div>
 

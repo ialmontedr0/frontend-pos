@@ -70,7 +70,11 @@ export const EditUser: React.FC<EditUserProps> = ({ user, isOpen, closeModal, er
       usuario: '',
       correo: '',
       telefono: '',
-      direccion: '',
+      direccion: {
+        calle: '',
+        casa: '',
+        ciudad: ''
+      },
       rol: 'cajero',
       estado: 'activo',
       foto: '',
@@ -293,10 +297,42 @@ export const EditUser: React.FC<EditUserProps> = ({ user, isOpen, closeModal, er
 
                   <div>
                     <Label>Direccion</Label>
-                    <Input id="direccion" {...register('direccion')} placeholder={user.direccion} />
-                    {errors.direccion && (
-                      <div className="text-sm text-red-500">{errors.direccion.message}</div>
-                    )}
+                    <div className="grid grid-cols-2 space-x-2 space-y-2">
+                <div>
+                  <Label htmlFor="calle">Calle</Label>
+                  <Input
+                    id="calle"
+                    type="text"
+                    placeholder="Ingresa la calle de residencia del usuario"
+                    {...register('direccion.calle', { required: 'El campo calle es obligatorio' })}
+                  />
+                  {errors.direccion?.calle && <div>{errors.direccion.calle.message}</div>}
+                </div>
+                <div>
+                  <Label htmlFor="casa">Casa</Label>
+                  <Input
+                    id="casa"
+                    type="text"
+                    placeholder="Numero de la casa #"
+                    {...register('direccion.casa', {
+                      required: 'El campo casa es obligatorio',
+                    })}
+                  />
+                  {errors.direccion?.casa && <div>{errors.direccion.casa.message}</div>}
+                </div>
+                <div>
+                  <Label htmlFor="ciudad">Ciudad</Label>
+                  <Input
+                    id="ciudad"
+                    type="text"
+                    placeholder="Ciudad"
+                    {...register('direccion.ciudad', {
+                      required: 'El campo ciudad es obligatorio',
+                    })}
+                  />
+                  {errors.direccion?.ciudad && <div>{errors.direccion.ciudad.message}</div>}
+                </div>
+              </div>
                   </div>
 
                   <div>
