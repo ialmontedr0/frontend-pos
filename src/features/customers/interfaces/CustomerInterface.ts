@@ -6,7 +6,11 @@ export interface Customer {
   apellido?: string;
   telefono: string;
   correo?: string;
-  direccion?: string;
+  direccion?: {
+    calle: string;
+    casa: string;
+    ciudad: string;
+  };
   tipo: 'express' | 'comun';
   historialCompras: Sale[];
   createdAt: string;

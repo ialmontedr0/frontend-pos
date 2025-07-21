@@ -7,7 +7,7 @@ import withReactContent from 'sweetalert2-react-content';
 import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
 import type { RootState } from '../../../store/store';
 
-import { clearSelectedUser, getUserByUsername } from '../slices/usersSlice';
+import { clearSelectedUser, clearUserError, getUserByUsername } from '../slices/usersSlice';
 import { parseTextSizeName, parseUserRole } from '../../../utils/commonFunctions';
 
 import Button from '../../../components/UI/Button/Button';
@@ -35,6 +35,7 @@ export const User: React.FC = () => {
       navigate('/users');
       return;
     }
+    dispatch(clearUserError());
     dispatch(getUserByUsername(usuario));
     return () => {
       dispatch(clearSelectedUser());
@@ -130,6 +131,13 @@ export const User: React.FC = () => {
               <p className="text-gray-500 dark:text-gray-400 text-sm">Rol</p>
               <p className="text-gray-800 dark:text-gray-200">{parseUserRole(user.rol)}</p>
             </div>
+
+            {user.rol !== 'admin' && user.sucursal && (
+              <div>
+                <p className="text-gray-500 dark:text-gray-400 text-sm">Sucursal</p>
+                <p className="text-gray-800 dark:text-gray-200">{user?.sucursal.nombre}</p>
+              </div>
+            )}
 
             <div>
               <p className="text-gray-500 dark:text-gray-400 text-sm">Direccion</p>

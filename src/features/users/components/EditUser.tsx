@@ -1,10 +1,10 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
-import { useAppDispatch } from '../../../hooks/hooks';
+import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
 import { updateUser, deleteUser, getUserByUsername } from '../slices/usersSlice';
 import type { User as UserInterface } from '../interfaces/UserInterface';
 import type { UpdateUserDTO } from '../dtos/update-user.dto';
@@ -17,6 +17,11 @@ import { ToggleSwitch } from '../../../components/UI/ToggleSwitch/ToggleSwitch';
 import { Modal } from '../../../components/UI/Modal/Modal';
 import { myAlertSuccess, myAlertError } from '../../../utils/commonFunctions';
 import { BiSave, BiSolidSave, BiSolidTrash, BiTrash, BiX } from 'react-icons/bi';
+import { type RootState } from '../../../store/store';
+import { getAllStores } from '../../stores/slices/storesSlice';
+import { SearchSelect } from '../../../components/SearchSelect/SearchSelect';
+import type { Store } from '../../stores/interfaces/store.interface';
+import { Select } from '../../../components/UI/Select/Select';
 
 interface EditUserProps {
   user: UserInterface;
@@ -29,6 +34,13 @@ export const EditUser: React.FC<EditUserProps> = ({ user, isOpen, closeModal, er
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
+  const [selectedUserRole, setSelectedUserRole] = useState<'admin' | 'cajero' | 'inventarista'>();
+  const [selectedStoreName, setSelectedStoreName] = useState<string>('');
+  const { stores } = useAppSelector((state: RootState) => state.stores);
+
+  useEffect(() => {
+    dispatch(getAllStores());
+  }, [dispatch]);
 
   const sanitizedUserForForm = (user: any): UpdateUserDTO => {
     const {
@@ -40,6 +52,7 @@ export const EditUser: React.FC<EditUserProps> = ({ user, isOpen, closeModal, er
       direccion,
       rol,
       estado,
+      sucursal,
       foto,
       configuracion,
     } = user;
@@ -52,6 +65,7 @@ export const EditUser: React.FC<EditUserProps> = ({ user, isOpen, closeModal, er
       direccion,
       rol,
       estado,
+      sucursal,
       foto,
       configuracion,
     };
@@ -73,10 +87,11 @@ export const EditUser: React.FC<EditUserProps> = ({ user, isOpen, closeModal, er
       direccion: {
         calle: '',
         casa: '',
-        ciudad: ''
+        ciudad: '',
       },
       rol: 'cajero',
       estado: 'activo',
+      sucursal: '',
       foto: '',
       configuracion: undefined,
     },
@@ -84,9 +99,31 @@ export const EditUser: React.FC<EditUserProps> = ({ user, isOpen, closeModal, er
 
   useEffect(() => {
     if (user) {
-      reset(sanitizedUserForForm(user));
+      const storeId = (typeof user.sucursal === 'object' ? user.sucursal._id : user.sucursal) || '';
+
+      reset(
+        sanitizedUserForForm({
+          nombre: user.nombre,
+          apellido: user.apellido,
+          usuario: user.usuario,
+          correo: user.correo,
+          telefono: user.telefono,
+          direccion: user.direccion,
+          rol: user.rol,
+          estado: user.estado,
+          sucursal: user.sucursal,
+          foto: user.foto,
+          configuracion: user.configuracion,
+        })
+      );
+
+      setSelectedStoreName(
+        typeof user.sucursal === 'object'
+          ? user.sucursal.nombre
+          : stores.find((s: Store) => s._id === storeId)?.nombre || ''
+      );
     }
-  }, [user, reset]);
+  }, [user, stores, reset]);
 
   useEffect(() => {
     if (!user) {
@@ -96,43 +133,45 @@ export const EditUser: React.FC<EditUserProps> = ({ user, isOpen, closeModal, er
     return () => {};
   }, [user, navigate]);
 
-  const onSubmit = useCallback(
-    (updateUserDTO: UpdateUserDTO) => {
-      myAlert
-        .fire({
-          title: 'Actualizar Usuario',
-          text: `Estas seguro que deseas guardar los cambios?`,
-          iconHtml: <BiSolidSave />,
-          customClass: {
-            icon: 'no-default-icon-border',
-          },
-          showConfirmButton: true,
-          showCancelButton: true,
-          confirmButtonText: 'Guardar',
-          cancelButtonText: 'Cancelar',
-        })
-        .then((result) => {
-          if (result.isConfirmed && user) {
-            dispatch(
-              updateUser({
-                userId: user._id,
-                updateUserDTO,
-              })
-            )
-              .unwrap()
-              .then(() => {
-                closeModal();
-                myAlertSuccess(`Usuario actualizado`, `Se ha actualizado el usuario con exito`);
-                getUserByUsername(user.usuario!);
-              })
-              .catch((error: any) => {
-                myAlertError(error);
-              });
+  const onSubmit = useCallback((updateUserDTO: UpdateUserDTO) => {
+    myAlert
+      .fire({
+        title: `Actualizar Usuario`,
+        text: `Estas seguro que deseas guardar los cambios?`,
+        iconHtml: <BiSolidSave />,
+        customClass: {
+          icon: 'no-default-icon-border',
+        },
+        showConfirmButton: true,
+        showCancelButton: true,
+        confirmButtonText: 'Guardar',
+        cancelButtonText: 'Cancelar',
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+
+          if (updateUserDTO.rol === 'admin') {
+            delete updateUserDTO.sucursal;
           }
-        });
-    },
-    [dispatch]
-  );
+
+          dispatch(
+            updateUser({
+              userId: user._id,
+              updateUserDTO,
+            })
+          )
+            .unwrap()
+            .then(() => {
+              closeModal();
+              myAlertSuccess(`Usuario actualizado`, `Se ha actualizado el usuario exitosamente.`);
+              dispatch(getUserByUsername(user.usuario));
+            })
+            .catch((error: any) => {
+              myAlertError(error);
+            });
+        }
+      });
+  }, []);
 
   const onDelUser = useCallback(
     (userId: string) => {
@@ -259,18 +298,55 @@ export const EditUser: React.FC<EditUserProps> = ({ user, isOpen, closeModal, er
                     )}
                   </div>
                   <div>
-                    <Label>Rol</Label>
-                    <select
+                    <Label htmlFor="rol">Rol</Label>
+                    <Select
                       id="rol"
                       {...register('rol', { required: true })}
                       defaultValue={user.rol}
+                      onChange={(e) => {
+                        register('rol').onChange(e);
+                        setSelectedUserRole(e.target.value as 'admin' | 'cajero' | 'inventarista');
+                      }}
                     >
-                      <option value="admin">Administrador</option>
+                      <option className="px-3 py-3 bg-white" value="admin">
+                        Administrador
+                      </option>
                       <option value="cajero">Cajero</option>
                       <option value="inventarista">Inventarista</option>
-                    </select>
+                    </Select>
+
                     {errors.rol && <div className="text-sm text-red-500">{errors.rol.message}</div>}
                   </div>
+
+                  {selectedUserRole !== 'admin' && (
+                    <div>
+                      <Label htmlFor="sucursal">Sucursal</Label>
+                      <Controller
+                        name="sucursal"
+                        control={control}
+                        rules={{ required: 'El campo sucursal es obligatorio' }}
+                        render={({ field }) => (
+                          <SearchSelect
+                            options={stores}
+                            initialDisplayValue={selectedStoreName}
+                            fieldValue={field.value}
+                            placeholder="Buscar Sucursal"
+                            name={field.name}
+                            onFieldChange={field.onChange}
+                            onFieldBlur={field.onBlur}
+                            onSelect={(id: string) => {
+                              field.onChange(id);
+                              const found = stores.find((s) => s._id === id);
+                              setSelectedStoreName(found?.nombre || '');
+                            }}
+                          />
+                        )}
+                      />
+                      {errors.sucursal && (
+                        <div className="text-sm text-red-500">{errors.sucursal.message}</div>
+                      )}
+                    </div>
+                  )}
 
                   <div>
                     <Label>Estado</Label>
@@ -298,41 +374,43 @@ export const EditUser: React.FC<EditUserProps> = ({ user, isOpen, closeModal, er
                   <div>
                     <Label>Direccion</Label>
                     <div className="grid grid-cols-2 space-x-2 space-y-2">
-                <div>
-                  <Label htmlFor="calle">Calle</Label>
-                  <Input
-                    id="calle"
-                    type="text"
-                    placeholder="Ingresa la calle de residencia del usuario"
-                    {...register('direccion.calle', { required: 'El campo calle es obligatorio' })}
-                  />
-                  {errors.direccion?.calle && <div>{errors.direccion.calle.message}</div>}
-                </div>
-                <div>
-                  <Label htmlFor="casa">Casa</Label>
-                  <Input
-                    id="casa"
-                    type="text"
-                    placeholder="Numero de la casa #"
-                    {...register('direccion.casa', {
-                      required: 'El campo casa es obligatorio',
-                    })}
-                  />
-                  {errors.direccion?.casa && <div>{errors.direccion.casa.message}</div>}
-                </div>
-                <div>
-                  <Label htmlFor="ciudad">Ciudad</Label>
-                  <Input
-                    id="ciudad"
-                    type="text"
-                    placeholder="Ciudad"
-                    {...register('direccion.ciudad', {
-                      required: 'El campo ciudad es obligatorio',
-                    })}
-                  />
-                  {errors.direccion?.ciudad && <div>{errors.direccion.ciudad.message}</div>}
-                </div>
-              </div>
+                      <div>
+                        <Label htmlFor="calle">Calle</Label>
+                        <Input
+                          id="calle"
+                          type="text"
+                          placeholder="Ingresa la calle de residencia del usuario"
+                          {...register('direccion.calle', {
+                            required: 'El campo calle es obligatorio',
+                          })}
+                        />
+                        {errors.direccion?.calle && <div>{errors.direccion.calle.message}</div>}
+                      </div>
+                      <div>
+                        <Label htmlFor="casa">Casa</Label>
+                        <Input
+                          id="casa"
+                          type="text"
+                          placeholder="Numero de la casa #"
+                          {...register('direccion.casa', {
+                            required: 'El campo casa es obligatorio',
+                          })}
+                        />
+                        {errors.direccion?.casa && <div>{errors.direccion.casa.message}</div>}
+                      </div>
+                      <div>
+                        <Label htmlFor="ciudad">Ciudad</Label>
+                        <Input
+                          id="ciudad"
+                          type="text"
+                          placeholder="Ciudad"
+                          {...register('direccion.ciudad', {
+                            required: 'El campo ciudad es obligatorio',
+                          })}
+                        />
+                        {errors.direccion?.ciudad && <div>{errors.direccion.ciudad.message}</div>}
+                      </div>
+                    </div>
                   </div>
 
                   <div>
@@ -354,14 +432,16 @@ export const EditUser: React.FC<EditUserProps> = ({ user, isOpen, closeModal, er
               <Button size="sm" variant="outline" startIcon={<BiX />} onClick={cancel}>
                 Cancelar
               </Button>
-              <Button
-                size="sm"
-                variant="destructive"
-                startIcon={<BiTrash />}
-                onClick={() => onDelUser(user._id)}
-              >
-                Eliminar
-              </Button>
+              {user.estado === 'inactivo' && (
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  startIcon={<BiTrash />}
+                  onClick={() => onDelUser(user._id)}
+                >
+                  Eliminar
+                </Button>
+              )}
             </div>
           </form>
         </div>

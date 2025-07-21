@@ -3,6 +3,7 @@ import type { User } from '../interfaces/UserInterface';
 import type { UpdateUserDTO } from '../dtos/update-user.dto';
 import { usersService } from '../services/usersService';
 import type { ChangeUserPasswordDTO } from '../dtos/change-user-password.dto';
+import type { CreateUserDTO } from '../dtos/create-user.dto';
 
 interface UsersState {
   user: User | null;
@@ -80,7 +81,7 @@ export const getUsersByStatus = createAsyncThunk<User[], string, { rejectValue: 
   }
 );
 
-export const createUser = createAsyncThunk<User, Partial<User>, { rejectValue: string }>(
+export const createUser = createAsyncThunk<User, CreateUserDTO, { rejectValue: string }>(
   'users/create',
   async (createUserDTO, { rejectWithValue }) => {
     try {

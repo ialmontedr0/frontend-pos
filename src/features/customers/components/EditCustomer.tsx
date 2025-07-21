@@ -54,15 +54,19 @@ export const EditCustomer: React.FC<EditCustomerProps> = ({
       apellido: '',
       telefono: '',
       correo: '',
-      direccion: '',
+      direccion: {
+        calle: '',
+        casa: '',
+        ciudad: '',
+      },
     },
   });
 
   useEffect(() => {
     if (customer) {
-        reset(sanitizedCustomerForForm(customer))
+      reset(sanitizedCustomerForForm(customer));
     }
-  }, [customer, reset])
+  }, [customer, reset]);
 
   useEffect(() => {
     if (!customer) {
@@ -230,17 +234,35 @@ export const EditCustomer: React.FC<EditCustomerProps> = ({
                       <div className="text-sm text-red-500">{errors.correo.message}</div>
                     )}
                   </div>
+                </div>
 
-                  <div>
-                    <Label htmlFor="direccion">Direccion</Label>
+                <div className='mt-2'>
+                  <Label htmlFor="direccion">Direccion</Label>
+                  <div className="border border-gray-200 p-4 w-full rounded-2xl shadow-theme-md">
+                    <Label htmlFor="">Calle</Label>
                     <Input
-                      id="direccion"
-                      {...register('direccion')}
-                      placeholder={customer.direccion}
-                    />
-                    {errors.direccion && (
-                      <div className="text-sm text-red-500">{errors.direccion.message}</div>
-                    )}
+                      placeholder="Ingresa Calle"
+                      id="calle"
+                      type="text"
+                      {...register('direccion.calle')}
+                    />{' '}
+                    {errors.direccion?.calle && <div className="text-sm text-red-500"></div>}
+                    <Label htmlFor="">Casa</Label>
+                    <Input
+                      placeholder="Ingresa No. de residencia"
+                      id="casa"
+                      type="text"
+                      {...register('direccion.casa')}
+                    />{' '}
+                    {errors.direccion?.casa && <div className="text-sm text-red-500"></div>}
+                    <Label htmlFor="">Ciudad</Label>
+                    <Input
+                      placeholder="Ingresa Ciudad"
+                      id="ciudad"
+                      type="text"
+                      {...register('direccion.ciudad')}
+                    />{' '}
+                    {errors.direccion?.ciudad && <div className="text-sm text-red-500"></div>}
                   </div>
                 </div>
               </div>

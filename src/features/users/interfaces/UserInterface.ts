@@ -18,6 +18,7 @@ export interface User {
   };
   rol: UserRole;
   estado: string;
+  sucursal: { _id: string; codigo: string; nombre: string };
   configuracion: UserSettings;
   foto?: string;
   createdAt: string;

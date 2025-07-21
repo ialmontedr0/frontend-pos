@@ -13,6 +13,7 @@ export interface UpdateUserDTO {
   };
   rol?: string;
   estado?: Estado;
+  sucursal?: string;
   configuracion?: {
     tema?: string;
     idioma?: string;

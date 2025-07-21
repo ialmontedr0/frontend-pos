@@ -5,36 +5,36 @@ import Input from '../../../components/UI/Input/Input';
 import { Label } from '../../../components/UI/Label/Label';
 import { Modal } from '../../../components/UI/Modal/Modal';
 import { myAlertSuccess, myAlertError } from '../../../utils/commonFunctions';
-import type { Branche } from '../interfaces/branche.interface';
+import type { Store } from '../interfaces/store.interface';
 import { useAppDispatch } from '../../../hooks/hooks';
 import { useNavigate } from 'react-router-dom';
 import withReactContent from 'sweetalert2-react-content';
 import Swal from 'sweetalert2';
 import {
-  updateBranche,
-  deleteBranche,
-  getBrancheById,
-  clearSelectedBranche,
-} from '../slices/branchesSlice';
-import type { UpdateBrancheDTO } from '../dtos/update-branche.dto';
+  updateStore,
+  deleteStore,
+  clearSelectedStore,
+  getStoreByCode,
+} from '../slices/storesSlice';
+import type { UpdateStoreDTO } from '../dtos/update-store.dto';
 
 import { useForm } from 'react-hook-form';
 import { BiSave, BiSolidSave, BiSolidTrash, BiTrash, BiX } from 'react-icons/bi';
 
-interface EditBrancheProps {
-  branche: Branche;
+interface EditStoreProps {
+  store: Store;
   isOpen: boolean;
   closeModal: () => void;
   error?: string;
 }
 
-export const EditBranche: React.FC<EditBrancheProps> = ({ isOpen, branche, closeModal, error }) => {
+export const EditStore: React.FC<EditStoreProps> = ({ isOpen, store, closeModal, error }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
 
-  const sanitizedBrancheForForm = (branche: Branche): UpdateBrancheDTO => {
-    const { nombre, direccion, telefono } = branche;
+  const sanitizedBrancheForForm = (store: Store): UpdateStoreDTO => {
+    const { nombre, direccion, telefono } = store;
     return {
       nombre,
       direccion,
@@ -47,11 +47,12 @@ export const EditBranche: React.FC<EditBrancheProps> = ({ isOpen, branche, close
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<UpdateBrancheDTO>({
+  } = useForm<UpdateStoreDTO>({
     defaultValues: {
       nombre: '',
       direccion: {
         calle: '',
+        numero: '',
         ciudad: '',
       },
       telefono: '',
@@ -59,21 +60,21 @@ export const EditBranche: React.FC<EditBrancheProps> = ({ isOpen, branche, close
   });
 
   useEffect(() => {
-    if (branche) {
-      reset(sanitizedBrancheForForm(branche));
+    if (store) {
+      reset(sanitizedBrancheForForm(store));
     }
-  }, [branche, reset]);
+  }, [store, reset]);
 
   useEffect(() => {
-    if (!branche) {
-      navigate('/branches');
+    if (!store) {
+      navigate('/stores');
       return;
     }
     return () => {};
-  }, [branche, navigate]);
+  }, [store, navigate]);
 
   const onSubmit = useCallback(
-    (updateBrancheDTO: UpdateBrancheDTO) => {
+    (updateStoreDTO: UpdateStoreDTO) => {
       myAlert
         .fire({
           title: 'Actualizar Sucursal',
@@ -88,11 +89,11 @@ export const EditBranche: React.FC<EditBrancheProps> = ({ isOpen, branche, close
           cancelButtonText: 'Cancelar',
         })
         .then((result) => {
-          if (result.isConfirmed && branche) {
+          if (result.isConfirmed && store) {
             dispatch(
-              updateBranche({
-                brancheId: branche._id,
-                updateBrancheDTO,
+              updateStore({
+                storeId: store._id,
+                updateStoreDTO,
               })
             )
               .unwrap()
@@ -102,7 +103,7 @@ export const EditBranche: React.FC<EditBrancheProps> = ({ isOpen, branche, close
                   `Sucursal ${branche.nombre} actualizada`,
                   `Se ha actualizado la sucursal con exito`
                 );
-                getBrancheById(branche._id);
+                getStoreByCode(branche.codigo);
               })
               .catch((error: any) => {
                 myAlertError(error);
@@ -113,8 +114,8 @@ export const EditBranche: React.FC<EditBrancheProps> = ({ isOpen, branche, close
     [dispatch]
   );
 
-  const onDelBranche = useCallback(
-    (brancheId: string) => {
+  const onDelStore = useCallback(
+    (storeId: string) => {
       myAlert
         .fire({
           title: 'Eliminar Sucursal',
@@ -131,7 +132,7 @@ export const EditBranche: React.FC<EditBrancheProps> = ({ isOpen, branche, close
         })
         .then((result) => {
           if (result.isConfirmed) {
-            dispatch(deleteBranche(brancheId))
+            dispatch(deleteStore(storeId))
               .unwrap()
               .then(() => {
                 closeModal();
@@ -159,12 +160,12 @@ export const EditBranche: React.FC<EditBrancheProps> = ({ isOpen, branche, close
       .then((result) => {
         if (result.isConfirmed) {
           closeModal();
-          clearSelectedBranche();
+          clearSelectedStore();
         }
       });
   };
 
-  if (!branche) return null;
+  if (!store) return null;
 
   return (
     <>
@@ -182,7 +183,7 @@ export const EditBranche: React.FC<EditBrancheProps> = ({ isOpen, branche, close
             <div className="custom-scrollbar h-fit overflow-y-auto px-2">
               <div className="">
                 <h5 className="text-lg font-medium text-black dark:text-gray-200">
-                  Sucursal {branche.nombre}
+                  Sucursal {store.nombre}, Codigo {store.codigo}
                 </h5>
                 <div className="flex flex-col md:grid md:grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                   <div className="col-span-2 lg:col-span-1">
@@ -209,6 +210,20 @@ export const EditBranche: React.FC<EditBrancheProps> = ({ isOpen, branche, close
                       />
                       {errors.direccion?.calle && (
                         <div className="text-sm text-red-500">{errors.direccion.calle.message}</div>
+                      )}
+
+                      <Label htmlFor="numero">Numero</Label>
+                      <Input
+                        id="numero"
+                        type="text"
+                        {...register('direccion.numero', {
+                          required: 'El campo numero es obligatorio',
+                        })}
+                      />
+                      {errors.direccion?.numero && (
+                        <div className="text-sm text-red-500">
+                          {errors.direccion.numero.message}
+                        </div>
                       )}
 
                       <Label htmlFor="ciudad">Ciudad</Label>
@@ -254,7 +269,7 @@ export const EditBranche: React.FC<EditBrancheProps> = ({ isOpen, branche, close
                 size="sm"
                 variant="destructive"
                 startIcon={<BiTrash size={20} />}
-                onClick={() => onDelBranche(branche._id)}
+                onClick={() => onDelStore(store._id)}
               >
                 Eliminar
               </Button>

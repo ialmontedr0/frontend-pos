@@ -110,10 +110,25 @@ export const Customer: React.FC = () => {
               </p>
             </div>
 
-            <div>
-              <Label className="text-gray-500 dark:text-gray-400 text-sm">Direccion</Label>
-              <p className="text-gray-800 dark:text-gray-200">{customer.direccion || '-'}</p>
-            </div>
+            {customer.direccion && (
+              <div>
+                <Label className="text-gray-500 dark:text-gray-400 text-sm">Direccion</Label>
+                <p className="text-gray-800 dark:text-gray-200">
+                  <strong>Calle: </strong>
+                  {customer.direccion.calle}
+                </p>
+
+                <p className="text-gray-800 dark:text-gray-200">
+                  <strong>No. Casa: </strong>
+                  {customer.direccion.casa}
+                </p>
+
+                <p className="text-gray-800 dark:text-gray-200">
+                  <strong>Ciudad: </strong>
+                  {customer.direccion.ciudad}
+                </p>
+              </div>
+            )}
 
             {customer.createdBy && (
               <div>

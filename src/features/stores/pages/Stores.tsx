@@ -4,58 +4,59 @@ import { useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../../../hooks/hooks';
 import type { RootState } from '../../../store/store';
 
-import { getAllBranches } from '../slices/branchesSlice';
+import { getAllStores } from '../slices/storesSlice';
 
-import type { Branche } from '../interfaces/branche.interface';
+import type { Store } from '../interfaces/store.interface';
 import type { Action, Column } from '../../../components/Table/types';
 import { Table } from '../../../components/Table/Table';
 import { useModal } from '../../../hooks/useModal';
 import PageMeta from '../../../components/common/PageMeta';
 import Button from '../../../components/UI/Button/Button';
 import { BiPlusCircle } from 'react-icons/bi';
-import { EditBranche } from '../components/EditBranche';
+import { EditStore } from '../components/EditStore';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 
-export default function Branches() {
+export default function Stores() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { isOpen, openModal, closeModal } = useModal();
 
-  const [selectedBranche, setSelectedBranche] = useState<Branche | null>(null);
+  const [selectedBranche, setSelectedBranche] = useState<Store | null>(null);
 
-  const { branches, loading, error } = useAppSelector((state: RootState) => state.branches);
+  const { stores, loading, error } = useAppSelector((state: RootState) => state.stores);
 
   useEffect(() => {
-    dispatch(getAllBranches());
+    dispatch(getAllStores());
   }, [dispatch]);
 
-  const branchesColumns: Column<Branche>[] = [
+  const branchesColumns: Column<Store>[] = [
+    { header: 'Codigo', accessor: 'codigo' },
     { header: 'Nombre', accessor: 'nombre' },
     {
       header: 'Direccion',
       accessor: 'direccion',
-      render: (value: Branche['direccion']) => value.calle + `, ` + value.ciudad,
+      render: (value: Store['direccion']) => value.calle + `, ` + value.ciudad,
     },
     { header: 'Telefono', accessor: 'telefono' },
   ];
 
-  const branchesActions: Action<Branche>[] = [
-    { label: 'Ver', onClick: (b) => viewBranche(b._id) },
-    { label: 'Editar', onClick: (b) => editBranche(b) },
+  const branchesActions: Action<Store>[] = [
+    { label: 'Ver', onClick: (s) => viewStore(s.codigo) },
+    { label: 'Editar', onClick: (s) => editStore(s) },
   ];
 
-  const branchesData = branches;
+  const branchesData = stores;
 
   const newBranche = () => {
-    navigate('/branches/create');
+    navigate('/stores/create');
   };
 
-  const viewBranche = (brancheId: string) => {
-    navigate(`/branches/${brancheId}`);
+  const viewStore = (codigo: string) => {
+    navigate(`/stores/${codigo}`);
   };
 
-  const editBranche = (branche: Branche) => {
-    setSelectedBranche(branche);
+  const editStore = (store: Store) => {
+    setSelectedBranche(store);
     openModal();
   };
 
@@ -89,7 +90,7 @@ export default function Branches() {
         </div>
       </div>
 
-      <EditBranche branche={selectedBranche!} isOpen={isOpen} closeModal={closeModal} />
+      <EditStore store={selectedBranche!} isOpen={isOpen} closeModal={closeModal} />
     </>
   );
 }

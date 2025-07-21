@@ -11,23 +11,23 @@ import PageMeta from '../../../components/common/PageMeta';
 import Button from '../../../components/UI/Button/Button';
 import { Label } from '../../../components/UI/Label/Label';
 import { NotFound } from '../../../pages/NotFound';
-import { getBrancheById } from '../slices/branchesSlice';
+import { getStoreByCode } from '../slices/storesSlice';
 import Spinner from '../../../components/UI/Spinner/Spinner';
-import { EditBranche } from '../components/EditBranche';
+import { EditStore } from '../components/EditStore';
 import { useModal } from '../../../hooks/useModal';
 
-export const Branche: React.FC = () => {
+export const Store: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { brancheId } = useParams<{ brancheId: string }>();
+  const { codigo } = useParams<{ codigo: string }>();
   const { isOpen, openModal, closeModal } = useModal();
   moment.locale('es');
 
-  const { branche, loading, error } = useAppSelector((state: RootState) => state.branches);
+  const { store, loading, error } = useAppSelector((state: RootState) => state.stores);
 
   useEffect(() => {
-    if (brancheId) {
-      dispatch(getBrancheById(brancheId));
+    if (codigo) {
+      dispatch(getStoreByCode(codigo));
     }
   }, [dispatch]);
 
@@ -36,10 +36,10 @@ export const Branche: React.FC = () => {
   };
 
   const oneditBranche = () => {
-    openModal()
-  }
+    openModal();
+  };
 
-  if (!branche) {
+  if (!store) {
     return <NotFound node="Sucursal" />;
   }
 
@@ -51,54 +51,62 @@ export const Branche: React.FC = () => {
       <div className="space-y-6 p-4 text-black dark:text-gray-200">
         <div className="space-y-4">
           <div className="my-2">
-            <h2 className="text-2xl md:text-3xl font-medium">
-              Sucursal {branche.nombre}
-            </h2>
+            <h2 className="text-2xl md:text-3xl font-medium">Sucursal {store.nombre}</h2>
           </div>
 
           <div className="space-y-2 grid grid-cols-2 space-x-3">
             <div>
               <Label htmlFor="nombre">Nombre</Label>
-              <p>{branche.nombre}</p>
+              <p>{store.nombre}</p>
+            </div>
+
+            <div>
+              <Label htmlFor="codigo">Codigo</Label>
+              <p>{store.codigo}</p>
             </div>
 
             <div>
               <Label>Direccion</Label>
               <p>
                 <strong>Calle: </strong>
-                {branche.direccion.calle}
+                {store.direccion.calle}
+              </p>
+
+              <p>
+                <strong>Numero: </strong>
+                {store.direccion.numero || '#'}
               </p>
               <p>
                 <strong>Ciudad: </strong>
-                {branche.direccion.ciudad}
+                {store.direccion.ciudad}
               </p>
             </div>
 
             <div>
               <Label htmlFor="telefono">Telefono</Label>
-              <p>{branche.telefono}</p>
+              <p>{store.telefono}</p>
             </div>
 
             <div>
               <Label htmlFor="createdBy">Creada Por</Label>
-              <p>{branche.createdBy.usuario}</p>
+              <p>{store.createdBy.usuario}</p>
             </div>
 
             <div>
               <Label htmlFor="createdAt">Fecha Creacion</Label>
-              <p>{moment(branche.createdAt).format('LLLL')}</p>
+              <p>{moment(store.createdAt).format('LLLL')}</p>
             </div>
 
-            {branche.updatedBy && (
+            {store.updatedBy && (
               <div>
                 <Label htmlFor="updatedBy">Actualizado Por</Label>
-                <p>{branche.updatedBy.usuario}</p>
+                <p>{store.updatedBy.usuario}</p>
               </div>
             )}
-            {branche.updatedAt && (
+            {store.updatedAt && (
               <div>
                 <Label htmlFor="updatedAt">Fecha Actualizacion</Label>
-                <p>{moment(branche.updatedAt).format('LLLL')}</p>
+                <p>{moment(store.updatedAt).format('LLLL')}</p>
               </div>
             )}
           </div>
@@ -107,13 +115,18 @@ export const Branche: React.FC = () => {
             <Button size="sm" variant="outline" startIcon={<BiArrowBack />} onClick={goBack}>
               Volver
             </Button>
-            <Button size="sm" variant="primary" startIcon={<BiEdit />} onClick={() => oneditBranche()}>
+            <Button
+              size="sm"
+              variant="primary"
+              startIcon={<BiEdit />}
+              onClick={() => oneditBranche()}
+            >
               Editar
             </Button>
           </div>
         </div>
       </div>
-      <EditBranche branche={branche} isOpen={isOpen} closeModal={closeModal} error={error!}/>
+      <EditStore store={store} isOpen={isOpen} closeModal={closeModal} error={error!} />
     </>
   );
 };

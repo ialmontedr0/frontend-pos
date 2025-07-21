@@ -15,7 +15,7 @@ export const Error: React.FC<ErrorProps> = ({ message }) => {
   };
 
   return (
-    <div className="self-center m-4 w-md bg-red-200 rounded-xl shadow-md p-2 h-auto space-y-2">
+    <div className="self-center m-4 w-md bg-white rounded-xl shadow-md p-2 h-auto space-y-2">
       <div className="p-2">
         <h2 className="text-2xl md:text-3xl font-regular">Error</h2>
       </div>

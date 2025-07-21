@@ -15,7 +15,8 @@ export interface CreateUserDTO {
   };
   rol?: UserRole;
   estado?: string;
+  sucursal: string;
   foto?: string;
   configuracion?: UserSettings;
-  roles?: string[]
+  roles?: string[];
 }

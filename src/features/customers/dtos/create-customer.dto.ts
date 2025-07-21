@@ -3,5 +3,9 @@ export interface CreateCustomerDTO {
   apellido?: string;
   telefono: string;
   correo?: string;
-  direccion?: string;
+  direccion?: {
+    calle: string;
+    casa: string;
+    ciudad: string;
+  };
 }

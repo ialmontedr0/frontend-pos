@@ -11,7 +11,6 @@ import type { CreateCustomerDTO } from '../dtos/create-customer.dto';
 
 import Button from '../../../components/UI/Button/Button';
 import Input from '../../../components/UI/Input/Input';
-import { Textarea } from '../../../components/UI/TextArea/TextArea';
 import { Label } from '../../../components/UI/Label/Label';
 import { myAlertError, myAlertSuccess } from '../../../utils/commonFunctions';
 import { BiSave, BiX } from 'react-icons/bi';
@@ -37,7 +36,11 @@ export const CreateCustomer: React.FC = () => {
       apellido: '',
       telefono: '',
       correo: '',
-      direccion: '',
+      direccion: {
+        calle: '',
+        casa: '',
+        ciudad: '',
+      },
     },
   });
 
@@ -70,10 +73,10 @@ export const CreateCustomer: React.FC = () => {
             .unwrap()
             .then(() => {
               myAlertSuccess(`Cliente creado`, `Se ha creado el cliente exitosamente!`);
-              navigate('/users');
+              navigate('/customers');
             })
             .catch((error: any) => {
-              myAlertError(`Error`, `Error: ${error.response?.data?.message || error.message}`);
+              myAlertError(error);
             });
         }
       });
@@ -85,7 +88,7 @@ export const CreateCustomer: React.FC = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="w-full max-w-4xl mx-auto p-6 bg-white dark:bg-gray-900 rounded-lg shadow-md space-y-6"
       >
-        <h2 className="text-2xl font-regular text-black dark:text-gray-200 mb-4">
+        <h2 className="text-2xl md:text-3xl font-medium text-black dark:text-gray-200 mb-4">
           Crear Cliente
         </h2>
 
@@ -137,14 +140,35 @@ export const CreateCustomer: React.FC = () => {
             />
             {errors.correo && <p className="mt-1 text-sm text-red-500">{errors.correo.message}</p>}
           </div>
+        </div>
 
-          <div>
-            <Label htmlFor="direccion">Direccion</Label>
-            <Textarea
-              id="direccion"
-              placeholder="Ej. Calle 01, Provincia, Pais"
-              {...register('direccion')}
-            />
+        <div>
+          <Label htmlFor="direccion">Direccion</Label>
+          <div className="border border-gray-200 p-4 w-full rounded-2xl shadow-theme-md">
+            <Label htmlFor="">Calle</Label>
+            <Input
+              placeholder="Ingresa Calle"
+              id="calle"
+              type="text"
+              {...register('direccion.calle')}
+            />{' '}
+            {errors.direccion?.calle && <div className="text-sm text-red-500"></div>}
+            <Label htmlFor="">Casa</Label>
+            <Input
+              placeholder="Ingresa No. de residencia"
+              id="casa"
+              type="text"
+              {...register('direccion.casa')}
+            />{' '}
+            {errors.direccion?.casa && <div className="text-sm text-red-500"></div>}
+            <Label htmlFor="">Ciudad</Label>
+            <Input
+              placeholder="Ingresa Ciudad"
+              id="ciudad"
+              type="text"
+              {...register('direccion.ciudad')}
+            />{' '}
+            {errors.direccion?.ciudad && <div className="text-sm text-red-500"></div>}
           </div>
         </div>
 

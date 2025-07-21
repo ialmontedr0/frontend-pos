@@ -39,8 +39,8 @@ import { SalePage } from './features/sales/pages/NewSalePage';
 import { SettingsPage } from './features/users/user/pages/SettingsPage';
 import { SyncLog } from './features/sync-logs/pages/SyncLog';
 import { UserProfilePage } from './features/users/user/pages/UserProfilePage';
-import { Branche } from './features/branches/pages/Branche';
-import { CreateBranche } from './features/branches/pages/CreateBranche';
+import { Store } from './features/stores/pages/Store';
+import { CreateStore } from './features/stores/pages/CreateStore';
 
 // Lazy Loading Routes
 const Users = lazy(() => import('./features/users/pages/Users'));
@@ -56,7 +56,7 @@ const Providers = lazy(() => import('./features/products/providers/pages/Provide
 const Categories = lazy(() => import('./features/products/categories/pages/Categories'));
 const Products = lazy(() => import('./features/products/pages/Products'));
 const Invoices = lazy(() => import('./features/invoices/pages/Invoices'));
-const Branches = lazy(() => import('./features/branches/pages/Branches'));
+const Stores = lazy(() => import('./features/stores/pages/Stores'));
 
 const routes: RouteObject[] = [
   {
@@ -135,9 +135,9 @@ const routes: RouteObject[] = [
           { path: '/cash-registers/:codigo', element: <CashRegister /> },
           { path: '/cash-registers/create', element: <CreateRegister /> },
 
-          { path: '/branches', element: <Branches /> },
-          { path: '/branches/:brancheId', element: <Branche /> },
-          { path: '/branches/create', element: <CreateBranche /> },
+          { path: '/stores', element: <Stores /> },
+          { path: '/stores/:codigo', element: <Store /> },
+          { path: '/stores/create', element: <CreateStore /> },
 
           { path: '/transactions', element: <Transactions /> },
           { path: '/transactions/:transactionId', element: <Transaction /> },

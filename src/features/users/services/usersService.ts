@@ -1,5 +1,6 @@
 import api from '../../../services/api';
 import type { ChangeUserPasswordDTO } from '../dtos/change-user-password.dto';
+import type { CreateUserDTO } from '../dtos/create-user.dto';
 import type { UpdateUserDTO } from '../dtos/update-user.dto';
 import type { User } from '../interfaces/UserInterface';
 
@@ -9,7 +10,7 @@ export const usersService = {
   getByUsername: (usuario: string) => api.get<User>(`/users/user/${usuario}`),
   getByRole: (rol: string) => api.get<User[]>(`/users/filter/role/${rol}`),
   getByStatus: (estado: string) => api.get<User[]>(`/users/filter/status/${estado}`),
-  create: (createUserDTO: Partial<User>) => api.post<User>('/users', createUserDTO),
+  create: (createUserDTO: CreateUserDTO) => api.post<User>('/users', createUserDTO),
   update: (userId: string, updateUserDTO: UpdateUserDTO) =>
     api.patch<User>(`/users/${userId}`, updateUserDTO),
   changePassword: (changeUserPasswordDTO: ChangeUserPasswordDTO) =>

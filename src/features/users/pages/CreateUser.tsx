@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import React, { useEffect, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
@@ -18,20 +18,34 @@ import { myAlertSuccess } from '../../../utils/commonFunctions';
 import PageMeta from '../../../components/common/PageMeta';
 import { Toaster } from '../../../components/UI/Toaster/Toaster';
 import { toast } from '../../../components/UI/Toast/hooks/useToast';
+import { SearchSelect } from '../../../components/SearchSelect/SearchSelect';
+import type { RootState } from '../../../store/store';
 
 export const CreateUser: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
+  const [selectedUserRole, setSelectedUserRole] = useState<'admin' | 'cajero' | 'inventarista'>(
+    'cajero'
+  );
+  const [selectedStoreName, setSelectedStoreName] = useState<string>('');
 
-  const { loading, error } = useAppSelector((state) => state.users);
+  const onSelectUserRole = (rol: 'admin' | 'cajero' | 'inventarista') => {
+    setSelectedUserRole(rol);
+  };
+
+  const { loading, error } = useAppSelector((state: RootState) => state.users);
+  const { stores } = useAppSelector((state: RootState) => state.stores);
 
   // Inicializar React Hook form
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
   } = useForm<CreateUserDTO>({
+    mode: 'onChange',
+    reValidateMode: 'onBlur',
     defaultValues: {
       nombre: '',
       apellido: '',
@@ -45,6 +59,7 @@ export const CreateUser: React.FC = () => {
       },
       rol: 'cajero',
       estado: 'activo',
+      sucursal: '',
       foto: '',
       configuracion: undefined,
       roles: [],
@@ -72,6 +87,7 @@ export const CreateUser: React.FC = () => {
             .unwrap()
             .then(() => {
               myAlertSuccess(`Usuario creado`, `Se ha creado el usuario con exito`);
+              navigate('/users');
             })
             .catch((error: any) => {
               toast({
@@ -190,10 +206,16 @@ export const CreateUser: React.FC = () => {
 
             <div>
               <Label htmlFor="rol">Rol</Label>
-              <Select id="rol" {...register('rol')}>
-                <option value="admin">Administrador</option>
-                <option value="cajero">Cajero</option>
-                <option value="inventarista">Inventarista</option>
+              <Select id="rol" {...register('rol', { required: 'El campo rol es obligatorio' })}>
+                <option value="admin" onClick={() => onSelectUserRole('admin')}>
+                  Administrador
+                </option>
+                <option value="cajero" onClick={() => onSelectUserRole('cajero')}>
+                  Cajero
+                </option>
+                <option value="inventarista" onClick={() => onSelectUserRole('inventarista')}>
+                  Inventarista
+                </option>
               </Select>
               {errors.rol && <p className="mt-1 text-sm text-red-500">{errors.rol.message}</p>}
             </div>
@@ -205,6 +227,36 @@ export const CreateUser: React.FC = () => {
                 <option value="inactivo">Inactivo</option>
               </Select>
             </div>
+
+            {selectedUserRole !== 'admin' && (
+              <div>
+                <Label htmlFor="sucursal">Sucursal</Label>
+                <Controller
+                  name="sucursal"
+                  control={control}
+                  rules={{ required: 'El campo sucursal es obligatorio' }}
+                  render={({ field }) => (
+                    <SearchSelect
+                      options={stores}
+                      initialDisplayValue={selectedStoreName}
+                      fieldValue={field.value}
+                      placeholder="Buscar Sucursal"
+                      name={field.name}
+                      onFieldChange={field.onChange}
+                      onFieldBlur={field.onBlur}
+                      onSelect={(id: string) => {
+                        field.onChange(id);
+                        const found = stores.find((s) => s._id === id);
+                        setSelectedStoreName(found?.nombre || '');
+                      }}
+                    />
+                  )}
+                />
+                {errors.sucursal && (
+                  <div className="text-sm text-red-500">{errors.sucursal.message}</div>
+                )}
+              </div>
+            )}
 
             <div className="col-span-full md:col-span-2">
               <Label htmlFor="foto">Foto (URL)</Label>

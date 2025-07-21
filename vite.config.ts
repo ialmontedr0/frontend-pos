@@ -10,6 +10,9 @@ const __dirname = dirname(__filename);
 
 // https://vite.dev/config/
 export default defineConfig({
+  build: {
+    target: 'esnext'
+  },
   plugins: [react(), svgr(), tailwindcss()],
   resolve: {
     alias: {

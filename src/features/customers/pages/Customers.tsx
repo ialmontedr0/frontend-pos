@@ -103,7 +103,7 @@ export default function Customers() {
     <>
       <div className="p-4 space-y-6">
         <div className="space-y-4 space-x-4">
-          <h2 className="text-3xl font-regular text-black dark:text-gray-200">Clientes</h2>
+          <h2 className="text-2xl md:text-3xl font-medium text-black dark:text-gray-200">Clientes</h2>
           <Button
             size="sm"
             onClick={createCustomer}

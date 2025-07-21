@@ -3,5 +3,9 @@ export interface UpdateCustomerDTO {
   apellido?: string;
   telefono?: string;
   correo?: string;
-  direccion?: string;
+  direccion?: {
+    calle: string;
+    casa: string;
+    ciudad: string;
+  };
 }

@@ -29,7 +29,7 @@ import transactionReducer from '../features/cash-registers/transactions/slices/t
 import invoicesReducer from '../features/invoices/slices/invoicesSlice';
 import settingsReducer from '../features/settings/slices/settingsSlice';
 import offlineReducer from '../features/offline/slices/offlineSlice';
-import branchesReducer from '../features/branches/slices/branchesSlice';
+import storesReducer from '../features/stores/slices/storesSlice';
 import { offlineMiddleware } from '../features/offline/middlewares/offlineMiddleware';
 import { setupOfflineSync } from '../features/offline/sync/offlineSync';
 
@@ -64,7 +64,7 @@ export const api = createApi({
     'Invoice',
     'Notification',
     'Transaction',
-    'Branche',
+    'Store',
     'Stats',
     'Settings',
   ],
@@ -89,7 +89,7 @@ const rootReducer = combineReducers({
   notifications: notificationsReducer,
   settings: settingsReducer,
   offline: offlineReducer,
-  branches: branchesReducer,
+  stores: storesReducer,
   [api.reducerPath]: api.reducer,
 });
 

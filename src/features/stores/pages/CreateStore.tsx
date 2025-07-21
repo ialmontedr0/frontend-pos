@@ -8,9 +8,9 @@ import withReactContent from 'sweetalert2-react-content';
 
 import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
 import type { RootState } from '../../../store/store';
-import { createBranche, clearBrancheError } from '../slices/branchesSlice';
+import { createStore, clearStoreError } from '../slices/storesSlice';
 
-import type { CreateBrancheDTO } from '../dtos/create-branche.dto';
+import type { CreateStoreDTO } from '../dtos/create-store.dto';
 
 import { BiArrowBack, BiSave, BiSolidSave } from 'react-icons/bi';
 import PageMeta from '../../../components/common/PageMeta';
@@ -20,23 +20,24 @@ import { Label } from '../../../components/UI/Label/Label';
 import Input from '../../../components/UI/Input/Input';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 
-export const CreateBranche: React.FC = () => {
+export const CreateStore: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
 
-  const { loading, error } = useAppSelector((state: RootState) => state.branches);
+  const { loading, error } = useAppSelector((state: RootState) => state.stores);
 
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<CreateBrancheDTO>({
+  } = useForm<CreateStoreDTO>({
     defaultValues: {
       nombre: '',
       direccion: {
         calle: '',
+        numero: '',
         ciudad: '',
       },
       telefono: '',
@@ -44,7 +45,7 @@ export const CreateBranche: React.FC = () => {
   });
 
   const onSubmit = useCallback(
-    (createBrancheDTO: CreateBrancheDTO) => {
+    (createStoreDTO: CreateStoreDTO) => {
       myAlert
         .fire({
           title: `Crear Sucursal`,
@@ -60,11 +61,11 @@ export const CreateBranche: React.FC = () => {
         })
         .then((result) => {
           if (result.isConfirmed) {
-            dispatch(createBranche(createBrancheDTO))
+            dispatch(createStore(createStoreDTO))
               .unwrap()
               .then(() => {
                 myAlertSuccess(`Sucursal Creada`, `Se ha creado la sucursal con exito`);
-                navigate('/branches');
+                navigate('/stores');
                 reset();
               })
               .catch((error: any) => {
@@ -90,8 +91,8 @@ export const CreateBranche: React.FC = () => {
       .then((result) => {
         if (result.isConfirmed) {
           reset();
-          clearBrancheError();
-          navigate('/branches');
+          clearStoreError();
+          navigate('/stores');
         }
       });
   };
@@ -133,6 +134,21 @@ export const CreateBranche: React.FC = () => {
                     <div className="text-sm text-red-500">{errors.direccion?.calle.message}</div>
                   )}
                 </div>
+
+                <div>
+                  <Label htmlFor="direccion.numero">Numero</Label>
+                  <Input
+                    id="numero"
+                    placeholder="Ingresa la el numero del edificion de la sucursal"
+                    {...register('direccion.numero', {
+                      required: 'El campo numero es obligatorio',
+                    })}
+                  />
+                  {errors.direccion?.numero && (
+                    <div className="text-sm text-red-500">{errors.direccion?.numero.message}</div>
+                  )}
+                </div>
+
                 <div>
                   <Label htmlFor="direccion.ciudad">Ciudad</Label>
                   <Input
