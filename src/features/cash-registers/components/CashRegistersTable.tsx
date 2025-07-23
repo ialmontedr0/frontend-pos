@@ -76,7 +76,7 @@ export const CashRegistersTable: React.FC<CashRegisterTableProps> = ({ data, loa
               .then(() => {
                 myAlertSuccess(`Caja eliminada`, `Se ha eliminado la caja exitosamente!`);
                 dispatch(clearCashRegisterError());
-                navigate('/cash-registers', { replace: true });
+                navigate(0);
               })
               .catch((error: any) => {
                 myAlertError(error);

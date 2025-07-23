@@ -11,7 +11,7 @@ import { Table } from '../../../components/Table/Table';
 import Button from '../../../components/UI/Button/Button';
 import { BiPlusCircle } from 'react-icons/bi';
 import Spinner from '../../../components/UI/Spinner/Spinner';
-import { parseCustomerType } from '../../../utils/commonFunctions';
+import { myAlertError, myAlertSuccess, parseCustomerType } from '../../../utils/commonFunctions';
 import { EditCustomer } from '../components/EditCustomer';
 import { useModal } from '../../../hooks/useModal';
 
@@ -32,7 +32,12 @@ export default function Customers() {
     { header: 'Nombre', accessor: 'nombre' },
     { header: 'Telefono', accessor: 'telefono', render: (value: string) => `${value || '-'}` },
     { header: 'Correo', accessor: 'correo', render: (value: string) => `${value || 'Sin correo'}` },
-    { header: 'Direccion', accessor: 'direccion', render: (value: string) => `${value || '--'}` },
+    {
+      header: 'Direccion',
+      accessor: 'direccion',
+      render: (value: { calle: string; casa: string; ciudad: string }) =>
+        value ? value.ciudad || value.casa || value.calle : '-',
+    },
     { header: 'Tipo', accessor: 'tipo', render: (value: string) => `${parseCustomerType(value)}` },
   ];
 
@@ -75,23 +80,11 @@ export default function Customers() {
             dispatch(deleteCustomer(customerId))
               .unwrap()
               .then(() => {
-                myAlert.fire({
-                  title: 'Cliente eliminado',
-                  text: `Se ha eliminado el cliente con exito!`,
-                  icon: 'success',
-                  timer: 5000,
-                  timerProgressBar: true,
-                });
+                myAlertSuccess('Cliente eliminado', `Se ha eliminado el cliente con exito!`);
                 dispatch(getAllCustomers());
               })
               .catch((error: any) => {
-                myAlert.fire({
-                  title: 'Error',
-                  text: `Error: ${error.response?.data?.message || error.message}`,
-                  icon: 'error',
-                  timer: 5000,
-                  timerProgressBar: true,
-                });
+                myAlertError(error);
               });
           }
         });
@@ -103,7 +96,9 @@ export default function Customers() {
     <>
       <div className="p-4 space-y-6">
         <div className="space-y-4 space-x-4">
-          <h2 className="text-2xl md:text-3xl font-medium text-black dark:text-gray-200">Clientes</h2>
+          <h2 className="text-2xl md:text-3xl font-medium text-black dark:text-gray-200">
+            Clientes
+          </h2>
           <Button
             size="sm"
             onClick={createCustomer}

@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
 import Swal from 'sweetalert2';
@@ -13,8 +13,6 @@ import {
   clearSelectedCashRegister,
   closeCashRegister,
   openCashRegister,
-  assignCashRegisterToUser,
-  clearCashRegisterError,
 } from '../slices/cashRegisterSlice';
 import { getAllUsers } from '../../users/slices/usersSlice';
 
@@ -26,7 +24,6 @@ import Spinner from '../../../components/UI/Spinner/Spinner';
 import { Table } from '../../../components/Table/Table';
 import { BiArrowBack, BiCollapse, BiEdit, BiFolderOpen, BiTrash } from 'react-icons/bi';
 import { myAlertError, myAlertSuccess } from '../../../utils/commonFunctions';
-import type { User } from '../../users/interfaces/UserInterface';
 import Badge from '../../../components/UI/Badge/Badge';
 import Button from '../../../components/UI/Button/Button';
 import { UserIcon } from '../../../assets/icons';
@@ -34,15 +31,23 @@ import PageMeta from '../../../components/common/PageMeta';
 import PageBreadcrum from '../../../components/common/PageBreadCrumb';
 import { EditRegister } from '../components/EditRegister';
 import { useModal } from '../../../hooks/useModal';
+import type { CashRegister as CashRegisterInterface } from '../interfaces/CashRegisterInterface';
+import { AssignToUser } from '../components/AssignToUser';
+import { NotFound } from '../../../pages/NotFound';
 
 export const CashRegister: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
   const { isOpen, openModal, closeModal } = useModal();
+  const {
+    isOpen: isOpenAssignModal,
+    openModal: openAssignModal,
+    closeModal: closeAssignModal,
+  } = useModal();
   moment.locale('es');
 
-  const { users } = useAppSelector((state: RootState) => state.users);
+  const [selectedRegister, setSelectedRegister] = useState<CashRegisterInterface | null>(null);
 
   let openAmount: number = 0;
   let closeAmount: number = 0;
@@ -95,6 +100,10 @@ export const CashRegister: React.FC = () => {
 
   const editRegister = () => {
     openModal();
+  };
+
+  const viewUser = (codigo: string) => {
+    navigate(`/users/${codigo}`);
   };
 
   const openRegister = useCallback(
@@ -200,7 +209,7 @@ export const CashRegister: React.FC = () => {
     [dispatch, myAlert]
   );
 
-  const handleAssignToUser = () => {
+  /* const handleAssignToUser = () => {
     let internalSelected: User | null = null;
 
     // Helper para actualizar la lista de resultados
@@ -275,27 +284,19 @@ export const CashRegister: React.FC = () => {
             });
         }
       });
-  };
+  }; */
 
-  if (!loading && error) {
-    return (
-      <div className="p-6">
-        <p className="text-sm text-red-500">Error: {error}</p>
-      </div>
-    );
-  }
+  const onAssignToUser = (cashRegister: CashRegisterInterface) => {
+    setSelectedRegister(cashRegister);
+    openAssignModal();
+  };
 
   if (loading) {
     return <Spinner />;
   }
 
   if (!cashRegister) {
-    return (
-      <div className="p-6">
-        <p className="text-gray-600">No existe la caja</p>
-        <button>Volver</button>
-      </div>
-    );
+    return <NotFound node="Caja" />;
   }
 
   return (
@@ -310,6 +311,11 @@ export const CashRegister: React.FC = () => {
           <div>
             <Label htmlFor="codigo">Caja</Label>
             <p>{cashRegister.codigo}</p>
+          </div>
+
+          <div>
+            <Label htmlFor="sucursal">Sucursal</Label>
+            <p>{cashRegister.sucursal?.nombre}</p>
           </div>
 
           <div>
@@ -351,7 +357,12 @@ export const CashRegister: React.FC = () => {
           {cashRegister.assignedTo && (
             <div>
               <Label htmlFor="assignedTo">Cajero asignado</Label>
-              <p>{cashRegister.assignedTo.usuario}</p>
+              <p
+                onClick={() => viewUser(cashRegister.assignedTo!.usuario)}
+                className="cursor-pointer hover:bg-gray-100/50 hover:border hover:border-gray-200/50 px-4 py-1 w-fit rounded-lg transition-all"
+              >
+                {cashRegister.assignedTo.usuario}
+              </p>
             </div>
           )}
 
@@ -410,16 +421,11 @@ export const CashRegister: React.FC = () => {
           <Button size="sm" onClick={back} startIcon={<BiArrowBack />}>
             Volver
           </Button>
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={editRegister}
-            startIcon={<BiEdit />}
-          >
+          <Button size="sm" variant="outline" onClick={editRegister} startIcon={<BiEdit />}>
             Editar
           </Button>
           {cashRegister.assignedTo === undefined && (
-            <Button size="sm" onClick={() => handleAssignToUser()} startIcon={<UserIcon />}>
+            <Button size="sm" onClick={() => onAssignToUser(cashRegister)} startIcon={<UserIcon />}>
               Asignar
             </Button>
           )}
@@ -456,6 +462,12 @@ export const CashRegister: React.FC = () => {
         cashRegister={cashRegister}
         isOpen={isOpen}
         closeModal={closeModal}
+        error={error!}
+      />
+      <AssignToUser
+        cashRegister={selectedRegister!}
+        isOpen={isOpenAssignModal}
+        closeModal={closeAssignModal}
         error={error!}
       />
     </>

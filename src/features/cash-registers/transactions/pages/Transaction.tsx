@@ -47,7 +47,7 @@ export const Transaction: React.FC = () => {
       <PageBreadcrum pageTitle="Transaccion" />
       <div className="border border-black m-2 p-4 bg-white dark:bg-gray-900 rounded-lg shadow-lg">
         <div className="flex-1 space-y-4 my-4">
-          <h2 className="text-2xl md:text-3xl font-regular text-black dark:text-gray-200">
+          <h2 className="text-2xl md:text-3xl font-medium text-black dark:text-gray-200">
             Transaccion
           </h2>
         </div>
@@ -89,7 +89,9 @@ export const Transaction: React.FC = () => {
             variant="outline"
             startIcon={<BiArrowBack size={20} />}
             onClick={() => navigate('/transactions')}
-          >Volver</Button>
+          >
+            Volver
+          </Button>
         </div>
       </div>
     </>

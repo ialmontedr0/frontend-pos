@@ -16,7 +16,7 @@ import { myAlertError, myAlertSuccess, parseUserRole } from '../../../utils/comm
 
 import { Table } from '../../../components/Table/Table';
 import Button from '../../../components/UI/Button/Button';
-import { BiPencil, BiPlusCircle, BiShow } from 'react-icons/bi';
+import { BiPlusCircle, BiSolidKey, BiSolidPencil, BiSolidShow } from 'react-icons/bi';
 import { BiGrid } from 'react-icons/bi';
 import { BiListUl } from 'react-icons/bi';
 import { Card, type CardItem } from '../../../components/UI/Card/Card';
@@ -25,6 +25,7 @@ import Badge from '../../../components/UI/Badge/Badge';
 import PageMeta from '../../../components/common/PageMeta';
 import { EditUser } from '../components/EditUser';
 import { useModal } from '../../../hooks/useModal';
+import { Error } from '../../../components/Error/components/Error';
 
 export default function Users() {
   const dispatch = useAppDispatch();
@@ -76,7 +77,9 @@ export default function Users() {
 
   const cardItems: CardItem[] = users.map((u) => ({
     id: u._id,
-    imageUrl: u.foto || '',
+    imageUrl:
+      u.foto ||
+      'https://i0.wp.com/www.madewithlev.com/wp-content/uploads/2019/06/blank-portrait.jpg?fit=819%2C1024&ssl=1',
     title: `${u.nombre} ${u.apellido}`,
     subtitle: u.usuario,
     fields: [
@@ -92,14 +95,19 @@ export default function Users() {
     ],
     actions: [
       {
-        icon: <BiShow size={20} />,
+        icon: <BiSolidShow size={20} />,
         onClick: () => navigate(`/users/${u.usuario}`),
         toolTip: 'Ver usuario',
       },
       {
-        icon: <BiPencil size={20} />,
+        icon: <BiSolidPencil size={20} />,
         onClick: () => editUser(u),
         toolTip: 'Editar usuario',
+      },
+      {
+        icon: <BiSolidKey size={20} />,
+        onClick: () => handleResetPassword(u.usuario),
+        toolTip: 'Restablecer Contrasena',
       },
     ],
   }));
@@ -175,7 +183,9 @@ export default function Users() {
     [dispatch]
   );
 
-  if (error) return <div>Error {error}</div>;
+  if (error) return (
+    <Error message='Usuarios'/>
+  );
 
   return (
     <>

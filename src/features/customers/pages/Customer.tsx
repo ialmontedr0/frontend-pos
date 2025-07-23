@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-
 import moment from 'moment/min/moment-with-locales';
 
 import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
 import { getCustomerById, clearSelectedCustomer } from '../slices/customerSlice';
 import type { RootState } from '../../../store/store';
+
 import type { Column, Action } from '../../../components/Table/types';
 import { Table } from '../../../components/Table/Table';
 import Button from '../../../components/UI/Button/Button';
@@ -28,7 +28,6 @@ export const Customer: React.FC = () => {
   moment.locale('es');
 
   const { customer, loading, error } = useAppSelector((state: RootState) => state.customers);
-
   const [customerPurchases, setCustomerPurchases] = useState<any[]>([]);
 
   const purchaseColumns: Column<CustomerPurchase>[] = [
@@ -58,6 +57,7 @@ export const Customer: React.FC = () => {
       navigate('/customers');
       return;
     }
+
     dispatch(getCustomerById(customerId))
       .unwrap()
       .then((customer: CustomerInterface) => {
@@ -68,10 +68,6 @@ export const Customer: React.FC = () => {
       dispatch(clearSelectedCustomer());
     };
   }, [dispatch, customerId, navigate]);
-
-  if (loading) {
-    return <Spinner />;
-  }
 
   if (error) {
     return (
@@ -84,9 +80,15 @@ export const Customer: React.FC = () => {
     );
   }
 
-  if (!customer) {
+  if (!loading && !customer) {
     return <NotFound node="Cliente" />;
   }
+
+  if (loading) {
+    return <Spinner />;
+  }
+
+  if (!customer) return null;
 
   return (
     <>

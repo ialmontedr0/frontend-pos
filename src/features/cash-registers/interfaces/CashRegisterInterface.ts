@@ -1,8 +1,10 @@
+import type { Store } from '../../stores/interfaces/store.interface';
 import type { Transaction } from './TransactionInterface';
 
 export interface CashRegister {
   _id: string;
   codigo: string;
+  sucursal: Store;
   montoApertura: number;
   montoCierre: number;
   diferencia?: number;

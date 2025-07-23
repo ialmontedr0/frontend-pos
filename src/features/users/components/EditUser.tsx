@@ -148,10 +148,13 @@ export const EditUser: React.FC<EditUserProps> = ({ user, isOpen, closeModal, er
         cancelButtonText: 'Cancelar',
       })
       .then((result) => {
-        if (result.isConfirmed) {
-
+        if (result.isConfirmed && user) {
           if (updateUserDTO.rol === 'admin') {
             delete updateUserDTO.sucursal;
+          }
+
+          if (updateUserDTO.rol !== 'admin') {
+            updateUserDTO.sucursal = user.sucursal?._id;
           }
 
           dispatch(
@@ -231,13 +234,13 @@ export const EditUser: React.FC<EditUserProps> = ({ user, isOpen, closeModal, er
             <h4 className="mb-2 text-2xl font-semibold text-black dark:text-gray-200">
               Editar Usuario
             </h4>
-            <p className="mb-6 text-sm text-gray-500 dark:text-gray-200 lg:mb-7">
+            <p className="mb-2 text-sm text-gray-500 dark:text-gray-200 lg:mb-7">
               Actualiza los datos del usuario
             </p>
           </div>
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
             <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
-              <div className="mt-7">
+              <div className="mt-2">
                 <h5 className="text-lg font-medium text-black dark:text-gray-200 lg:mb-6">
                   {user.nombre} {user.apellido}
                 </h5>

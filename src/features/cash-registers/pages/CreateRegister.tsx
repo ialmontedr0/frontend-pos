@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 
@@ -16,7 +16,10 @@ import { Label } from '../../../components/UI/Label/Label';
 import { Select } from '../../../components/UI/Select/Select';
 import Input from '../../../components/UI/Input/Input';
 import Button from '../../../components/UI/Button/Button';
-import { BiSave, BiTrash, BiX } from 'react-icons/bi';
+import { BiSave, BiSolidEraser, BiTrash, BiX } from 'react-icons/bi';
+import type { Store } from '../../stores/interfaces/store.interface';
+import { getAllStores } from '../../stores/slices/storesSlice';
+import { myAlertError, myAlertSuccess } from '../../../utils/commonFunctions';
 
 export const CreateRegister: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -26,12 +29,17 @@ export const CreateRegister: React.FC = () => {
   const [registerCurrentAmount, setRegisterCurrentAmount] = useState<number>(0);
 
   const { users } = useAppSelector((state: RootState) => state.users);
+  const { stores } = useAppSelector((state: RootState) => state.stores);
+
   const [userQuery, setUserQuery] = useState<string>('');
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
-  const filteredUsers = users.filter((u) =>
-    u.usuario.toLowerCase().includes(userQuery.toLowerCase())
-  );
+  const [storeQuery, setStoreQuery] = useState<string>('');
+  const [selectedStore, setSelectedStore] = useState<Store | null>(null);
+
+  const filteredUsers = users
+    .filter((u) => u.rol === 'cajero')
+    .filter((u) => u.usuario.toLowerCase().includes(userQuery.toLowerCase()));
 
   const {
     handleSubmit,
@@ -39,6 +47,7 @@ export const CreateRegister: React.FC = () => {
   } = useForm<CreateRegisterDTO>({
     defaultValues: {
       estado: 'abierta',
+      sucursal: '',
       montoActual: registerCurrentAmount ?? 0,
       assignedTo: '',
     },
@@ -46,6 +55,7 @@ export const CreateRegister: React.FC = () => {
 
   useEffect(() => {
     dispatch(getAllUsers());
+    dispatch(getAllStores());
     setRegisterCurrentAmount(0);
   }, [dispatch]);
 
@@ -55,7 +65,7 @@ export const CreateRegister: React.FC = () => {
     };
   }, [dispatch]);
 
-  const onSubmit = () => {
+  const onSubmit = useCallback(() => {
     myAlert
       .fire({
         title: 'Crear Caja',
@@ -68,35 +78,34 @@ export const CreateRegister: React.FC = () => {
       })
       .then((result) => {
         if (result.isConfirmed) {
-          dispatch(
-            createCashRegister({
-              assignedTo: selectedUser?._id,
-              estado: registerStatus ?? 'abierta',
-              montoActual: registerCurrentAmount ?? 0,
-            })
-          )
-            .unwrap()
-            .then(() => {
-              myAlert.fire({
-                title: `Caja creada`,
-                text: `Se ha creado la caja con exito`,
-                icon: 'success',
-                timer: 5000,
-                timerProgressBar: true,
+          if (selectedUser && selectedUser.sucursal) {
+            dispatch(
+              createCashRegister({
+                assignedTo: selectedUser._id,
+                sucursal: selectedUser.sucursal._id,
+                estado: registerStatus ?? 'abierta',
+                montoActual: registerCurrentAmount ?? 0,
+              })
+            )
+              .unwrap()
+              .then(() => {
+                myAlertSuccess(`Caja Creada`, `Se ha creado la caja exitosamente.`);
+              })
+              .catch((error: any) => {
+                myAlertError(error);
               });
-              navigate('/cash-registers');
-            })
-            .catch((error: any) => {
-              myAlert.fire({
-                title: `Error`,
-                text: `Error: ${error}`,
-                icon: 'error',
-                timer: 5000,
-                timerProgressBar: true,
-              });
-            });
+          } else if (!selectedUser && selectedStore) {
+            console.log(`Sucursal seleccionada: ${selectedStore._id}`);
+          }
         }
       });
+  }, []);
+
+  const clear = () => {
+    setRegisterStatus('abierta');
+    setRegisterCurrentAmount(0);
+    setSelectedUser(null);
+    setSelectedStore(null);
   };
 
   const cancel = () => {
@@ -117,109 +126,15 @@ export const CreateRegister: React.FC = () => {
       });
   };
 
-  {
-    /* <div className="p-6">
-      <div className="">
-        <h2 className="text-2xl font-semibold">Crear Caja</h2>
-      </div>
-
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="w-full max-w-4xl mx-auto p-6 bg-white dark:bg-gray-900 rounded-lg shadow-md space-y-6"
-      >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="estado">Estado</Label>
-
-            <Select
-              value={registerStatus}
-              onChange={(e) => setRegisterStatus(e.target.value as any)}
-              className="block w-40 md:w-48 rounded-md border border-gray-300 dark:border-gray-600 
-                        bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200
-                        focus:ring-indigo-500 focus:border-indigo-500"
-            >
-              <option value="abierta">Abierta</option>
-              <option value="cerrada">Cerrada</option>
-            </Select>
-          </div>
-
-          <div>
-            <Label htmlFor="montoActual">Monto Actual</Label>
-            <Input
-              type="number"
-              id="montoActual"
-              min={0}
-              onChange={(e) => {
-                let val = parseFloat(e.target.value) || 0;
-                setRegisterCurrentAmount(val);
-              }}
-            />
-            {errors.montoActual && (
-              <p className="text-sm text-red-500">{errors.montoActual.message}</p>
-            )}
-          </div>
-
-          <div>
-            <Label htmlFor="assignedTo">Asignar a Usuario</Label>
-            <Input
-              type="text"
-              value={userQuery}
-              onChange={(e) => setUserQuery(e.target.value)}
-              placeholder="Buscar usuario..."
-            />
-            {userQuery && (
-              <ul className="overflow-auto max-h-40 border rounded mt-1 bg-white">
-                {filteredUsers.map((u) => (
-                  <li
-                    className="px-3 py-2 hover:bg-blue-100 cursor-pointer"
-                    key={u._id}
-                    onClick={() => {
-                      setSelectedUser(u);
-                      setUserQuery('');
-                    }}
-                  >
-                    {u.usuario}
-                  </li>
-                ))}
-              </ul>
-            )}
-            {selectedUser && (
-              <div>
-                <p className="mt-2 font-semibold">📌 {selectedUser.usuario}</p>
-                <Button
-                  onClick={() => setSelectedUser(null)}
-                  startIcon={<BiTrash size={16} />}
-                ></Button>
-              </div>
-            )}
-          </div>
-
-          {error && <p className="text-red-500">Error: {error}</p>}
-        </div>
-
-        <div className="flex flex-wrap gap-2">
-          <Button type="submit">{loading ? `${(<Spinner />)}` : 'Crear caja'}</Button>
-          <Button
-            className="px-3 py-2 rounded-lg bg-green-600 text-white"
-            type="button"
-            onClick={cancel}
-          >
-            Cancelar
-          </Button>
-        </div>
-      </form>
-    </div> */
-  }
-
   return (
     <div className="p-6 space-y-4 border-2 border-black h-screen">
       <div className="border border-green-600 py-4 rounded-lg shadow-theme-sm">
         <div className="space-y-6 px-4">
-          <h2 className="text-xl md:text-2xl lg:text-3xl font-regular">Crear Caja</h2>
+          <h2 className="text-2xl md:text-3xl font-medium my-2">Crear Caja</h2>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="">
-          <div className="grid grid-cols-1 md:grid-cols-2 space-x-4 px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 space-y-4 space-x-4 px-4">
             <div>
               <Label>Estado Inicial</Label>
               <Select onChange={(e) => setRegisterStatus(e.target.value as any)}>
@@ -245,12 +160,12 @@ export const CreateRegister: React.FC = () => {
             </div>
 
             <div>
-              <Label htmlFor="assignedTo">Asignar a Usuario</Label>
+              <Label htmlFor="assignedTo">Asignar a Usuario (CAJERO)</Label>
               <Input
                 type="text"
                 value={userQuery}
                 onChange={(e) => setUserQuery(e.target.value)}
-                placeholder={selectedUser ? selectedUser.usuario : 'Buscar usuario' }
+                placeholder={selectedUser ? selectedUser.usuario : 'Buscar usuario'}
               />
               {userQuery && (
                 <ul className="overflow-auto max-h-40 border rounded mt-1 bg-white">
@@ -260,6 +175,7 @@ export const CreateRegister: React.FC = () => {
                       key={u._id}
                       onClick={() => {
                         setSelectedUser(u);
+                        setSelectedStore(null);
                         setUserQuery('');
                       }}
                     >
@@ -270,20 +186,79 @@ export const CreateRegister: React.FC = () => {
               )}
               {selectedUser && (
                 <div className="flex flex-row gap-2 my-2">
-                  <p className="mt-2 font-semibold">📌 {selectedUser.usuario}</p>
+                  <p className="mt-2 font-medium">
+                    📌 {selectedUser.usuario} - {selectedUser.sucursal?.nombre || 'Administrador'}
+                  </p>
                   <Button
                     className="bg-transparent hover:bg-gray-100 p-1"
-                    onClick={() => setSelectedUser(null)}
+                    onClick={() => {
+                      setSelectedUser(null);
+                    }}
                     startIcon={<BiTrash className="text-red-400" size={20} />}
                   ></Button>
                 </div>
               )}
             </div>
+
+            <div>
+              <Label htmlFor="sucursal">Sucursal</Label>
+              {selectedUser && (
+                <p>
+                  Se ha seleccionado un usuario: Su sucursal es: <br />
+                  {selectedUser.sucursal!.nombre}
+                </p>
+              )}
+              {!selectedUser && (
+                <div>
+                  <Input
+                    type="text"
+                    value={storeQuery}
+                    onChange={(e) => setStoreQuery(e.target.value)}
+                    placeholder={selectedStore ? selectedStore.nombre : 'Buscar sucursal'}
+                  />
+                  {storeQuery && (
+                    <ul className="overflow-auto max-h-40 border rounded mt-1 bg-white">
+                      {stores.map((s) => (
+                        <li
+                          key={s._id}
+                          className="px-3 py-2 hover:bg-blue-100 cursor-pointer"
+                          onClick={() => {
+                            setSelectedStore(s);
+                            setStoreQuery('');
+                          }}
+                        >
+                          {s.nombre}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  {selectedStore && (
+                    <div className="flex flex-row gap-2 my-2">
+                      <p className="mt-2 font-semibold">📌 {selectedStore.nombre}</p>
+                      <Button
+                        className="bg-transparent hover:bg-gray-100 p-1"
+                        onClick={() => setSelectedStore(null)}
+                        startIcon={<BiTrash className="text-red-400" size={20} />}
+                      ></Button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
 
-          <div className="flex flex-row gap-2 my-2 px-4 justify-center md:justify-end lg:justify-end">
+          <div className="flex flex-row gap-2 my-4 px-4 justify-center md:justify-end lg:justify-end">
             <Button size="sm" variant="primary" type="submit" startIcon={<BiSave size={20} />}>
               Crear
+            </Button>
+            <Button
+              size="sm"
+              variant="success"
+              type="button"
+              startIcon={<BiSolidEraser />}
+              onClick={clear}
+            >
+              Limpiar
             </Button>
             <Button
               size="sm"

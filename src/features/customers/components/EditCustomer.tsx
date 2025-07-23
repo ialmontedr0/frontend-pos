@@ -93,6 +93,7 @@ export const EditCustomer: React.FC<EditCustomerProps> = ({
         })
         .then((result) => {
           if (result.isConfirmed && customer) {
+            console.log(`SI`);
             dispatch(
               updateCustomer({
                 customerId: customer._id,
@@ -106,7 +107,7 @@ export const EditCustomer: React.FC<EditCustomerProps> = ({
                   `Cliente ${customer.nombre} actualizado`,
                   `Se ha actualizado el cliente con exito`
                 );
-                getCustomerById(customer._id);
+                dispatch(getCustomerById(customer._id));
               })
               .catch((error: any) => {
                 myAlertError(error);
@@ -236,7 +237,7 @@ export const EditCustomer: React.FC<EditCustomerProps> = ({
                   </div>
                 </div>
 
-                <div className='mt-2'>
+                <div className="mt-2">
                   <Label htmlFor="direccion">Direccion</Label>
                   <div className="border border-gray-200 p-4 w-full rounded-2xl shadow-theme-md">
                     <Label htmlFor="">Calle</Label>

@@ -22,6 +22,8 @@ import { BiSave, BiSolidSave, BiSolidTrash, BiTrash, BiX } from 'react-icons/bi'
 import { Select } from '../../../components/UI/Select/Select';
 import type { User } from '../../users/interfaces/UserInterface';
 import type { RootState } from '../../../store/store';
+import type { Store } from '../../stores/interfaces/store.interface';
+import { getAllStores } from '../../stores/slices/storesSlice';
 
 interface EditRegisterProps {
   cashRegister: CashRegister;
@@ -43,10 +45,18 @@ export const EditRegister: React.FC<EditRegisterProps> = ({
   const [userQuery, setUserQuery] = useState<string>('');
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
+  const [storeQuery, setStoreQuery] = useState<string>('');
+  const [selectedStore, setSelectedStore] = useState<Store | null>(null);
+
   const { users } = useAppSelector((state: RootState) => state.users);
+  const { stores } = useAppSelector((state: RootState) => state.stores);
 
   const filteredUsers = users.filter((user: User) =>
     user.usuario.toLowerCase().includes(userQuery.toLowerCase())
+  );
+
+  const filteredStores = stores.filter((store: Store) =>
+    store.nombre.toLowerCase().includes(storeQuery.toLowerCase())
   );
 
   const sanitizedRegisterForForm = (cashRegister: CashRegister): UpdateRegisterDTO => {
@@ -73,6 +83,7 @@ export const EditRegister: React.FC<EditRegisterProps> = ({
 
   useEffect(() => {
     if (cashRegister) {
+      dispatch(getAllStores());
       reset(sanitizedRegisterForForm(cashRegister));
     }
   }, [cashRegister, reset]);
@@ -105,17 +116,21 @@ export const EditRegister: React.FC<EditRegisterProps> = ({
             dispatch(
               updateCashRegister({
                 cashRegisterId: cashRegister._id,
-                updateRegisterDTO,
+                updateRegisterDTO: {
+                  ...updateRegisterDTO,
+                  sucursal: updateRegisterDTO.sucursal ?? cashRegister.sucursal._id,
+                  assignedTo: updateRegisterDTO.assignedTo._id ?? cashRegister.assignedTo?._id,
+                },
               })
             )
               .unwrap()
               .then((cashRegister) => {
                 closeModal();
                 myAlertSuccess(
-                  `Proveedor ${cashRegister.codigo} actualizada`,
+                  `Caja ${cashRegister.codigo} actualizada`,
                   `Se ha actualizado la caja con exito`
                 );
-                getCashRegisterByCode(cashRegister.codigo);
+                dispatch(getCashRegisterByCode(cashRegister.codigo));
               })
               .catch((error: any) => {
                 myAlertError(error);
@@ -226,13 +241,54 @@ export const EditRegister: React.FC<EditRegisterProps> = ({
                       <div className="text-sm text-red-500">{errors.montoActual.message}</div>
                     )}
                   </div>
+
                   <div>
-                    <Label htmlFor="telefono">Telefono</Label>
+                    <Label htmlFor="sucursal">Sucursal</Label>
+                    <Input
+                      type="text"
+                      value={storeQuery}
+                      onChange={(e) => setStoreQuery(e.target.value)}
+                      placeholder="Buscar sucursal..."
+                    />
+                    {storeQuery && (
+                      <ul className="overflow-auto max-h-40 border rounded mt-1 bg-white">
+                        {filteredStores.map((store: Store) => (
+                          <li
+                            key={store._id}
+                            className="px-3 py-2 hover:bg-blue-100 cursor-pointer"
+                            onClick={() => {
+                              setSelectedStore(store);
+                              setStoreQuery('');
+                            }}
+                          >
+                            {store.nombre}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    {selectedStore ? (
+                      <div className="flex flex-row gap-2 my-2">
+                        {selectedStore && <p className="">📌 {selectedStore.nombre}</p>}{' '}
+                        <Button
+                          size="icon"
+                          variant="icon"
+                          startIcon={<BiTrash />}
+                          onClick={() => setSelectedUser(null)}
+                        ></Button>
+                      </div>
+                    ) : (
+                      <div className="flex flex-row gap-2 my-2">
+                        📌 Sucursal: <p>{cashRegister.sucursal?.nombre}</p>
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <Label htmlFor="assignedTo">Usuario Asignado</Label>
                     <Input
                       type="text"
                       value={userQuery}
                       onChange={(e) => setUserQuery(e.target.value)}
-                      placeholder={selectedUser ? selectedUser.usuario : 'Buscar Usuario'}
+                      placeholder="Buscar Usuario..."
                     />
                     {userQuery && (
                       <ul className="overflow-auto max-h-40 border rounded mt-1 bg-white">

@@ -5,6 +5,7 @@ import type { UpdateRegisterDTO } from '../dtos/update-register.dto';
 import type { OpenRegisterDTO } from '../dtos/open-register.dto';
 import type { CloseRegisterDTO } from '../dtos/close-register.dto';
 import type { RegisterTransactionDTO } from '../dtos/register-transaction.dto';
+import type { AssignRegisterToUserDTO } from '../dtos/assign-register-to-user.dto';
 
 export const cashRegisterService = {
   getAll: () => api.get<CashRegister[]>('/cash-registers'),
@@ -22,8 +23,8 @@ export const cashRegisterService = {
     api.post<CashRegister>('/cash-registers', createRegisterDTO),
   update: (registerId: string, updateRegisterDTO: UpdateRegisterDTO) =>
     api.patch<CashRegister>(`/cash-registers/${registerId}`, updateRegisterDTO),
-  assign: (userId: string, registerId: string) =>
-    api.patch<CashRegister>(`/cash-registers/assign/${userId}/${registerId}`),
+  assign: (registerId: string, assignRegisterToUserDTO: AssignRegisterToUserDTO) =>
+    api.patch<CashRegister>(`/cash-registers/assign/${registerId}`, assignRegisterToUserDTO),
   open: (registerId: string, openRegisterDTO: OpenRegisterDTO) =>
     api.patch<CashRegister>(`/cash-registers/open/${registerId}`, openRegisterDTO),
   close: (registerId: string, closeRegisterDTO: CloseRegisterDTO) =>

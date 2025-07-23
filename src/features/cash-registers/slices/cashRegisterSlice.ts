@@ -7,6 +7,7 @@ import type { OpenRegisterDTO } from '../dtos/open-register.dto';
 import type { CloseRegisterDTO } from '../dtos/close-register.dto';
 import type { RegisterTransactionDTO } from '../dtos/register-transaction.dto';
 import type { Transaction } from '../interfaces/TransactionInterface';
+import type { AssignRegisterToUserDTO } from '../dtos/assign-register-to-user.dto';
 
 interface CashRegisterState {
   cashRegister: CashRegister | null;
@@ -180,16 +181,22 @@ export const updateCashRegister = createAsyncThunk<
 
 export const assignCashRegisterToUser = createAsyncThunk<
   CashRegister,
-  { userId: string; registerId: string },
+  { registerId: string; assignRegisterToUserDTO: AssignRegisterToUserDTO },
   { rejectValue: string }
->('cashRegisters/assignToUser', async ({ userId, registerId }, { rejectWithValue }) => {
-  try {
-    const registerResponse = await cashRegisterService.assign(userId, registerId);
-    return registerResponse.data;
-  } catch (error: any) {
-    return rejectWithValue(error.response?.data?.message || error.message);
+>(
+  'cashRegisters/assignToUser',
+  async ({ registerId, assignRegisterToUserDTO }, { rejectWithValue }) => {
+    try {
+      const registerResponse = await cashRegisterService.assign(
+        registerId,
+        assignRegisterToUserDTO
+      );
+      return registerResponse.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
   }
-});
+);
 
 export const openCashRegister = createAsyncThunk<
   CashRegister,

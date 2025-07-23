@@ -105,7 +105,7 @@ export const myAlertSuccess = async (
 export const myAlertError = async (errorMessage: string): Promise<SweetAlertResult<void>> => {
   return myAlert.fire({
     title: `Error`,
-    text: `Error ${errorMessage}`,
+    text: `Error: ${errorMessage}`,
     icon: 'error',
     timer: 5000,
     timerProgressBar: true,

@@ -1,31 +1,33 @@
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import moment from 'moment/min/moment-with-locales';
-import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
 
 import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
 import type { RootState } from '../../../store/store';
 
 import { clearSelectedUser, clearUserError, getUserByUsername } from '../slices/usersSlice';
-import { parseTextSizeName, parseUserRole } from '../../../utils/commonFunctions';
+import { parseUserRole } from '../../../utils/commonFunctions';
 
 import Button from '../../../components/UI/Button/Button';
 import { BiArrowBack, BiCog, BiEdit } from 'react-icons/bi';
 import Badge from '../../../components/UI/Badge/Badge';
 import Spinner from '../../../components/UI/Spinner/Spinner';
-import { AiFillSetting } from 'react-icons/ai';
 import { NotFound } from '../../../pages/NotFound';
 import { Error } from '../../../components/Error/components/Error';
 import { useModal } from '../../../hooks/useModal';
 import { EditUser } from '../components/EditUser';
+import { SettingsModal } from '../components/SettingsModal';
 
 export const User: React.FC = () => {
   const { usuario } = useParams<{ usuario: string }>();
   const { isOpen, openModal, closeModal } = useModal();
+  const {
+    isOpen: isSettingsOpen,
+    openModal: openSettingsModal,
+    closeModal: closeSettingsModal,
+  } = useModal();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const myAlert = withReactContent(Swal);
   moment.locale('es');
 
   const { user, loading, error } = useAppSelector((state: RootState) => state.users);
@@ -44,38 +46,7 @@ export const User: React.FC = () => {
 
   const showSettings = () => {
     if (user && user.configuracion) {
-      myAlert.fire({
-        title: `Configuracion`,
-        iconHtml: <AiFillSetting />,
-        customClass: {
-          icon: 'no-default-icon-border',
-        },
-        html: `
-         <div className='flex flex-row'>
-          <strong>Tema: </strong> <label>${user.configuracion.tema.charAt(0).toUpperCase() + user.configuracion.tema.slice(1)}</label>
-         </div>
-
-         <div>
-          <strong>Idioma: </strong><label>${user.configuracion.idioma}</label>
-         </div>
-
-        <div>
-          <strong>Moneda: </strong><label>${user.configuracion.moneda}</label>
-        </div>
-
-        <div>
-          <strong>Zona Horaria: </strong><label>${user.configuracion.zonaHoraria}</label>
-        </div>
-
-        <div>
-          <strong>Tamano Texto: </strong><label>${parseTextSizeName(user.configuracion.tamanoTexto)}</label>
-        </div>
-
-        <div>
-          <strong>Notificaciones: </strong><label>${user.configuracion.notificaciones ? 'Si' : 'No'}</label>
-        </div>
-        `,
-      });
+      openSettingsModal();
     }
   };
 
@@ -223,6 +194,12 @@ export const User: React.FC = () => {
           </div>
         </div>
         <EditUser user={user} isOpen={isOpen} closeModal={closeModal} error={error!} />
+        <SettingsModal
+          user={user}
+          isOpen={isSettingsOpen}
+          closeModal={closeSettingsModal}
+          error={error!}
+        />
       </div>
     </>
   );

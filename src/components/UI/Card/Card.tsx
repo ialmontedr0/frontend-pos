@@ -20,7 +20,7 @@ interface CardProps {
 
 export const Card: React.FC<CardProps> = ({ item, className }) => {
   return (
-    <div className={cn('bg-white dark:bg-gray-800 rounded-lg shadow p-4 flex-col', className)}>
+    <div className={cn('bg-white dark:bg-gray-800 rounded-xl shadow p-4 flex-col', className)}>
       <div className="w-full h-40 mb-4 overflow-hidden rounded-md bg-gray-100">
         {item.imageUrl ? (
           <img src={item.imageUrl || ''} alt={item.title} className="object-cover w-full h-full" />
@@ -51,7 +51,7 @@ export const Card: React.FC<CardProps> = ({ item, className }) => {
               key={i}
               onClick={a.onClick}
               title={a.toolTip}
-              className="cursor-pointer p-2 bg-gray-100 dark:bg-gray-700 dark:text-white rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition"
+              className="cursor-pointer p-2 bg-gray-100/50 dark:bg-gray-700 dark:text-white rounded-md hover:bg-gray-200/50 dark:hover:bg-gray-600 transition"
             >
               {a.icon}
             </button>
