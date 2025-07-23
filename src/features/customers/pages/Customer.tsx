@@ -15,10 +15,10 @@ import { Label } from '../../../components/UI/Label/Label';
 import { parseSaleStatus } from '../../../utils/commonFunctions';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import type { CustomerPurchase } from '../interfaces/CustomerPurchaseInterface';
-import { NotFound } from '../../../pages/NotFound';
 import PageMeta from '../../../components/common/PageMeta';
 import { useModal } from '../../../hooks/useModal';
 import { EditCustomer } from '../components/EditCustomer';
+import { Error } from '../../../components/Error/components/Error';
 
 export const Customer: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -69,40 +69,23 @@ export const Customer: React.FC = () => {
     };
   }, [dispatch, customerId, navigate]);
 
-  if (error) {
-    return (
-      <div className="p-6 max-w-lg mx-auto bg-white dark:bg-gray-800 rounded-lg shadow">
-        <p className="text-red-600 dark:text-red-400">Error: {error}</p>
-        <Button startIcon={<BiArrowBack size={20} />} onClick={() => navigate('/customers')}>
-          Volver
-        </Button>
-      </div>
-    );
-  }
-
-  if (!loading && !customer) {
-    return <NotFound node="Cliente" />;
-  }
-
-  if (loading) {
-    return <Spinner />;
-  }
-
+  if (loading) return <Spinner />;
+  if (error) return <Error message="Cliente" />;
   if (!customer) return null;
-
+  
   return (
     <>
       <PageMeta title="Cliente - PoS v2" description="Cliente" />
       <div className="m-2 mx-2 p-4 max-2-2xl bg-white dark:bg-gray-900 rounded-lg shadow-lg">
         <div className="flex-1 space-y-4">
-          <h2 className="text-2xl font-regular text-gray-800 dark:text-gray-100">
-            {customer.nombre} {customer.apellido || ''}
+          <h2 className="text-2xl md:text-3xl font-medium text-gray-800 dark:text-gray-100">
+            {customer!.nombre} {customer!.apellido || ''}
           </h2>
 
           <div className="grid grid-cols sm:grid-cols-2 gap-x-6 gap-y-2">
             <div>
               <Label className="text-gray-500 dark:text-gray-400 text-sm">Telefono</Label>
-              <p className="text-gray-800 dark:text-gray-200">{customer.telefono || '-'}</p>
+              <p className="text-gray-800 dark:text-gray-200">{customer!.telefono || '-'}</p>
             </div>
 
             <div>
@@ -112,44 +95,44 @@ export const Customer: React.FC = () => {
               </p>
             </div>
 
-            {customer.direccion && (
+            {customer!.direccion && (
               <div>
                 <Label className="text-gray-500 dark:text-gray-400 text-sm">Direccion</Label>
                 <p className="text-gray-800 dark:text-gray-200">
                   <strong>Calle: </strong>
-                  {customer.direccion.calle}
+                  {customer!.direccion.calle}
                 </p>
 
                 <p className="text-gray-800 dark:text-gray-200">
                   <strong>No. Casa: </strong>
-                  {customer.direccion.casa}
+                  {customer!.direccion.casa}
                 </p>
 
                 <p className="text-gray-800 dark:text-gray-200">
                   <strong>Ciudad: </strong>
-                  {customer.direccion.ciudad}
+                  {customer!.direccion.ciudad}
                 </p>
               </div>
             )}
 
-            {customer.createdBy && (
+            {customer!.createdBy && (
               <div>
                 <Label className="text-gray-500 dark:text-gray-400 text-sm">Creado por</Label>
-                <p className="text-gray-700 dark:text-gray-200">{customer.createdBy.usuario}</p>
+                <p className="text-gray-700 dark:text-gray-200">{customer!.createdBy.usuario}</p>
               </div>
             )}
 
-            {customer.updatedBy && (
+            {customer!.updatedBy && (
               <div>
                 <Label htmlFor="updatedBy">Actualizado por</Label>
-                <p>{customer.updatedBy.usuario}</p>
+                <p>{customer!.updatedBy.usuario}</p>
               </div>
             )}
 
             <div>
               <Label className="text-gray-500 dark:text-gray-400 text-sm">Fecha creacion</Label>
               <p className="text-gray-800 dark:text-gray-200">
-                {moment(customer.createdAt).format('LLLL')}
+                {moment(customer!.createdAt).format('LLLL')}
               </p>
             </div>
 
@@ -158,7 +141,7 @@ export const Customer: React.FC = () => {
                 Fecha Actualizacion
               </Label>
               <p className="text-gray-800 dark:text-gray-200">
-                {moment(customer.updatedAt).format('LLLL')}
+                {moment(customer!.updatedAt).format('LLLL')}
               </p>
             </div>
           </div>
@@ -167,7 +150,7 @@ export const Customer: React.FC = () => {
             <Label className="text-xl font-regular" htmlFor="historialCompras">
               Compras
             </Label>
-            {customer.historialCompras.length ? (
+            {customer!.historialCompras.length ? (
               <Table
                 data={customerPurchases}
                 columns={purchaseColumns}
@@ -199,7 +182,7 @@ export const Customer: React.FC = () => {
             </Button>
           </div>
         </div>
-        <EditCustomer customer={customer} isOpen={isOpen} closeModal={closeModal} error={error!} />
+        <EditCustomer customer={customer!} isOpen={isOpen} closeModal={closeModal} error={error!} />
       </div>
     </>
   );

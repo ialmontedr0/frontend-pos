@@ -9,6 +9,7 @@ interface UsersState {
   user: User | null;
   users: User[] | [];
   nextTema: string | null;
+  creating: boolean;
   error: string | null;
   loading: boolean;
 }
@@ -17,6 +18,7 @@ const initialState: UsersState = {
   user: null,
   users: [],
   nextTema: null,
+  creating: false,
   error: null,
   loading: false,
 };
@@ -315,15 +317,15 @@ const usersSlice = createSlice({
 
     // === Crear nuevo usuario ===
     builder.addCase(createUser.pending, (state) => {
-      (state.loading = true), (state.error = null);
+      (state.loading = true), (state.creating = true), (state.error = null);
     });
 
     builder.addCase(createUser.fulfilled, (state, action: PayloadAction<User>) => {
-      (state.loading = false), (state.user = action.payload);
+      (state.loading = false), (state.creating = false), (state.user = action.payload);
     });
 
     builder.addCase(createUser.rejected, (state, action) => {
-      (state.loading = false), (state.error = action.payload as string);
+      (state.loading = false), (state.creating = false), (state.error = action.payload as string);
     });
 
     // === Actualizar usuario ===

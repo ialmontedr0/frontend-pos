@@ -12,7 +12,6 @@ import Button from '../../../components/UI/Button/Button';
 import { BiArrowBack, BiCog, BiEdit } from 'react-icons/bi';
 import Badge from '../../../components/UI/Badge/Badge';
 import Spinner from '../../../components/UI/Spinner/Spinner';
-import { NotFound } from '../../../pages/NotFound';
 import { Error } from '../../../components/Error/components/Error';
 import { useModal } from '../../../hooks/useModal';
 import { EditUser } from '../components/EditUser';
@@ -50,17 +49,9 @@ export const User: React.FC = () => {
     }
   };
 
-  if (!error && loading) {
-    return <Spinner />;
-  }
-
-  if (error && !loading) {
-    return <Error message={error} />;
-  }
-
-  if (!user) {
-    return <NotFound node="Usuario" />;
-  }
+  if (loading) return <Spinner />;
+  if (error) return <Error message="Cliente" />;
+  if (!user) return null;
 
   return (
     <>

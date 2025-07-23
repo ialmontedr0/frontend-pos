@@ -18,7 +18,7 @@ export const Label = forwardRef<HTMLLabelElement, LabelProps>(
         htmlFor={htmlFor}
         tabIndex={props.tabIndex ?? 0} // <-- lo hacemos foco‑able
         className={clsx(
-          twMerge('mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400', className)
+          twMerge('mb-1.5 block text-md font-medium text-gray-700 dark:text-gray-400', className)
         )}
         {...props} // acepta tabIndex, onFocus, etc.
       >

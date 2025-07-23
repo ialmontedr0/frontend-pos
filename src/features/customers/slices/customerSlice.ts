@@ -7,6 +7,7 @@ import { customersService } from '../services/customersService';
 interface CustomerState {
   customer: Customer | null;
   customers: Customer[] | [];
+  creating: boolean;
   loading: boolean;
   error: string | null;
 }
@@ -14,6 +15,7 @@ interface CustomerState {
 const initialState: CustomerState = {
   customer: null,
   customers: [],
+  creating: false,
   loading: false,
   error: null,
 };
@@ -134,15 +136,16 @@ const customersSlice = createSlice({
 
     // === Crear cliente ===
     builder.addCase(createCustomer.pending, (state) => {
-      (state.loading = true), (state.error = null);
+      (state.loading = true), (state.creating = true), (state.error = null);
     });
 
     builder.addCase(createCustomer.fulfilled, (state, action: PayloadAction<Customer>) => {
-      (state.loading = false), (state.customer = action.payload);
+      (state.loading = false), (state.creating = false), (state.customer = action.payload);
     });
 
     builder.addCase(createCustomer.rejected, (state, action) => {
       (state.loading = false),
+        (state.creating = false),
         (state.error = (action.payload as string) || 'Error creando el cliente');
     });
 

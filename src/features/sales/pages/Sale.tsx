@@ -35,6 +35,11 @@ export const Sale: React.FC = () => {
 
   const paymentColumns: Column<Payment>[] = [
     {
+      header: 'Codigo',
+      accessor: 'codigo',
+      render: (value: string) => value ? value : '-'
+    },
+    {
       header: 'Metodo pago',
       accessor: 'metodoPago',
       render: (value: string) => `${parsePaymentMethod(value)}`,
@@ -158,6 +163,11 @@ export const Sale: React.FC = () => {
           </div>
 
           <div>
+            <Label htmlFor="sucursal">Sucursal</Label>
+            <p>{sale.sucursal.nombre}</p>
+          </div>
+
+          <div>
             <Label htmlFor="caja">Caja</Label>
             <p>{sale.caja.codigo}</p>
           </div>
@@ -267,12 +277,7 @@ export const Sale: React.FC = () => {
           </Button>
         </div>
       </div>
-      <MakePayment
-        sale={sale}
-        isOpen={isOpen}
-        closeModal={closeModal}
-        error={error!}
-      />
+      <MakePayment sale={sale} isOpen={isOpen} closeModal={closeModal} error={error!} />
     </>
   );
 };

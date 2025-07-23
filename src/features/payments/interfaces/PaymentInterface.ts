@@ -1,6 +1,7 @@
 
 export interface Payment {
   _id: string;
+  codigo: string;
   venta: { _id: string; codigo: string };
   cliente: { _id: string; nombre: string };
   usuario: { _id: string; usuario: string };

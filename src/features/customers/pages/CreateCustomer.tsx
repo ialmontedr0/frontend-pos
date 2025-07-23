@@ -21,7 +21,7 @@ export const CreateCustomer: React.FC = () => {
   const myAlert = withReactContent(Swal);
 
   const {
-    loading,
+    creating,
     error,
     customer: createdCustomer,
   } = useAppSelector((state: RootState) => state.customers);
@@ -177,10 +177,11 @@ export const CreateCustomer: React.FC = () => {
         )}
 
         <div className="flex justify-end pt-4 gap-2 dark:border-gray-700">
-          <Button startIcon={<BiSave size={20} />} type="submit" variant="primary">
-            {loading ? 'Creando...' : 'Crear Cliente'}
+          <Button size='sm' startIcon={<BiSave size={20} />} type="submit" variant="primary">
+            {creating ? 'Creando...' : 'Crear Cliente'}
           </Button>
           <Button
+          size='sm'
             startIcon={<BiX size={20} />}
             type="button"
             variant="outline"

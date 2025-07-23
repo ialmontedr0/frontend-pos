@@ -23,7 +23,7 @@ export const InventoryPage: React.FC = () => {
   return (
     <div className="p-6 space-y-4 text-black dark:text-gray-200">
       <div>
-        <h2 className="text-2xl md:text-3xl font-regular">Inventario</h2>
+        <h2 className="text-2xl md:text-3xl font-medium">Inventario</h2>
       </div>
 
       {loading && <Spinner />}

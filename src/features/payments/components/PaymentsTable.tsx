@@ -21,14 +21,25 @@ interface PaymentsTableProps {
   data: Payment[] | null;
   loading: boolean;
   error: string;
+  emptyMessage?: string;
 }
 
-export const PaymentsTable: React.FC<PaymentsTableProps> = ({ data, loading, error }) => {
+export const PaymentsTable: React.FC<PaymentsTableProps> = ({
+  data,
+  loading,
+  error,
+  emptyMessage = 'No hay Pagos para mostrar',
+}) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const myAlert = withReactContent(Swal);
 
   const paymentColumns: Column<Payment>[] = [
+    {
+      header: 'Codigo',
+      accessor: 'codigo',
+      render: (value: string) => (value ? value : '-'),
+    },
     {
       header: 'Venta',
       accessor: 'venta',
@@ -65,6 +76,8 @@ export const PaymentsTable: React.FC<PaymentsTableProps> = ({ data, loading, err
     { label: 'Ver', onClick: (p) => navigate(`/payments/${p._id}`) },
     { label: 'Eliminar', onClick: (p) => onDelPayment(p._id) },
   ];
+
+  if (data?.length === 0) return <div>{emptyMessage}</div>;
 
   const onDelPayment = useCallback(
     (paymentId: string) => {
@@ -105,11 +118,11 @@ export const PaymentsTable: React.FC<PaymentsTableProps> = ({ data, loading, err
   return (
     <div className="p-4 space-y-4">
       <div className="space-y-6">
-        <h2 className="text-3xl font-regular text-black dark:text-gray-200">Pagos</h2>
+        <h2 className="text-3xl font-medium text-black dark:text-gray-200">Pagos</h2>
         <div className="w-auto flex flex-wrap gap-4 my-2">
           <Button
             onClick={() => navigate('/payments/create')}
-            startIcon={<BiPlusCircle size={24} />}
+            startIcon={<BiPlusCircle size={20} />}
             type="button"
           >
             Nuevo Pago

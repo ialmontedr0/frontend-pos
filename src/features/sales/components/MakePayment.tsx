@@ -17,6 +17,7 @@ import type { CreatePaymentDTO } from '../../payments/dtos/create-payment.dto';
 import type { Customer } from '../../customers/interfaces/CustomerInterface';
 import type { RootState } from '../../../store/store';
 import { Textarea } from '../../../components/UI/TextArea/TextArea';
+import { getAllCustomers } from '../../customers/slices/customerSlice';
 
 interface MakePaymentProps {
   sale: Sale;
@@ -42,6 +43,7 @@ export const MakePayment: React.FC<MakePaymentProps> = ({ sale, isOpen, closeMod
 
   useEffect(() => {
     onCustomerQuery(customerQuery);
+    dispatch(getAllCustomers());
   }, [customerQuery]);
 
   const {

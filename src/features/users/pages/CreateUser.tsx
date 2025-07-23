@@ -34,7 +34,7 @@ export const CreateUser: React.FC = () => {
     setSelectedUserRole(rol);
   };
 
-  const { loading, error } = useAppSelector((state: RootState) => state.users);
+  const { creating, error } = useAppSelector((state: RootState) => state.users);
   const { stores } = useAppSelector((state: RootState) => state.stores);
 
   // Inicializar React Hook form
@@ -210,7 +210,11 @@ export const CreateUser: React.FC = () => {
                 <option value="admin" onClick={() => onSelectUserRole('admin')}>
                   Administrador
                 </option>
-                <option value="cajero" onClick={() => onSelectUserRole('cajero')}>
+                <option
+                  className="px-2 py-4"
+                  value="cajero"
+                  onClick={() => onSelectUserRole('cajero')}
+                >
                   Cajero
                 </option>
                 <option value="inventarista" onClick={() => onSelectUserRole('inventarista')}>
@@ -284,7 +288,9 @@ export const CreateUser: React.FC = () => {
                     placeholder="Ingresa la calle de residencia del usuario"
                     {...register('direccion.calle', { required: 'El campo calle es obligatorio' })}
                   />
-                  {errors.direccion?.calle && <div>{errors.direccion.calle.message}</div>}
+                  {errors.direccion?.calle && (
+                    <div className="text-sm text-red-500">{errors.direccion.calle.message}</div>
+                  )}
                 </div>
                 <div>
                   <Label htmlFor="casa">Casa</Label>
@@ -296,7 +302,9 @@ export const CreateUser: React.FC = () => {
                       required: 'El campo casa es obligatorio',
                     })}
                   />
-                  {errors.direccion?.casa && <div>{errors.direccion.casa.message}</div>}
+                  {errors.direccion?.casa && (
+                    <div className="text-sm text-red-500">{errors.direccion.casa.message}</div>
+                  )}
                 </div>
                 <div>
                   <Label htmlFor="ciudad">Ciudad</Label>
@@ -308,7 +316,9 @@ export const CreateUser: React.FC = () => {
                       required: 'El campo ciudad es obligatorio',
                     })}
                   />
-                  {errors.direccion?.ciudad && <div>{errors.direccion.ciudad.message}</div>}
+                  {errors.direccion?.ciudad && (
+                    <div className="text-sm text-red-500">{errors.direccion.ciudad.message}</div>
+                  )}
                 </div>
               </div>
             </div>
@@ -317,10 +327,16 @@ export const CreateUser: React.FC = () => {
           {error && <p className="text-center text-red-600 bg-red-100 p-2 rounded-md">{error}</p>}
 
           <div className="flex justify-end pt-4 gap-2 dark:border-gray-700">
-            <Button startIcon={<BiSave size={20} />} type="submit" variant="primary">
-              {loading ? 'Creando...' : 'Guardar usuario'}
+            <Button size="sm" startIcon={<BiSave size={20} />} type="submit" variant="primary">
+              {creating ? 'Creando...' : 'Guardar usuario'}
             </Button>
-            <Button startIcon={<BiX size={20} />} type="button" variant="outline" onClick={cancel}>
+            <Button
+              size="sm"
+              startIcon={<BiX size={20} />}
+              type="button"
+              variant="outline"
+              onClick={cancel}
+            >
               Cancelar
             </Button>
           </div>

@@ -12,7 +12,6 @@ import { BiArrowBack, BiFolderOpen, BiPaperPlane, BiTrash } from 'react-icons/bi
 import { myAlertError, myAlertSuccess, parsePaymentMethod } from '../../../utils/commonFunctions';
 import PageMeta from '../../../components/common/PageMeta';
 import PageBreadcrum from '../../../components/common/PageBreadCrumb';
-import { NotFound } from '../../../pages/NotFound';
 import { generateInvoice } from '../../invoices/slices/invoicesSlice';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import { Error } from '../../../components/Error/components/Error';
@@ -65,7 +64,7 @@ export const Payment: React.FC = () => {
   }
 
   if (!payment) {
-    return <NotFound node="Pago" />;
+    return null;
   }
 
   return (
@@ -78,6 +77,12 @@ export const Payment: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-2 md:flex-col sm:flex-col xs:flex-col space-y-4">
+          {payment.codigo && (
+            <div>
+              <Label htmlFor="codigo">Codigo Pago</Label>
+              <p>{payment.codigo}</p>
+            </div>
+          )}
           <div>
             <Label htmlFor="venta">Venta</Label>
             <p>{payment.venta.codigo ?? '-'}</p>

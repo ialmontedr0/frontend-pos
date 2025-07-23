@@ -7,6 +7,7 @@ export interface Sale {
   usuario: { _id: string; usuario: string };
   cliente: { _id: string; nombre: string };
   caja: { _id: string; codigo: string };
+  sucursal: { _id: string; codigo: string; nombre: string; }
   fecha: string;
   productos: SaleProduct[];
   itbisVenta: number;
